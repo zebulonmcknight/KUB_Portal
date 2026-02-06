@@ -23,8 +23,8 @@ npm install
 
 ```bash
 touch .env
-echo "PORT=3000"
-echo "NODE_ENV=development
+echo "PORT=3000" > .env
+echo "NODE_ENV=development" > .env
 ```
 
 
