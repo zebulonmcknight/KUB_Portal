@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express, { Application } from 'express';
+import router from './gateway/router';
 
 const app: Application = express();
 
@@ -17,7 +18,6 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Placeholder for router (you'll add this in Issue #2)
-// app.use('/api', router);
+app.use('/api', router); 
 
 export default app;
