@@ -5,8 +5,9 @@ import { Router } from 'express';
 // dictate that we choose one format and stick with it.  
 import { profile } from './controllers/account.controller';
 import { login } from './controllers/auth.controller';
-import { payment } from './controllers/billing.controller';
+import { createBillingCustomer } from './controllers/billing.controller';
 import { get_user_by_email } from './controllers/user.controller';
+import { createBillingCustomerSubscription } from './controllers/billing.controller';
 
 // Express router object, this object acts as a router for API requests 
 // by using router.post and router.get methods. These methods take in a 
@@ -17,7 +18,8 @@ import { get_user_by_email } from './controllers/user.controller';
 const router = Router(); 
 
 router.post('/auth/login', login);
-router.post('/billing/payment', payment);
+router.post('/billing/createBillingCustomer', createBillingCustomer);
+router.post('/billing/createBillingCustomerSubscription', createBillingCustomerSubscription);
 router.post('/account/profile', profile); 
 router.get('/user/get_user', get_user_by_email);  
 
