@@ -1,4 +1,4 @@
-// backend/src/database/test-connection.ts
+// backend/src/database/testConnection.ts
 import { supabase } from './supabase';
 
 // Simple check to ensure that supabase client is up and running, we can hit
