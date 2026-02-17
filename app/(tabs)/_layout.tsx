@@ -3,15 +3,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Image, View } from 'react-native';
 
-const TabIcon = ({focused, icon, title}: any) => {
-
-   if( focused ){
-      return(
-         <View>
-            <Image source={icon} style={{ width: 24, height: 24 }}/>
-         </View>
-      )
-   }
+const TabIcon = ({icon}: any) => {
    return(
       <View>
          <Image source={icon} style={{ width: 24, height: 24 }}/>
@@ -23,9 +15,16 @@ const _layout = () => {
    return (
       <Tabs
          screenOptions={{
+            headerShown: false,
+            headerStyle: {
+               backgroundColor: '#091C3C',
+            },
+            headerShadowVisible: false,
             tabBarShowLabel: true,
+            tabBarInactiveTintColor: '#F7FDFD',
             tabBarStyle: {
                backgroundColor: '#091C3C',
+               shadowColor: 'transparent',
                height: 106,
                width: '100%',
                position: 'absolute',
@@ -42,9 +41,7 @@ const _layout = () => {
                headerShown: true,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
-                     focused={focused}
                      icon={!focused ? icons.billing : highlightedIcons.highlightedBilling}
-                     title='Billing'
                   />
                )
             }}
@@ -56,9 +53,7 @@ const _layout = () => {
                headerShown: true,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
-                     focused={focused}
                      icon={!focused ? icons.profile : highlightedIcons.highlightedProfile}
-                     title='Profile'
                   />
                )
             }}
@@ -70,9 +65,7 @@ const _layout = () => {
                headerShown: true,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
-                     focused={focused}
                      icon={!focused ? icons.outages : highlightedIcons.highlightedOutages}
-                     title='Outages'
                   />
                )
             }}
@@ -84,9 +77,7 @@ const _layout = () => {
                headerShown: true,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
-                     focused={focused}
                      icon={!focused ? icons.chatbot : highlightedIcons.highlightedChatbot}
-                     title='Q&A'
                   />
                )
             }}
