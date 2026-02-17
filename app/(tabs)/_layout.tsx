@@ -3,6 +3,7 @@ import { Tabs } from 'expo-router';
 import React from 'react';
 import { Image, View } from 'react-native';
 
+// Component to render the tab icons, changing based on whether the tab is focused or not
 const TabIcon = ({icon}: any) => {
    return(
       <View>
@@ -15,17 +16,15 @@ const _layout = () => {
    return (
       <Tabs
          screenOptions={{
-            headerShown: false,
             headerStyle: {
-               backgroundColor: '#091C3C',
+               backgroundColor: '#091C3C', // Match the header background to the app's theme
             },
-            headerShadowVisible: false,
-            tabBarShowLabel: true,
-            tabBarInactiveTintColor: '#F7FDFD',
+            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
+            tabBarShowLabel: true, // Show labels under icons for better clarity
             tabBarStyle: {
-               backgroundColor: '#091C3C',
-               shadowColor: 'transparent',
-               height: 106,
+               backgroundColor: '#091C3C', // Match the tab bar background to the app's theme
+               shadowColor: 'transparent', // Remove the shadown of the tab bar for seamless integration with background
+               height: 106, // Height used in Figma design
                width: '100%',
                position: 'absolute',
                overflow: 'hidden',
@@ -34,6 +33,7 @@ const _layout = () => {
             }
          }}
       >
+         {/* Each screen corresponds to a tab in the bottom navigation */}
          <Tabs.Screen
             name='index'
             options={{
@@ -41,7 +41,7 @@ const _layout = () => {
                headerShown: true,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
-                     icon={!focused ? icons.billing : highlightedIcons.highlightedBilling}
+                     icon={!focused ? icons.billing : highlightedIcons.highlightedBilling} // Change icon based on whether the tab is focused or not
                   />
                )
             }}

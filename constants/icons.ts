@@ -1,3 +1,5 @@
+// File containing all icons used in the app, both regular and highlighted versions.
+
 import billing from "@/assets/icons/billing-icon.png";
 import chatbot from "@/assets/icons/chatbot-icon.png";
 import outages from "@/assets/icons/outages-icon.png";
