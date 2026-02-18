@@ -24,6 +24,13 @@ export default function RootLayout() {
             headerShown: false, // Hide the header for the main tab layout
           }}
         />
+        {/* Will probably uncomment this when we have the login boolean setup, we either render the login screens or the actual app screens based on that. */}
+        {/* <Stack.Screen
+          name="(auth)"
+          options={{
+            headerShown: false, // Hide the header for the auth layout as well
+          }}
+        /> */}
       </Stack>
     </ThemeProvider>
   );

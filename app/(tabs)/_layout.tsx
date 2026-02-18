@@ -12,7 +12,7 @@ const TabIcon = ({icon}: any) => {
    )
 }
 
-const _layout = () => {
+export default function TabsLayout () {
    return (
       <Tabs
          screenOptions={{
@@ -35,10 +35,10 @@ const _layout = () => {
       >
          {/* Each screen corresponds to a tab in the bottom navigation */}
          <Tabs.Screen
-            name='index'
+            name='billing'
             options={{
                title: 'Billing',
-               headerShown: true,
+               headerShown: false,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
                      icon={!focused ? icons.billing : highlightedIcons.highlightedBilling} // Change icon based on whether the tab is focused or not
@@ -50,7 +50,7 @@ const _layout = () => {
             name='profile'
             options={{
                title: 'Profile',
-               headerShown: true,
+               headerShown: false,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
                      icon={!focused ? icons.profile : highlightedIcons.highlightedProfile}
@@ -62,7 +62,7 @@ const _layout = () => {
             name='outages'
             options={{
                title: 'Outages',
-               headerShown: true,
+               headerShown: false,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
                      icon={!focused ? icons.outages : highlightedIcons.highlightedOutages}
@@ -74,7 +74,7 @@ const _layout = () => {
             name='chatbot'
             options={{
                title: 'Q&A',
-               headerShown: true,
+               headerShown: false,
                tabBarIcon: ({ focused }) => (
                   <TabIcon
                      icon={!focused ? icons.chatbot : highlightedIcons.highlightedChatbot}
@@ -85,5 +85,3 @@ const _layout = () => {
       </Tabs>
    );
 }
-
-export default _layout;
