@@ -1,3 +1,4 @@
+import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import './globals.css';
@@ -14,23 +15,32 @@ const globalTheme = {
 };
 
 export default function RootLayout() {
+
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_600SemiBold,
+    Inter_700Bold,
+  });
+
   return (
     // Wrap the entire app in the ThemeProvider to apply the global theme
     <ThemeProvider value={globalTheme}>
       <Stack>
+        {/* Authentication user flow*/}
+        <Stack.Screen
+          name="(auth)"
+          options={{
+            headerShown: false, // Hide the header for the auth layout as well
+          }}
+        />
+
+        {/* Main app flow */}
         <Stack.Screen
           name="(tabs)"
           options={{
             headerShown: false, // Hide the header for the main tab layout
           }}
         />
-        {/* Will probably uncomment this when we have the login boolean setup, we either render the login screens or the actual app screens based on that. */}
-        {/* <Stack.Screen
-          name="(auth)"
-          options={{
-            headerShown: false, // Hide the header for the auth layout as well
-          }}
-        /> */}
       </Stack>
     </ThemeProvider>
   );

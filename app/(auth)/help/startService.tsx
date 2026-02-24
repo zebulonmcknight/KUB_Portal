@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-export default function Billing() {
+export default function StartService() {
   return (
     <View
       style={{
@@ -9,7 +9,7 @@ export default function Billing() {
         alignItems: "center",
       }}
     >
-      <Text className="text-text_main">Edit app/index.tsx to edit this screen.</Text>
+      <Text className="text-text_main">Edit (auth)/help/startService.tsx to edit this screen.</Text>
     </View>
   );
 }

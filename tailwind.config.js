@@ -15,6 +15,11 @@ module.exports = {
             inactive_text: "#A0B3D3", // This is the color of inactive text, such as hidden info, or preferences in the profile page
             energi: "#294068", // This is the color of the text box for the chatbot Energi
          },
+         fontFamily: {
+            sans: ['Inter_400Regular'], // This is the font family for the app, we use Inter as our main font
+            semibold: ['Inter_600SemiBold'], // This is the font family for semi bold text
+            bold: ['Inter_700Bold'], // This is the font family for bold text
+         },
     },
   },
   plugins: [],

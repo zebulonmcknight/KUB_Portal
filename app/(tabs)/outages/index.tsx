@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-const Outages = () => {
+export default function Outages() {
    return (
       <View
          style={{
@@ -13,5 +13,3 @@ const Outages = () => {
       </View>
    )
 }
-
-export default Outages;

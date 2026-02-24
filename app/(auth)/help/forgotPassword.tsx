@@ -1,6 +1,6 @@
 import { Text, View } from "react-native";
 
-export default function Index() {
+export default function ForgotPassword() {
   return (
     <View
       style={{
@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text className="text-text_main">Edit (auth)/index.tsx to edit this screen.</Text>
+      <Text className="text-text_main">Edit (auth)/help/forgotPassword.tsx to edit this screen.</Text>
     </View>
   );
 }
