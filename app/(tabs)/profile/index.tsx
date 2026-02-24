@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-const Profile = () => {
+export default function Profile() {
    return (
       <View
          style={{
@@ -13,5 +13,3 @@ const Profile = () => {
       </View>
    )
 }
-
-export default Profile;

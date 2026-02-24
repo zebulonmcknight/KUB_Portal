@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-const Chatbot = () => {
+export default function Chatbot() {
    return (
       <View
          style={{
@@ -13,5 +13,3 @@ const Chatbot = () => {
       </View>
    )
 }
-
-export default Chatbot;
