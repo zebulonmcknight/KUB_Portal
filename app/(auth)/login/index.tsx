@@ -12,12 +12,7 @@ export default function Login() {
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-      }}
-    >
+    <View className="flex-1 justify-center">
       <Stack.Screen 
          options={{
             headerShown: false, // Hide the header on the login screen for a cleaner look
@@ -26,7 +21,7 @@ export default function Login() {
       />
 
       <TouchableOpacity onPress={handleLogin}
-        className="bg-active_icon rounded-xl justify-center items-center py-4 mx-6"
+        className="bg-active_icon rounded-xl justify-center items-center py-3.5 mx-6"
       >
         <Text className="text-text_main text-lg font-semibold tracking-wider">LOGIN</Text>
       </TouchableOpacity>
@@ -40,6 +35,11 @@ export default function Login() {
         <TouchableOpacity onPress={() => router.push("/(auth)/createLogin")}>
           <Text className="text-active_icon text-lg font-semibold tracking-wider">CREATE LOGIN</Text>
         </TouchableOpacity>
+      </View>
+      <View className="absolute bottom-10 left-52">
+        <Text className="text-text_main font-semibold tracking-wider">
+          v1.0.0
+        </Text>
       </View>
     </View>
   );
