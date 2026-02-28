@@ -4,7 +4,7 @@ from supabase import create_client
 from sentence_transformers import SentenceTransformer
 from fastapi import FastAPI
 from pydantic import BaseModel
-from ollama import chat
+from openai import OpenAI
 
 app = FastAPI()
 
@@ -15,7 +15,8 @@ supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_PUBLIC_K
 if HF_TOKEN:= os.getenv("HF_TOKEN"):
     os.environ['HF_TOKEN'] = HF_TOKEN
 
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
+client = OpenAI(api_key="none", base_url="http://localhost:11434/v1")
+MODEL = os.getenv("MODEL")
 
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
@@ -53,15 +54,14 @@ def search_faq(query: str, similarity_threshold: float = 0.5, num_match: int = 1
 
 def call_LLM(context:str, question: str):
     try:
-        response = chat(
-            model=OLLAMA_MODEL, 
-            think=False,
+        response = client.chat.completions.create(
+            model=MODEL, 
             messages=[
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": f"FAQ Context:\n{context}\n\nUser Question: \n{question}"}
             ]
         )
-        return response.message.content
+        return response.choices[0].message.content
     
     except Exception as e:
         return "Energi is currently unavailable. Please call KUB support at 865-524-2911"
