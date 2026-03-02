@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { supabase } from '../../database/supabase.ts';
+import { supabase } from '../../database/supabase';
+
+import dotenv from 'dotenv';
+dotenv.config(); 
 
 const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN!;
 const AUTH0_CLIENT_ID = process.env.AUTH0_CLIENT_ID!;
@@ -10,7 +13,7 @@ export class Auth0Service {
     async login(email: string, password: string) 
     {
         const response = await axios.post(
-            'https://${AUTH0_DOMAIN}/oauth/token', 
+            `https://${AUTH0_DOMAIN}/oauth/token`, 
             {
                 grant_type: 'password', 
                 username: email, 
@@ -39,7 +42,7 @@ export class Auth0Service {
         }
 
         const response = await axios.post(
-            'https://${AUTH0_DOMAIN}/dbconnections/signup',
+            `https://${AUTH0_DOMAIN}/dbconnections/signup`,
             { client_id: AUTH0_CLIENT_ID, ...userData}
         ); 
 
@@ -49,7 +52,7 @@ export class Auth0Service {
     private async syncUser(accessToken: string) 
     {
         const userInfo = await axios.get(
-            'https://${AUTH0_DOMAIN}/userinfo', 
+            `https://${AUTH0_DOMAIN}/userinfo`, 
             {
                 headers: {Authorization: 'Bearer ${accessToken}'}
             }
