@@ -1,9 +1,9 @@
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
-const router = useRouter();
 
 export default function Billing() {
+  const router = useRouter();
   return (
     <View
       style={{
