@@ -41,12 +41,12 @@ export class Auth0Service {
             userData.user_metadata = { first_name, last_name, phone}
         }
 
-        const response = await axios.post(
+        await axios.post(
             `https://${AUTH0_DOMAIN}/dbconnections/signup`,
             { client_id: AUTH0_CLIENT_ID, ...userData}
         ); 
 
-        return response.data; 
+        return await this.login(email, password) 
     }
 
     private async syncUser(accessToken: string) 
@@ -54,7 +54,7 @@ export class Auth0Service {
         const userInfo = await axios.get(
             `https://${AUTH0_DOMAIN}/userinfo`, 
             {
-                headers: {Authorization: 'Bearer ${accessToken}'}
+                headers: {Authorization: `Bearer ${accessToken}`}
             }
         ); 
 

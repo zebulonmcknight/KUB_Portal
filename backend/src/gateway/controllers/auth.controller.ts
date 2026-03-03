@@ -36,6 +36,6 @@ export const signup = async (req: Request, res: Response) => {
         console.error('Signup error details:', error);
         console.error('message', error.message) 
         // return the error description or if null, 'Signup Failed' 
-        return res.status(401).json({error: error.response?.data?.error_description || 'Signup Failed'})
+        return res.status(401).json({error: error.response?.data?.message || 'Signup Failed'})
     }
 }
