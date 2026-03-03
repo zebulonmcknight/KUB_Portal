@@ -1,5 +1,6 @@
 import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import { StripeProvider } from "@stripe/stripe-react-native";
 import { Stack } from "expo-router";
 import './globals.css';
 
@@ -23,25 +24,30 @@ export default function RootLayout() {
   });
 
   return (
-    // Wrap the entire app in the ThemeProvider to apply the global theme
-    <ThemeProvider value={globalTheme}>
-      <Stack>
-        {/* Authentication user flow*/}
-        <Stack.Screen
-          name="(auth)"
-          options={{
-            headerShown: false, // Hide the header for the auth layout as well
-          }}
-        />
+    // Wrap the entire app with the StripeProvider for billing purposes
+    <StripeProvider
+      publishableKey={process.env.EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY!}
+    >
+      {/* Wrap the entire app in the ThemeProvider to apply the global theme */}
+      <ThemeProvider value={globalTheme}>
+        <Stack>
+          {/* Authentication user flow*/}
+          <Stack.Screen
+            name="(auth)"
+            options={{
+              headerShown: false, // Hide the header for the auth layout as well
+            }}
+          />
 
-        {/* Main app flow */}
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false, // Hide the header for the main tab layout
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
+          {/* Main app flow */}
+          <Stack.Screen
+            name="(tabs)"
+            options={{
+              headerShown: false, // Hide the header for the main tab layout
+            }}
+          />
+        </Stack>
+      </ThemeProvider>
+    </StripeProvider>
   );
 }
