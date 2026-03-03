@@ -61,21 +61,21 @@ export default function Login() {
         <TouchableOpacity onPress={handleLogin}
           className="bg-active_icon rounded-xl justify-center items-center py-3.5 mx-6"
         >
-          <Text className="text-text_main text-lg font-semibold tracking-wide px-1">LOGIN</Text>
+          <Text className="text-text_main text-lg font-semibold tracking-wide px-2">LOGIN</Text>
         </TouchableOpacity>
         
         {/* For the links under the login button */}
         {/* Using router.push here so it adds to stack and back button appears */}
         <View className="flex-row mt-8 justify-between px-16">
           <TouchableOpacity onPress={() => router.push("/(auth)/help")}>
-            <Text className="text-active_icon text-lg font-semibold tracking-wide px-1">NEED HELP?</Text>
+            <Text className="text-active_icon text-lg font-semibold tracking-wide px-2">NEED HELP?</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/(auth)/createLogin")}>
-            <Text className="text-active_icon text-lg font-semibold tracking-wide px-1">CREATE LOGIN</Text>
+            <Text className="text-active_icon text-lg font-semibold tracking-wide px-2">CREATE LOGIN</Text>
           </TouchableOpacity>
         </View>
         <View className="absolute bottom-10 items-center w-full">
-          <Text className="text-text_main font-semibold tracking-wide px-1">
+          <Text className="text-text_main font-semibold tracking-wide px-2">
             v1.0.0
           </Text>
         </View>
