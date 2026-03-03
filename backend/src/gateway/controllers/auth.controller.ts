@@ -29,8 +29,12 @@ export const signup = async (req: Request, res: Response) => {
             return res.status(400).json({error: 'Email and password are required'}); 
         }
 
-        await auth0Service.signup(email, password, first_name, last_name, phone); 
-        return res.status(201).json({message: 'Signup Successful'})
+        const signup = await auth0Service.signup(email, password, first_name, last_name, phone); 
+        return res.status(201).json({
+            message: 'Signup Successful',
+            access_token: signup.access_token, 
+            expires_in: signup.expires_in
+        })
 
     } catch (error: any) {
         console.error('Signup error details:', error);
