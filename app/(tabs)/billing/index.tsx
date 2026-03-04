@@ -24,7 +24,7 @@ export default function Billing() {
         {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ email: "testuser4@example.com"}),
+          body: JSON.stringify({ email: "testuser57@example.com"}),
         }
       );
 
