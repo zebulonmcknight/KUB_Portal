@@ -39,7 +39,14 @@
           }
         }
       ],
-      "expo-font"
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.yourcompany.appname"
+        }
+      ],
+      "expo-font",
+      "@stripe/stripe-react-native"
     ],
     "experiments": {
       "typedRoutes": true,

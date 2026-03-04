@@ -7,11 +7,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login() {
 
   const router = useRouter();
-  
-  const handleLogin = () => {
-    // Basic login simlation
-    router.replace("/(tabs)/billing"); // Redirect to billing screen after login
-  }
 
   return (
 
@@ -58,24 +53,24 @@ export default function Login() {
           />
       </View>
 
-        <TouchableOpacity onPress={handleLogin}
+        <TouchableOpacity onPress={() => router.replace("/(auth)/login/credentials")}
           className="bg-active_icon rounded-xl justify-center items-center py-3.5 mx-6"
         >
-          <Text className="text-text_main text-lg font-semibold tracking-wide px-2">LOGIN</Text>
+          <Text className="text-text_main text-lg font-semibold tracking-wide w-full text-center">LOGIN</Text>
         </TouchableOpacity>
         
         {/* For the links under the login button */}
         {/* Using router.push here so it adds to stack and back button appears */}
         <View className="flex-row mt-8 justify-between px-16">
           <TouchableOpacity onPress={() => router.push("/(auth)/help")}>
-            <Text className="text-active_icon text-lg font-semibold tracking-wide px-2">NEED HELP?</Text>
+            <Text className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">NEED HELP?</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.push("/(auth)/createLogin")}>
-            <Text className="text-active_icon text-lg font-semibold tracking-wide px-2">CREATE LOGIN</Text>
+            <Text className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">CREATE LOGIN</Text>
           </TouchableOpacity>
         </View>
         <View className="absolute bottom-10 items-center w-full">
-          <Text className="text-text_main font-semibold tracking-wide px-2">
+          <Text className="text-text_main font-semibold tracking-wide w-full text-center">
             v1.0.0
           </Text>
         </View>

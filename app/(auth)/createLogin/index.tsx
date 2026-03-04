@@ -1,21 +1,36 @@
 import CustomAlert from "@/components/customAlert";
+import FloatingInput from "@/components/floatingInput";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Stack } from "expo-router";
-import { useState } from "react";
-import { Linking, Text, TouchableOpacity, View } from "react-native";
+import { useRef, useState } from "react";
+import { Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function CreateLogin() {
 
-  const [showAlert, setShowAlert] = useState(false); // State to control the visibility of the custom alert
+  const [showAlert, setShowAlert] = useState(false); // State to control the visibility of the custom alert at the header
+  const [showAccountAlert, setShowAccountAlert] = useState(false); // State to control the visibility of the alert inside the account number text box
+  
+  // This is used to track what the user is typing
+  const [accountNumber, setAccountNumber] = useState("");
+  const [zipCode, setZipCode] = useState("");
+  const [ssn, setSSN] = useState("");
+
+  // useRef so that we can wire the keyboard to show 'Next' instead of 'Done' when on account number and zipcode text boxes
+  // Need references to zip and ssn as those are the boxes we move to
+  // Tell it type is of <TextInput> so that typescript doesnt complain about it not having a type
+  const zipCodeRef = useRef<TextInput>(null);
+  const ssnRef = useRef<TextInput>(null);
+
+  // Use REGEX to verify that the user only entered digits and that they meet the length requirements
+  const validAccount = /^\d{10}$/.test(accountNumber);
+  const ValidZip = /^\d{5}$/.test(zipCode);
+  const ValidSSN = /^\d{4}$/.test(ssn);
+
+  // boolean to determine whether all forms are properly filled. Either keeps next button disabled if not correct or allows user to proceed.
+  const isReady = validAccount && ValidZip && ValidSSN;
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
+    <View className="flex-1 justify-center">
       <Stack.Screen 
          options={{
             title: "Create Login", // Set the header title for this screen
@@ -31,7 +46,79 @@ export default function CreateLogin() {
             )
          }}
       />
-      <Text className="text-text_main">Edit (auth)/createLogin/index.tsx to edit this screen.</Text>
+
+      <View className="flex-1 justify-start px-6 pt-4">
+        <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
+          Register your account to view and pay your bill, monitor usage, and more.
+        </Text>
+
+        {/* Use input component to make input boxes for the information we need from the user */}
+        <FloatingInput
+          label="Account Number"
+          value={accountNumber}
+          onChangeText={setAccountNumber}
+          keyboard="number-pad"
+          maxLength={10}
+          keyType="next"
+          onSubmitEditing={() => zipCodeRef.current?.focus()}
+          alertIcon={
+            <TouchableOpacity onPress={() => setShowAccountAlert(true)} className="p-4">
+              <MaterialIcons name="info" size={24} color="white"/>
+            </TouchableOpacity>
+          }
+        />
+        <CustomAlert
+          message={
+            <Text>
+              Your account number appears in the upper right corner of your paper bill, or on the Summary and History and Manage Account screens when you log into the KUB website. It is 10 digits long.
+              If your account number is not recognized, please call customer service at{' '}
+              <Text onPress={ () => Linking.openURL(`tel:${8655242911}`)} className="underline">
+                (865) 524-2911
+              </Text>
+              .
+            </Text>
+          }
+          visible={showAccountAlert}
+          onClose={() => setShowAccountAlert(false)}
+        />
+
+        <FloatingInput
+          label="Billing Zip Code"
+          value={zipCode}
+          onChangeText={setZipCode}
+          keyboard="number-pad"
+          maxLength={5}
+          keyType="next"
+          inputRef={zipCodeRef}
+          onSubmitEditing={() => ssnRef.current?.focus()}
+        />
+
+        <Text className="text-text_main font-sans text-md tracking-wide pt-6 w-full">
+          Please confirm the last 4 digits of your Social Security (or Tax ID) Number.
+        </Text>
+
+        <FloatingInput
+          label="Social Security (or Tax ID) Number"
+          value={ssn}
+          onChangeText={setSSN}
+          keyboard="number-pad"
+          maxLength={4}
+          inputRef={ssnRef}
+          keyType="done"
+        />
+
+        <TouchableOpacity
+          disabled={!isReady}
+          className={`mt-6 rounded-xl items-center ${
+            isReady ? 'bg-[#3377F4]' : 'bg-[#3377F4]/50'
+          }`}
+          onPress={() => console.log("All forms filled, check information entered.")}
+        >
+          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+            NEXT
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Alert shows based on whether its activated based on the button being pressed */}
       <CustomAlert
