@@ -1,7 +1,12 @@
-import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
+import {
+  Inter_400Regular,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  useFonts,
+} from "@expo-google-fonts/inter";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
-import './globals.css';
+import "./globals.css";
 
 // Define a global theme for the app
 // Allows for consistent styling even in screens that are layered on top
@@ -9,13 +14,12 @@ const globalTheme = {
   ...DefaultTheme, // This ensures React uses default theme as a base
   colors: {
     ...DefaultTheme.colors,
-    background: '#091C3C', // We overwrite the values we have our own theme for
-    text: '#F7FDFD',
+    background: "#091C3C", // We overwrite the values we have our own theme for
+    text: "#F7FDFD",
   },
 };
 
 export default function RootLayout() {
-
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,
