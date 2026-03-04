@@ -1,15 +1,356 @@
-import { Text, View } from 'react-native';
+// import { Text, View } from 'react-native';
 
-export default function Chatbot() {
-   return (
-      <View
-         style={{
-         flex: 1,
-         justifyContent: "center",
-         alignItems: "center",
-         }}
-      >
-         <Text className="text-text_main">Chatbot</Text>
-      </View>
-   )
+// export default function Chatbot() {
+//    return (
+//       <View
+//          style={{
+//          flex: 1,
+//          justifyContent: "center",
+//          alignItems: "center",
+//          }}
+//       >
+//          <Text className="text-text_main">Chatbot</Text>
+//       </View>
+//    )
+// }
+
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import React, { useEffect, useRef, useState } from "react";
+import {
+   ActivityIndicator,
+   Animated,
+   FlatList,
+   KeyboardAvoidingView,
+   Platform,
+   SafeAreaView,
+   StyleSheet,
+   Text,
+   TextInput,
+   TouchableOpacity,
+   View,
+} from "react-native";
+import Svg, { Path } from "react-native-svg";
+
+// --->Backend integration point for Kevin<---
+//
+// Replace this function with your real API call.
+// Receives the user message string, returns the bot reply string.
+async function sendMessageToBackend(userMessage: string): Promise<string> {
+  // Example:
+  // const res = await fetch("https://your-api.com/chat", {
+  //   method: "POST",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({ message: userMessage }),
+  // });
+  // const data = await res.json();
+  // return data.reply;
+
+  // ── Stub: simulates a delayed bot reply ──
+  await new Promise((r) => setTimeout(r, 1400));
+  return `You said: "${userMessage}"`;
 }
+// ─────────────────────────────────────────────────────────────────────────────
+
+type Message = {
+  id: string;
+  from: "user" | "bot";
+  text: string;
+};
+
+const INITIAL_MESSAGES: Message[] = [
+  {
+    id: "0",
+    from: "bot",
+    text: "Hi, I'm Energi! I'm here to help you with any questions you have!",
+  },
+];
+
+// ── Typing indicator bubble ──────────────────────────────────────────────────
+function TypingBubble() {
+  const anim1 = useRef(new Animated.Value(0)).current;
+  const anim2 = useRef(new Animated.Value(0)).current;
+  const anim3 = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const bounce = (anim: Animated.Value, delay: number) =>
+      Animated.loop(
+        Animated.sequence([
+          Animated.delay(delay),
+          Animated.timing(anim, {
+            toValue: -5,
+            duration: 280,
+            useNativeDriver: true,
+          }),
+          Animated.timing(anim, {
+            toValue: 0,
+            duration: 280,
+            useNativeDriver: true,
+          }),
+          Animated.delay(540 - delay),
+        ]),
+      ).start();
+
+    bounce(anim1, 0);
+    bounce(anim2, 160);
+    bounce(anim3, 320);
+  }, []);
+
+  return (
+    <View style={styles.botRow}>
+      <View style={[styles.bubble, styles.botBubble, { paddingVertical: 14 }]}>
+        <View style={styles.dotsRow}>
+          {[anim1, anim2, anim3].map((anim, i) => (
+            <Animated.View
+              key={i}
+              style={[styles.dot, { transform: [{ translateY: anim }] }]}
+            />
+          ))}
+        </View>
+      </View>
+    </View>
+  );
+}
+
+// ── Single message bubble ────────────────────────────────────────────────────
+function MessageBubble({ msg }: { msg: Message }) {
+  const isUser = msg.from === "user";
+  return (
+    <View style={isUser ? styles.userRow : styles.botRow}>
+      <View
+        style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}
+      >
+        <Text style={isUser ? styles.userText : styles.botText}>
+          {msg.text}
+        </Text>
+      </View>
+    </View>
+  );
+}
+
+// ── Send icon ────────────────────────────────────────────────────────────────
+function SendIcon() {
+  return (
+    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+      <Path
+        d="M22 2L11 13"
+        stroke="white"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <Path
+        d="M22 2L15 22L11 13L2 9L22 2Z"
+        stroke="white"
+        strokeWidth={2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
+}
+
+// ── Main screen ──────────────────────────────────────────────────────────────
+export default function QAChat() {
+  const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const flatListRef = useRef<FlatList>(null);
+  const tabBarHeight = useBottomTabBarHeight();
+
+  const scrollToBottom = () => {
+    setTimeout(() => flatListRef.current?.scrollToEnd({ animated: true }), 100);
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isTyping]);
+
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || isTyping) return;
+
+    const userMsg: Message = { id: Date.now().toString(), from: "user", text };
+    setMessages((prev) => [...prev, userMsg]);
+    setInput("");
+    setIsTyping(true);
+
+    try {
+      const reply = await sendMessageToBackend(text);
+      setMessages((prev) => [
+        ...prev,
+        { id: (Date.now() + 1).toString(), from: "bot", text: reply },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: (Date.now() + 1).toString(),
+          from: "bot",
+          text: "Sorry, something went wrong. Please try again.",
+        },
+      ]);
+    } finally {
+      setIsTyping(false);
+    }
+  };
+
+  const canSend = input.trim().length > 0 && !isTyping;
+
+  return (
+    <SafeAreaView style={styles.safe}>
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={-tabBarHeight + 10}
+      >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Q&A</Text>
+        </View>
+
+        {/* Messages list */}
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.messageList}
+          showsVerticalScrollIndicator={false}
+          onContentSizeChange={scrollToBottom}
+          renderItem={({ item }) => <MessageBubble msg={item} />}
+          ListFooterComponent={isTyping ? <TypingBubble /> : null}
+        />
+
+        {/* Input bar */}
+        <View style={[styles.inputBar, { marginBottom: tabBarHeight }]}>
+          <TextInput
+            style={styles.input}
+            placeholder="Message Energi…"
+            placeholderTextColor="#9aaabb"
+            value={input}
+            onChangeText={setInput}
+            onSubmitEditing={handleSend}
+            returnKeyType="send"
+            blurOnSubmit={false}
+            multiline
+          />
+          <TouchableOpacity
+            style={[styles.sendBtn, { opacity: canSend ? 1 : 0.4 }]}
+            onPress={handleSend}
+            disabled={!canSend}
+            activeOpacity={0.75}
+          >
+            {isTyping ? (
+              <ActivityIndicator size="small" color="#fff" />
+            ) : (
+              <SendIcon />
+            )}
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+// ── Styles ───────────────────────────────────────────────────────────────────
+const styles = StyleSheet.create({
+  safe: {
+    flex: 1,
+    backgroundColor: "#0d1b2e",
+  },
+  flex: {
+    flex: 1,
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 10,
+  },
+  headerTitle: {
+    color: "#ffffff",
+    fontSize: 34,
+    fontWeight: "700",
+    letterSpacing: -0.5,
+  },
+  messageList: {
+    paddingHorizontal: 14,
+    paddingBottom: 8,
+    gap: 10,
+  },
+  botRow: {
+    alignSelf: "flex-start",
+    marginVertical: 4,
+  },
+  userRow: {
+    alignSelf: "flex-end",
+    marginVertical: 4,
+  },
+  bubble: {
+    maxWidth: "75%",
+    borderRadius: 18,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  botBubble: {
+    backgroundColor: "#1e3050",
+    borderBottomLeftRadius: 4,
+  },
+  userBubble: {
+    backgroundColor: "#3d6ef5",
+    borderBottomRightRadius: 4,
+  },
+  botText: {
+    color: "#e8edf5",
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  userText: {
+    color: "#ffffff",
+    fontSize: 15,
+    lineHeight: 22,
+  },
+  dotsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    height: 14,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: "#7a99c8",
+  },
+  inputBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginHorizontal: 14,
+    marginVertical: 10,
+    backgroundColor: "#ffffff",
+    borderRadius: 28,
+    paddingLeft: 18,
+    paddingRight: 6,
+    paddingVertical: 6,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: "#111",
+    maxHeight: 100,
+    paddingTop: 6,
+    paddingBottom: 6,
+  },
+  sendBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#3d6ef5",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 6,
+  },
+});
