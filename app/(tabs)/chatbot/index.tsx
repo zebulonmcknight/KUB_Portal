@@ -1,19 +1,3 @@
-// import { Text, View } from 'react-native';
-
-// export default function Chatbot() {
-//    return (
-//       <View
-//          style={{
-//          flex: 1,
-//          justifyContent: "center",
-//          alignItems: "center",
-//          }}
-//       >
-//          <Text className="text-text_main">Chatbot</Text>
-//       </View>
-//    )
-// }
-
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -255,7 +239,7 @@ export default function QAChat() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#0d1b2e",
+    backgroundColor: "#091C3C",
   },
   flex: {
     flex: 1,
