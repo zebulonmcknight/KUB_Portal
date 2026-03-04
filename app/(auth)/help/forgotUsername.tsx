@@ -1,7 +1,17 @@
+import FloatingInput from "@/components/floatingInput";
 import { Stack } from "expo-router";
-import { Text, View } from "react-native";
+import { useState } from "react";
+import { Text, TouchableOpacity, View } from "react-native";
 
 export default function ForgotUsername() {
+
+  // This is used to track what the user is typing
+  const [email, setEmail] = useState("");
+
+  // REGEX to check whether the user typed something we consider valid email format
+  // Checks: "1 or more characters" @ "1 or more characters" . "1 or more characters"
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   return (
     <View className="flex-1 justify-center">
       <Stack.Screen 
@@ -13,17 +23,29 @@ export default function ForgotUsername() {
             headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
          }}
       />
-      <View className="flex-1 justify-start left-4 pt-4">
-        <Text className="text-text_main font-sans text-2xl tracking-wide p-4">
+      <View className="flex-1 justify-start px-6 pt-4">
+        <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Please enter your information:
         </Text>
-        <View>
-          
-        </View>
+        
+        <FloatingInput
+          label="Email Address"
+          value={email}
+          onChangeText={setEmail}
+          keyboard="email-address"
+        />
 
-        {/* Text box with 'Email Address' prefilled inactive color. When clicked the email address text becomes active and becomes part of the box */}
-        {/* Under text box is inactive next button. Button becomes active when user types *@*.com [asterisk can be anything, works with just one letter] */}
-
+        <TouchableOpacity
+          disabled={!validEmail}
+          className={`mt-6 rounded-xl items-center ${
+            validEmail ? 'bg-[#3377F4]' : 'bg-[#3377F4]/50'
+          }`}
+          onPress={() => console.log("Email entered send username")}
+        >
+          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+            NEXT
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

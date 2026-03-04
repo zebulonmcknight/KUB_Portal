@@ -2,6 +2,8 @@ import { Inter_400Regular, Inter_600SemiBold, Inter_700Bold, useFonts } from '@e
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StripeProvider } from "@stripe/stripe-react-native";
 import { Stack } from "expo-router";
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
 import './globals.css';
 
 // Define a global theme for the app
@@ -15,13 +17,29 @@ const globalTheme = {
   },
 };
 
+// Prevent the splash screen from hiding until we tell it to
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
 
-  const [fontsLoaded] = useFonts({
+  // Attempt to load the fonts for the app
+  const [fontsLoaded, fontError] = useFonts({
     Inter_400Regular,
     Inter_600SemiBold,
     Inter_700Bold,
   });
+
+  // Watch the status of the fonts. Once loaded or if it fails drop the splash screen so user can use the application
+  useEffect(() => {
+    if( fontsLoaded || fontError ){
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
+
+  // If fonts aren't loaded yet then dont display anything. Prevents login screen from rendering too early.
+  if( !fontsLoaded && !fontError ){
+    return null;
+  }
 
   return (
     // Wrap the entire app with the StripeProvider for billing purposes

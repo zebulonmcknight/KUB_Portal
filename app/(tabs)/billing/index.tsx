@@ -1,7 +1,7 @@
-import { useRouter } from "expo-router";
-import { Text, TouchableOpacity, View, Alert } from "react-native";
 import { useStripe } from "@stripe/stripe-react-native";
+import { useRouter } from "expo-router";
 import { useState } from "react";
+import { Alert, Text, TouchableOpacity, View } from "react-native";
 
 
 export default function Billing() {
@@ -24,7 +24,7 @@ export default function Billing() {
         {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ email: "testuser57@example.com"}),
+          body: JSON.stringify({ email: "testuser@gmail.com"}),
         }
       );
 
