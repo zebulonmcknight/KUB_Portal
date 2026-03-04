@@ -29,43 +29,32 @@ export class Auth0Service {
         return response.data; 
     }
 
-    async signup(email: string, password: string, first_name?: string, last_name?: string, phone?: string)
-    {
-        const userData: any = {
-            email, 
-            password, 
-            connection: 'Username-Password-Authentication'
-        }; 
+    async signup(email: string, password: string, first_name?: string, last_name?: string, phone?: string) {
+        await axios.post(`https://${AUTH0_DOMAIN}/dbconnections/signup`, {
+            client_id: AUTH0_CLIENT_ID,
+            email,
+            password,
+            connection: 'Username-Password-Authentication',
+            ...(first_name && { given_name: first_name }),
+            ...(last_name && { family_name: last_name }),
+            ...(phone && { user_metadata: { phone } })
+        });
 
-        if (first_name || last_name || phone) {
-            userData.user_metadata = { first_name, last_name, phone}
-        }
-
-        await axios.post(
-            `https://${AUTH0_DOMAIN}/dbconnections/signup`,
-            { client_id: AUTH0_CLIENT_ID, ...userData}
-        ); 
-
-        return await this.login(email, password) 
+        return await this.login(email, password);
     }
 
-    private async syncUser(accessToken: string) 
-    {
-        const userInfo = await axios.get(
-            `https://${AUTH0_DOMAIN}/userinfo`, 
-            {
-                headers: {Authorization: `Bearer ${accessToken}`}
-            }
-        ); 
+    private async syncUser(accessToken: string) {
+        const payload = JSON.parse(Buffer.from(accessToken.split('.')[1], 'base64').toString()); 
+        
+        const userInfoResponse = await axios.get(`https://${AUTH0_DOMAIN}/userinfo`, {
+            headers: { Authorization: `Bearer ${accessToken}` }
+        });
 
-        const user = userInfo.data; 
+        const user = userInfoResponse.data;
+        //console.log('userinfo response:', JSON.stringify(user, null, 2)); 
 
-        // These two lines are absolutely disgusting sorry. 
-        // It's pretty much fixing phone number format to be consistent between Auth0 
-        // and supabase. strip non digit numbers, check if country code is present, 
-        // if it is prepend '+', if it isn't prepend '+1' (assume american)
-        const phone = user.phone_number?.replace(/\D/g, '');
-        const formattedPhone = phone?.length === 10 ? `+1${phone}` : phone ? `+${phone}` : null;
+        const phone = payload.user_metadata?.phone ?? null;
+        const formattedPhone = phone ? this.formatPhone(phone) : null;
 
         await supabase.from('dev_users').upsert({
             id: user.sub,
@@ -74,7 +63,11 @@ export class Auth0Service {
             last_name: user.family_name || null,
             phone: formattedPhone
         }, { onConflict: 'id' });
+    }
 
+    private formatPhone(phone: string): string {
+        const digits = phone.replace(/\D/g, '');
+        return digits.length === 10 ? `+1${digits}` : `+${digits}`;
     }
 }
 
