@@ -11,7 +11,7 @@ export default function Login() {
   return (
 
     // Parent view container to contain background mountain image as well as all of the buttons for the login screen
-    <View className="flex-1 bg-primary">
+    <SafeAreaView className="flex-1 bg-primary">
 
       {/* Get the image to take up 60% of screen and use absolute so that it doesnt affect other components. Doing 60% to blend image into background */}
       <Image 
@@ -26,13 +26,12 @@ export default function Login() {
       {/* Add a gradient to same area that image takes up. This helps blend the image to the primary background. */}
       <LinearGradient
         colors={ ["rgba(73, 130, 228, 0.3)", "#091C3C"] }
-        
         end={[0.7, 0.7]}
         className="absolute top-0 w-full h-[60%]"
       />
 
       {/* This view is in charge of the KUB logo as well as setting up the button/version text */}
-      <SafeAreaView className="flex-1 justify-center">
+      <View className="flex-1 justify-center">
         <Stack.Screen 
           options={{
               headerShown: false, // Hide the header on the login screen for a cleaner look
@@ -74,7 +73,7 @@ export default function Login() {
             v1.0.0
           </Text>
         </View>
-      </SafeAreaView>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }

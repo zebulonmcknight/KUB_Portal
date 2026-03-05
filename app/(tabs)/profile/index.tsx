@@ -1,17 +1,18 @@
+import { useRouter } from "expo-router";
 import React, { useEffect, useRef, useState } from "react";
 import {
-   Alert,
-   Animated,
-   KeyboardAvoidingView,
-   Modal,
-   Platform,
-   SafeAreaView,
-   ScrollView,
-   StyleSheet,
-   Text,
-   TextInput,
-   TouchableOpacity,
-   View,
+  Alert,
+  Animated,
+  KeyboardAvoidingView,
+  Modal,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Svg, { Circle, Path } from "react-native-svg";
 
@@ -314,10 +315,11 @@ export default function ProfileScreen({
     close();
   };
 
+  const router = useRouter();
   const handleLogout = () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Log Out", style: "destructive", onPress: () => onLogout?.() },
+      { text: "Log Out", style: "destructive", onPress: () => router.replace("/(auth)/login") },
     ]);
   };
 
@@ -575,10 +577,10 @@ function Divider() {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#0d1b2e" },
+  safe: { flex: 1, backgroundColor: "#091C3C" },
   scroll: { paddingHorizontal: 20, paddingBottom: 120 },
   pageTitle: {
-    color: "#fff",
+    color: "#F7FDFD",
     fontSize: 34,
     fontWeight: "700",
     letterSpacing: -0.5,
@@ -586,27 +588,27 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   accountCard: {
-    backgroundColor: "#1a2e4a",
+    backgroundColor: "#162C53",
     borderRadius: 16,
     padding: 20,
     alignItems: "center",
     marginBottom: 24,
   },
   accountName: {
-    color: "#fff",
+    color: "#F7FDFD",
     fontSize: 18,
     fontWeight: "700",
     marginBottom: 6,
   },
   accountDetail: {
-    color: "#c0d0e8",
+    color: "#A0B3D3",
     fontSize: 15,
     fontWeight: "600",
     marginBottom: 2,
   },
   manageBtn: {
     marginTop: 16,
-    backgroundColor: "#3d6ef5",
+    backgroundColor: "#3377F4",
     borderRadius: 10,
     paddingVertical: 14,
     paddingHorizontal: 32,
@@ -614,20 +616,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   manageBtnText: {
-    color: "#fff",
+    color: "#F7FDFD",
     fontSize: 14,
     fontWeight: "800",
     letterSpacing: 1.2,
   },
   sectionHeader: {
-    color: "#fff",
+    color: "#F7FDFD",
     fontSize: 16,
     fontWeight: "700",
     marginBottom: 8,
     marginTop: 4,
   },
   section: {
-    backgroundColor: "#1a2e4a",
+    backgroundColor: "#162C53",
     borderRadius: 14,
     marginBottom: 20,
     overflow: "hidden",
@@ -640,8 +642,8 @@ const styles = StyleSheet.create({
   },
   rowIcon: { marginRight: 12 },
   rowContent: { flex: 1 },
-  rowLabel: { color: "#e8edf5", fontSize: 15, fontWeight: "600" },
-  rowValue: { color: "#7a99c8", fontSize: 13, marginTop: 2 },
+  rowLabel: { color: "#F7FDFD", fontSize: 15, fontWeight: "600" },
+  rowValue: { color: "#A0B3D3", fontSize: 13, marginTop: 2 },
   divider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.06)",

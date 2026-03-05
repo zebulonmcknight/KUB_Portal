@@ -35,6 +35,12 @@ export default function Credentials() {
             }),
          });
 
+         // Check the response before trying to parse
+         if( !response.ok ){
+            Alert.alert("Error", "Incorrect Username/Password. Please try again.");
+            return;
+         }
+
          const { access_token, expires_in } = await response.json();
          console.log("Here data:", access_token, expires_in);
 
@@ -48,10 +54,13 @@ export default function Credentials() {
             return;
          }
 
+         // Securely store the tokens so that they can be referenced later
+
          router.replace(("/(tabs)/billing"));
 
       } catch (error) {
          console.error("There was an error:", error);
+         Alert.alert("Network Error", "Could not connect to the server.");
       } finally {
          setLoading(false); // regardless of if errors are caught or not, reset the button so it can be clicked once more
       }
