@@ -1,4 +1,6 @@
+import { icons } from "@/constants/icons";
 import { useStripe } from "@stripe/stripe-react-native";
+import { addMonths, format, setDate } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
@@ -17,6 +19,18 @@ export default function Billing() {
 
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
   const screenHeight = Dimensions.get('window').height;
+
+  // Calculate the current billing period and set payment due date.
+  const today = new Date(); // Get todays date
+  let paymentDate = setDate(today, 2); // Start by setting due date to 2nd of current month
+
+  // Actual KUB app generates roughly 12th or 13th of the month so using that as reference we can say if todays date is after those, then change the due date to next month as its a new billing cycle.
+  if( today.getDate() >= 12 ){
+    paymentDate = addMonths(paymentDate, 1); // add 1 month
+  }
+
+  // Format the date (Ex: Mar 2, 2026)
+  const paymentDateFormatted = format(paymentDate, "MMM d, yyyy");
 
   // invoke the backend API to handle the subscription payment request
   const handleSubscription = async () => {
@@ -116,7 +130,7 @@ export default function Billing() {
             <Text className="text-text_main font-bold text-3xl text-left w-full p-6 mt-4">Welcome</Text>
               <View className="flex-row justify-between w-full mt-4 px-20">
                 <Text className="text-text_main font-sans text-md">Payment Due</Text>
-                <Text className="text-text_main font-bold text-md">FEB 2, 2026</Text>
+                <Text className="text-text_main font-bold text-md">{paymentDateFormatted}</Text>
               </View>
           </View>
 
@@ -155,32 +169,37 @@ export default function Billing() {
         </View>
 
         <View className="w-full">
-          <TouchableOpacity onPress={() => console.log("Bills & Payments")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+          <TouchableOpacity onPress={() => console.log("Bills & Payments")} className="border-b border-section py-4 flex-row mx-4">
+            <Image source={icons.billing} style={{width: 24, height: 24}}/>
+            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bills & Payments
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Payment Method")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+          <TouchableOpacity onPress={() => console.log("Payment Method")} className="border-b border-section py-4 flex-row mx-4">
+            <Image source={icons.payment_method} style={{width: 24, height: 24}}/>
+            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Payment Method
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Bill & Payment Programs")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+          <TouchableOpacity onPress={() => console.log("Bill & Payment Programs")} className="border-b border-section py-4 flex-row mx-4">
+            <Image source={icons.payment_program} style={{width: 24, height: 24}}/>
+            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bill & Payment Programs
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Fiber")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+          <TouchableOpacity onPress={() => console.log("Fiber")} className="border-b border-section py-4 flex-row mx-4">
+            <Image source={icons.fiber} style={{width: 24, height: 24}}/>
+            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Fiber
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Offers & Promotions")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+          <TouchableOpacity onPress={() => console.log("Offers & Promotions")} className="border-b border-section flex-row mx-4 py-4">
+            <Image source={icons.promotions} style={{width: 24, height: 24}}/>
+            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Offers & Promotions
             </Text>
           </TouchableOpacity>

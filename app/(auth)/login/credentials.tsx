@@ -1,4 +1,5 @@
 import FloatingInput from "@/components/floatingInput";
+import Entypo from '@expo/vector-icons/Entypo';
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
@@ -12,6 +13,7 @@ export default function Credentials() {
    // This is used to track what the user is typing
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
+   const [isVisible, setIsVisible] = useState(false);
    const [loading, setLoading] = useState(false);
 
    // REGEX to check whether the user typed something we consider valid email format
@@ -70,15 +72,15 @@ export default function Credentials() {
       <SafeAreaView className="flex-1 justify-center">
          <Stack.Screen 
             options={{
-               headerShown: false,
+               title: "Enter Your Credentials",
                headerStyle: {
                   backgroundColor: '#3377F4', // Match the header background to active theme
                },
                headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
             }}
          />
-         <View className="flex-1 justify-start px-6 pt-4">
-         <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
+         <View className="flex-1 justify-start px-6">
+         <Text className="text-text_main font-sans text-2xl tracking-wide pb-4 w-full">
             Please enter your information:
          </Text>
          
@@ -94,7 +96,12 @@ export default function Credentials() {
             value={password}
             onChangeText={setPassword}
             keyboard="default"
-            // isPassword={true}
+            isPassword={!isVisible} // If its not visible then that means it is a password. The opposite is true basically
+            alertIcon={
+               <TouchableOpacity onPress={() => setIsVisible(!isVisible)} className="p-4">
+                  <Entypo name={ isVisible ? "eye-with-line": "eye"} size={24} color="white"/>
+               </TouchableOpacity>
+            }
          />
 
          <TouchableOpacity

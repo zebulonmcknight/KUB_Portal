@@ -52,7 +52,7 @@ export default function Login() {
           />
       </View>
 
-        <TouchableOpacity onPress={() => router.replace("/(auth)/login/credentials")}
+        <TouchableOpacity onPress={() => router.push("/(auth)/login/credentials")}
           className="bg-active_icon rounded-xl justify-center items-center py-3.5 mx-6"
         >
           <Text className="text-text_main text-lg font-semibold tracking-wide w-full text-center">LOGIN</Text>
