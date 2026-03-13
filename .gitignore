@@ -48,4 +48,4 @@ app-example
 # generated native folders
 /ios
 /android
-.env
+/customer_service/__pycache__
