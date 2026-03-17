@@ -1,19 +1,23 @@
 import CustomAlert from "@/components/customAlert";
 import FloatingInput from "@/components/floatingInput";
+import { useRegistration } from "@/components/registrationContext";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function CreateLogin() {
 
-  const [showAlert, setShowAlert] = useState(false); // State to control the visibility of the custom alert at the header
+  const router = useRouter(); // Allows us to send user to other pages.
+
+  const [showHeaderAlert, setShowHeaderAlert] = useState(false); // State to control the visibility of the custom alert at the header
   const [showAccountAlert, setShowAccountAlert] = useState(false); // State to control the visibility of the alert inside the account number text box
+  const [showError, setShowError] = useState(false); // State to control the visibility of the alert when info entered doesn't match an account on record.
   
   // This is used to track what the user is typing
-  const [accountNumber, setAccountNumber] = useState("");
-  const [zipCode, setZipCode] = useState("");
-  const [ssn, setSSN] = useState("");
+  const { accountNumber, setAccountNumber } = useRegistration();
+  const { zipCode, setZipCode } = useRegistration();
+  const { ssn, setSSN } = useRegistration();
 
   // useRef so that we can wire the keyboard to show 'Next' instead of 'Done' when on account number and zipcode text boxes
   // Need references to zip and ssn as those are the boxes we move to
@@ -29,6 +33,16 @@ export default function CreateLogin() {
   // boolean to determine whether all forms are properly filled. Either keeps next button disabled if not correct or allows user to proceed.
   const isReady = validAccount && ValidZip && ValidSSN;
 
+  // Function to send the information the user entered to the backend to verify that they are an existing customer
+  const checkInfo = async () => {
+    try{
+      router.push("/(auth)/createLogin/contactEmail"); // Send the user to the next page
+    }
+    catch(error: any) {
+      setShowError(true);
+    }
+  };
+
   return (
     <View className="flex-1 justify-center">
       <Stack.Screen 
@@ -40,7 +54,7 @@ export default function CreateLogin() {
             headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
             headerRight: () => (
               // Have to use actual button here and not custom modal as react native can't process custom modal in header. Using this as an 'activator' of sorts
-              <TouchableOpacity onPress={() => setShowAlert(true)}> 
+              <TouchableOpacity onPress={() => setShowHeaderAlert(true)}> 
                 <MaterialIcons name="info" size={24} color="white"/>
               </TouchableOpacity>
             )
@@ -112,8 +126,11 @@ export default function CreateLogin() {
           className={`mt-6 rounded-xl items-center ${
             isReady ? 'bg-[#3377F4]' : 'bg-[#3377F4]/50'
           }`}
-          onPress={() => console.log("All forms filled, check information entered.")}
+          onPress={checkInfo}
         >
+
+          {/* NEED TO CONNECT THIS TO AUTH0!!!!! */}
+          {/* Have to make sure they are a customer before allowing them to continue further. */}
           <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             NEXT
           </Text>
@@ -122,18 +139,28 @@ export default function CreateLogin() {
 
       {/* Alert shows based on whether its activated based on the button being pressed */}
       <CustomAlert
-          message={
-            <Text>
-              You must already have an active account with Knoxville Utilities Board before signing up to use our online services. If you are not yet a KUB customer, please visit{' '}
-              <Text onPress={ () => Linking.openURL("https://www.kub.org/start-stop-service")} className="underline">
-                www.kub.org/start-stop-service
-              </Text>
-              {' '}to get started.
+        message={
+          <Text>
+            You must already have an active account with Knoxville Utilities Board before signing up to use our online services. If you are not yet a KUB customer, please visit{' '}
+            <Text onPress={ () => Linking.openURL("https://www.kub.org/start-stop-service")} className="underline">
+              www.kub.org/start-stop-service
             </Text>
-          }
-          visible={showAlert}
-          onClose={() => setShowAlert(false)}
-        />
+            {' '}to get started.
+          </Text>
+        }
+        visible={showHeaderAlert}
+        onClose={() => setShowHeaderAlert(false)}
+      />
+
+      <CustomAlert
+        message={
+          <Text>
+            There was a problem registering your account. Please try again later, or call 865-524-2911 for assistance if the problem persists.
+          </Text>
+        }
+        visible={showError}
+        onClose={() => setShowError(false)}
+      />
     </View>
   );
 }

@@ -33,12 +33,6 @@ export default function Help() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(auth)/help/forgotUsername")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
-              I can't remember my username.
-            </Text>
-          </TouchableOpacity>
-
           {/* Need a seperate view as these are separate buttons that appear on the same line */}
           <View className="flex-row justify-between border-b border-section">
             <TouchableOpacity onPress={() => router.push("/(auth)/createLogin")} className="flex-1 p-4">

@@ -1,10 +1,10 @@
 import FloatingInput from "@/components/floatingInput";
 import Entypo from '@expo/vector-icons/Entypo';
+import { Checkbox } from "expo-checkbox";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
 
 export default function Credentials() {
 
@@ -15,6 +15,7 @@ export default function Credentials() {
    const [password, setPassword] = useState("");
    const [isVisible, setIsVisible] = useState(false);
    const [loading, setLoading] = useState(false);
+   const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
    // REGEX to check whether the user typed something we consider valid email format
    // Checks: "1 or more
@@ -103,6 +104,24 @@ export default function Credentials() {
                </TouchableOpacity>
             }
          />
+
+         <View className="flex-row justify-between items-center w-full mt-3">
+            <Text className="text-active_icon font-sans text-md underline" onPress={()=> router.replace("/(auth)/help/forgotPassword")}>
+               Forgot your password?
+            </Text>
+
+            <View className="flex-row items-center gap-2">
+               <Checkbox
+                  value={stayLoggedIn}
+                  onValueChange={setStayLoggedIn}
+                  color={stayLoggedIn ? "#3377F4" : undefined}
+               />
+               <Text className="text-text_main font-sans text-md">
+                  Keep me signed in
+               </Text>
+            </View>
+         </View>
+
 
          <TouchableOpacity
             disabled={!(validEmail && validPassword) || loading}
