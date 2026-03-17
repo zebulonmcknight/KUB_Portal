@@ -4,7 +4,7 @@ import { addMonths, format, setDate } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -108,7 +108,7 @@ export default function Billing() {
         <View className="w-full justify-between" style={{height: screenHeight * .55}}>
           {/* Get the image to take up 60% of screen and use absolute so that it doesnt affect other components. Doing 60% to blend image into background */}
           <Image 
-            source={require("@/assets/images/mountains.png")}
+            source={require("@/assets/images/mountains.jpg")}
             resizeMode="cover" // Will zoom in the image until it fits that specified size (60% in our case).
             className="top-0 w-full absolute h-full"
             style={{
@@ -190,7 +190,7 @@ export default function Billing() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Fiber")} className="border-b border-section py-4 flex-row mx-4">
+          <TouchableOpacity onPress={() => Linking.openURL("https://www.kub.org/fiber-shopping")} className="border-b border-section py-4 flex-row mx-4">
             <Image source={icons.fiber} style={{width: 24, height: 24}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Fiber

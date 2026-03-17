@@ -15,7 +15,7 @@ export default function Login() {
 
       {/* Get the image to take up 60% of screen and use absolute so that it doesnt affect other components. Doing 60% to blend image into background */}
       <Image 
-        source={require("@/assets/images/mountains.png")}
+        source={require("@/assets/images/mountains.jpg")}
         resizeMode="cover" // Will zoom in the image until it fits that specified size (60% in our case).
         className="absolute top-0 w-full h-[60%]"
         style={{
