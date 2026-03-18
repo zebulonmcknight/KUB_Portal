@@ -1,10 +1,11 @@
 import { icons } from "@/constants/icons";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStripe } from "@stripe/stripe-react-native";
 import { addMonths, format, setDate } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Dimensions, Image, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Linking, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
@@ -18,7 +19,8 @@ export default function Billing() {
   const [billAmount, setBillAmount] = useState(200.00);
 
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
-  const screenHeight = Dimensions.get('window').height;
+  const { height } = useWindowDimensions();
+  const tabBarHeight = useBottomTabBarHeight();
 
   // Calculate the current billing period and set payment due date.
   const today = new Date(); // Get todays date
@@ -103,16 +105,16 @@ export default function Billing() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: 150}}
+        contentContainerStyle={{paddingBottom: tabBarHeight}}
       >
-        <View className="w-full justify-between" style={{height: screenHeight * .55}}>
+        <View className="w-full justify-between" style={{height: height * .55}}>
           {/* Get the image to take up 60% of screen and use absolute so that it doesnt affect other components. Doing 60% to blend image into background */}
           <Image 
             source={require("@/assets/images/mountains.jpg")}
             resizeMode="cover" // Will zoom in the image until it fits that specified size (60% in our case).
             className="top-0 w-full absolute h-full"
             style={{
-              transform: [{ translateY: -60 }] // Basically cropping the image to get rid of some of the sky here.
+              transform: [{ translateY: -height * .07}]
             }}
           />
 
@@ -169,7 +171,7 @@ export default function Billing() {
         </View>
 
         <View className="w-full">
-          <TouchableOpacity onPress={() => console.log("Bills & Payments")} className="border-b border-section py-4 flex-row mx-4">
+          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/billsAndPayments")} className="border-b border-section py-4 flex-row mx-4">
             <Image source={icons.billing} style={{width: 24, height: 24}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bills & Payments

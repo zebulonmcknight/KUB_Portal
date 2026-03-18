@@ -64,7 +64,7 @@ export default function CreateLogin() {
   }
 
   // boolean to determine whether one - the password matches our criteria and two - both passwords entered match. Either keeps next button disabled if not correct or allows user to proceed.
-  const isReady = ( validPassword(password) && password == confirmPassword );
+  const isReady = ( validPassword(password) && password === confirmPassword );
 
   return (
     <View className="flex-1 justify-center">

@@ -55,12 +55,12 @@ export default function RootLayout() {
       <ThemeProvider value={globalTheme}>
         <Stack>
           {/* Authentication user flow*/}
-          <Stack.Screen
+          {/* <Stack.Screen
             name="(auth)"
             options={{
               headerShown: false, // Hide the header for the auth layout as well
             }}
-          />
+          /> */}
 
           {/* Main app flow */}
           <Stack.Screen

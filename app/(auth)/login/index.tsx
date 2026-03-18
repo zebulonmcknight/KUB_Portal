@@ -1,12 +1,13 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
 import React from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { Image, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Login() {
 
   const router = useRouter();
+  const { height } = useWindowDimensions();
 
   return (
 
@@ -19,7 +20,7 @@ export default function Login() {
         resizeMode="cover" // Will zoom in the image until it fits that specified size (60% in our case).
         className="absolute top-0 w-full h-[60%]"
         style={{
-          transform: [{ translateY: -110 }] // Basically cropping the image to get rid of some of the sky here.
+          transform: [{ translateY: -height * .12 }]
         }}
       />
 
