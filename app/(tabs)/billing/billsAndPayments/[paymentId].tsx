@@ -5,9 +5,10 @@ import { Text, View } from 'react-native';
 
 export default function PaidInvoice() {
 
-   const { paymentId } = useLocalSearchParams();
-   const payment = mockPayments.find(p => p.id === paymentId);
+   const { paymentId } = useLocalSearchParams(); // Grab the ID that is attached to the page URL in billsAndPayments/index. Each payment has its own unique ID.
+   const payment = mockPayments.find(p => p.id === paymentId); // Once we obtain the ID we serach the file for it to retrieve all of its information.
 
+   // Error check to make sure app doesn't crash if there is no matching payment.
    if( !payment ){
       return (
          <View className="flex-1 justify-center items-center">
