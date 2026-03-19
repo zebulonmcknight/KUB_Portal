@@ -1,5 +1,5 @@
 import FloatingInput from "@/components/floatingInput";
-import { Stack } from "expo-router";
+import ScreenHeader from "@/components/headerStyle";
 import { useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
@@ -15,15 +15,7 @@ export default function ForgotPassword() {
 
   return (
     <View className="flex-1 justify-center">
-      <Stack.Screen 
-         options={{
-            title: "Forgot Password", // Set the header title for this screen
-            headerStyle: {
-               backgroundColor: '#3377F4', // Match the header background to active theme
-            },
-            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-         }}
-      />
+      <ScreenHeader title="Forgot Password" />
       <View className="flex-1 justify-start px-6 pt-4">
         <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Please enter your information:

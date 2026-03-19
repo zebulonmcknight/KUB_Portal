@@ -1,8 +1,9 @@
 import CustomAlert from "@/components/customAlert";
 import FloatingInput from "@/components/floatingInput";
+import ScreenHeader from "@/components/headerStyle";
 import { useRegistration } from "@/components/registrationContext";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 
@@ -45,22 +46,7 @@ export default function CreateLogin() {
 
   return (
     <View className="flex-1 justify-center">
-      <Stack.Screen 
-         options={{
-            title: "Create Login", // Set the header title for this screen
-            headerStyle: {
-               backgroundColor: '#3377F4', // Match the header background to active theme
-            },
-            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-            headerRight: () => (
-              // Have to use actual button here and not custom modal as react native can't process custom modal in header. Using this as an 'activator' of sorts
-              <TouchableOpacity onPress={() => setShowHeaderAlert(true)}> 
-                <MaterialIcons name="info" size={24} color="white"/>
-              </TouchableOpacity>
-            )
-         }}
-      />
-
+      <ScreenHeader title="Create Login" onPress={() => setShowHeaderAlert(true)} />
       <View className="flex-1 justify-start px-6 pt-4">
         <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Register your account to view and pay your bill, monitor usage, and more.

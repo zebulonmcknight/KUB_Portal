@@ -1,6 +1,7 @@
+import ScreenHeader from '@/components/headerStyle';
 import { mockPayments } from '@/constants/mockBillingData';
 import { format, parseISO } from 'date-fns';
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
 export default function PaidInvoice() {
@@ -19,15 +20,7 @@ export default function PaidInvoice() {
 
    return (
       <View className='flex-1'>
-         <Stack.Screen 
-            options={{
-               title: format(parseISO(payment.paymentDate), "MMM dd, yyyy"), // Set the header title for this screen
-               headerStyle: {
-                  backgroundColor: '#3377F4', // Match the header background to active theme
-               },
-               headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-            }}
-         />
+         <ScreenHeader title={format(parseISO(payment.paymentDate), "MMM dd, yyyy")} />
          {/* number, amount, type, date, status */}
          <View className="w-full mx-4">
             <View className="border-b border-section p-4">

@@ -1,19 +1,11 @@
-import { Stack } from "expo-router";
+import ScreenHeader from "@/components/headerStyle";
 import { Text, View } from "react-native";
 
 export default function ProjectHelp(){
 
    return(
       <View className="flex-1 justify-center">
-         <Stack.Screen 
-            options={{
-               title: "Project Help", // Set the header title for this screen
-               headerStyle: {
-                  backgroundColor: '#3377F4', // Match the header background to active theme
-               },
-               headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-            }}
-         />
+         <ScreenHeader title="Project Help" />
          <Text>
             Hello
          </Text>

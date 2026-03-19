@@ -93,15 +93,7 @@ export default function Billing() {
   }
   return (
     <SafeAreaView className="flex-1 bg-primary">
-      <Stack.Screen 
-        options={{
-            headerShown: false,
-            headerStyle: {
-              backgroundColor: '#3377F4', // Match the header background to active theme
-            },
-            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-        }}
-      />
+      <Stack.Screen options={{ headerShown: false }} />
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
@@ -171,36 +163,36 @@ export default function Billing() {
         </View>
 
         <View className="w-full">
-          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/billsAndPayments")} className="border-b border-section py-4 flex-row mx-4">
-            <Image source={icons.billing} style={{width: 24, height: 24}}/>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/billsAndPayments")} className="border-b border-section py-4 flex-row mx-4 items-center">
+            <Image source={icons.billing} style={{width: 18, height: 18}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bills & Payments
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Payment Method")} className="border-b border-section py-4 flex-row mx-4">
-            <Image source={icons.payment_method} style={{width: 24, height: 24}}/>
+          <TouchableOpacity onPress={() => console.log("Payment Method")} className="border-b border-section py-4 flex-row mx-4 items-center">
+            <Image source={icons.payment_method} style={{width: 18, height: 18}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Payment Method
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Bill & Payment Programs")} className="border-b border-section py-4 flex-row mx-4">
-            <Image source={icons.payment_program} style={{width: 24, height: 24}}/>
+          <TouchableOpacity onPress={() => console.log("Bill & Payment Programs")} className="border-b border-section py-4 flex-row mx-4 items-center">
+            <Image source={icons.payment_program} style={{width: 18, height: 18}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bill & Payment Programs
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL("https://www.kub.org/fiber-shopping")} className="border-b border-section py-4 flex-row mx-4">
-            <Image source={icons.fiber} style={{width: 24, height: 24}}/>
+          <TouchableOpacity onPress={() => Linking.openURL("https://www.kub.org/fiber-shopping")} className="border-b border-section py-4 flex-row mx-4 items-center">
+            <Image source={icons.fiber} style={{width: 18, height: 18}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Fiber
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/promotions")} className="border-b border-section flex-row mx-4 py-4">
-            <Image source={icons.promotions} style={{width: 24, height: 24}}/>
+          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/promotions")} className="border-b border-section flex-row mx-4 py-4 items-center">
+            <Image source={icons.promotions} style={{width: 18, height: 18}} />
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Offers & Promotions
             </Text>

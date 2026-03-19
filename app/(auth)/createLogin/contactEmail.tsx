@@ -1,6 +1,7 @@
 import FloatingInput from "@/components/floatingInput";
+import ScreenHeader from "@/components/headerStyle";
 import { useRegistration } from "@/components/registrationContext";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
 // Similarly to the forgotUsername page where we check the email the user has entered
@@ -18,15 +19,7 @@ export default function ForgotPassword() {
 
   return (
     <View className="flex-1 justify-center">
-      <Stack.Screen 
-         options={{
-            title: "Create Login", // Set the header title for this screen
-            headerStyle: {
-               backgroundColor: '#3377F4', // Match the header background to active theme
-            },
-            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-         }}
-      />
+      <ScreenHeader title="Create Login" />
       <View className="flex-1 justify-start px-6 pt-4">
         <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Thank you! Next, please enter your email address:

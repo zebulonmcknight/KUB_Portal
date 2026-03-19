@@ -34,10 +34,7 @@ export default function Login() {
       {/* This view is in charge of the KUB logo as well as setting up the button/version text */}
       <View className="flex-1 justify-center">
         <Stack.Screen 
-          options={{
-              headerShown: false, // Hide the header on the login screen for a cleaner look
-              headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-          }}
+          options={{ headerShown: false }} // Hide the header on the login screen for a cleaner look
         />
 
         {/* Make it absolute so that it doesnt affect the other components */}

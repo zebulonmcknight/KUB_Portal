@@ -1,7 +1,8 @@
 import FloatingInput from "@/components/floatingInput";
+import ScreenHeader from "@/components/headerStyle";
 import Entypo from '@expo/vector-icons/Entypo';
 import { Checkbox } from "expo-checkbox";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -71,15 +72,7 @@ export default function Credentials() {
 
    return (
       <SafeAreaView className="flex-1 justify-center">
-         <Stack.Screen 
-            options={{
-               title: "Enter Your Credentials",
-               headerStyle: {
-                  backgroundColor: '#3377F4', // Match the header background to active theme
-               },
-               headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-            }}
-         />
+         <ScreenHeader title="Enter Your Credentials" />
          <View className="flex-1 justify-start px-6">
          <Text className="text-text_main font-sans text-2xl tracking-wide pb-4 w-full">
             Please enter your information:

@@ -1,6 +1,7 @@
+import ScreenHeader from "@/components/headerStyle";
 import { mockPromotions } from "@/constants/mockPromotionData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 
@@ -11,16 +12,7 @@ export default function Promotions(){
 
    return(
       <View className="flex-1 justify-center">
-         <Stack.Screen 
-            options={{
-               title: "Offers & Promotions", // Set the header title for this screen
-               headerStyle: {
-                  backgroundColor: '#3377F4', // Match the header background to active theme
-               },
-               headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-            }}
-         />
-
+         <ScreenHeader title="Offers & Promotions" />
          <ScrollView
          className="flex-1"
          showsVerticalScrollIndicator={false}
