@@ -107,7 +107,7 @@ export default function CreateLogin() {
           onSubmitEditing={() => ssnRef.current?.focus()}
         />
 
-        <Text className="text-text_main font-sans text-md tracking-wide pt-6 w-full">
+        <Text className="text-text_main font-sans text-base tracking-wide pt-6 w-full">
           Please confirm the last 4 digits of your Social Security (or Tax ID) Number.
         </Text>
 

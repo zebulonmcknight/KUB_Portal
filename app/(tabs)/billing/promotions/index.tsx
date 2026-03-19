@@ -1,0 +1,64 @@
+import { mockPromotions } from "@/constants/mockPromotionData";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
+import { Stack, useRouter } from "expo-router";
+import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+
+
+export default function Promotions(){
+
+   const tabBarHeight = useBottomTabBarHeight();
+   const router = useRouter();
+
+   return(
+      <View className="flex-1 justify-center">
+         <Stack.Screen 
+            options={{
+               title: "Offers & Promotions", // Set the header title for this screen
+               headerStyle: {
+                  backgroundColor: '#3377F4', // Match the header background to active theme
+               },
+               headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
+            }}
+         />
+
+         <ScrollView
+         className="flex-1"
+         showsVerticalScrollIndicator={false}
+         contentContainerStyle={{paddingBottom: tabBarHeight, paddingTop: 16}}
+         >
+            { mockPromotions.map((promotion) => (
+               // This is the card itself
+               <View key={promotion.id} className="bg-section mx-4 mb-6 overflow-hidden flex-col rounded-md">
+
+                  {/* The image the card uses */}
+                  <Image
+                     source={promotion.image}
+                     style={{width: "100%", height: 240}}
+                     resizeMode="cover"
+                  />
+
+                  <View className="p-4">
+                     {/* This is the title of the card */}
+                     <Text className="text-text_main font-semibold text-lg mt-4 tracking-wide">
+                        {promotion.title}
+                     </Text>
+                     {/* The description */}
+                     <Text className="text-text_main font-sans text-base mt-4 tracking-wide">
+                        {promotion.description}
+                     </Text>
+                     {/* Learn more button */}
+                     <TouchableOpacity onPress={() => router.push(promotion.route)}
+                        className="bg-active_icon rounded-xl justify-center items-center py-3.5 mt-8"
+                     >
+                        <Text className="text-text_main font-semibold text-lg tracking-wide">
+                           LEARN MORE
+                        </Text>
+                     </TouchableOpacity>
+                  </View>
+               </View>
+            ))}
+            
+         </ScrollView>
+      </View>
+   );
+}

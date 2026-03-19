@@ -131,8 +131,8 @@ export default function Billing() {
           <View>
             <Text className="text-text_main font-bold text-3xl text-left w-full p-6 mt-4">Welcome</Text>
               <View className="flex-row justify-between w-full mt-4 px-20">
-                <Text className="text-text_main font-sans text-md">Payment Due</Text>
-                <Text className="text-text_main font-bold text-md">{paymentDateFormatted}</Text>
+                <Text className="text-text_main font-sans text-base">Payment Due</Text>
+                <Text className="text-text_main font-bold text-base">{paymentDateFormatted}</Text>
               </View>
           </View>
 
@@ -199,7 +199,7 @@ export default function Billing() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Offers & Promotions")} className="border-b border-section flex-row mx-4 py-4">
+          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/promotions")} className="border-b border-section flex-row mx-4 py-4">
             <Image source={icons.promotions} style={{width: 24, height: 24}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Offers & Promotions

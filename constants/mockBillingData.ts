@@ -6,7 +6,9 @@
 import { parseISO } from "date-fns";
  
 /*
-  We define two separate types because invoices and payments have different fields.
+  These types define the shape of each object in our data.
+  TypeScript uses them to catch errors anywhere these types are used in the app.
+  We need two separate types because invoices and payments have different fields.
 */
 
 export type InvoiceItem = {

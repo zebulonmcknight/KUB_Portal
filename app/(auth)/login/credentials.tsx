@@ -106,7 +106,7 @@ export default function Credentials() {
          />
 
          <View className="flex-row justify-between items-center w-full mt-3">
-            <Text className="text-active_icon font-sans text-md underline" onPress={()=> router.replace("/(auth)/help/forgotPassword")}>
+            <Text className="text-active_icon font-sans text-base underline" onPress={()=> router.replace("/(auth)/help/forgotPassword")}>
                Forgot your password?
             </Text>
 
@@ -116,7 +116,7 @@ export default function Credentials() {
                   onValueChange={setStayLoggedIn}
                   color={stayLoggedIn ? "#3377F4" : undefined}
                />
-               <Text className="text-text_main font-sans text-md">
+               <Text className="text-text_main font-sans text-base">
                   Keep me signed in
                </Text>
             </View>
