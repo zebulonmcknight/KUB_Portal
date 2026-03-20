@@ -11,7 +11,7 @@ export default function Promotions(){
    const router = useRouter();
 
    return(
-      <View className="flex-1 justify-center">
+      <View className="flex-1">
          <ScreenHeader title="Offers & Promotions" />
          <ScrollView
          className="flex-1"
