@@ -177,7 +177,7 @@ export default function Billing() {
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => console.log("Bill & Payment Programs")} className="border-b border-section py-4 flex-row mx-4 items-center">
+          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/programs")} className="border-b border-section py-4 flex-row mx-4 items-center">
             <Image source={icons.payment_program} style={{width: 18, height: 18}}/>
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bill & Payment Programs
