@@ -4,9 +4,9 @@ import { Router } from 'express';
 // 'const endpoint = require(PATH);', both work, but stylistic guidelines 
 // dictate that we choose one format and stick with it.  
 import { profile } from './controllers/account.controller';
+import * as authController from './controllers/auth.controller';
 import { createBillingCustomer, createBillingCustomerSubscription, newCustomerSubscription } from './controllers/billing.controller';
 import { get_user_by_email } from './controllers/user.controller';
-import * as authController from './controllers/auth.controller';
 import { checkJwt, extractUserID } from './middleware/auth';
 
 
@@ -19,7 +19,8 @@ import { checkJwt, extractUserID } from './middleware/auth';
 const router = Router(); 
 
 router.post('/auth/login', authController.login); 
-router.post('/auth/signup', authController.signup)
+router.post('/auth/signup', authController.signup); 
+router.post('/auth/verifyKubAccount', authController.verifyKubAccount); 
 
 router.post('/billing/createBillingCustomer', createBillingCustomer);
 router.post('/billing/createBillingCustomerSubscription', createBillingCustomerSubscription);

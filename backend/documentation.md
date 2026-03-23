@@ -63,6 +63,7 @@ Creates a new user account and returns an access token.
 |---|---|---|
 | `email` | string | yes |
 | `password` | string | yes |
+| `account_number` | string | yes |
 | `first_name` | string | no |
 | `last_name` | string | no |
 | `phone` | string | no |
@@ -76,6 +77,7 @@ const response = await fetch('http://localhost:3000/api/auth/signup', {
   body: JSON.stringify({
     email: 'user@example.com',
     password: 'Password123!',
+    account_number: '1234567890'
     first_name: 'John',
     last_name: 'Doe',
     phone: '4231231234'
