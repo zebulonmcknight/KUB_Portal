@@ -1,5 +1,6 @@
 import ScreenHeader from "@/components/headerStyle";
 import { useStripe } from "@stripe/stripe-react-native";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
 
@@ -31,6 +32,7 @@ export default function Programs() {
    // to prevent the user from clicking the button again why the request is still processing
    const [loading, setLoading] = useState(false);
    const [billAmount, setBillAmount] = useState(200.00);
+   const router = useRouter();
 
    // invoke the backend API to handle the subscription payment request
    const handleSubscription = async () => {
@@ -102,7 +104,7 @@ export default function Programs() {
                title="AutoPay"
                description="Automatically draft monthly payments from your bank account on or near your due date."
                buttonText="Learn more and enroll"
-               onPress={() => console.log("AutoPay")}
+               onPress={() => router.push("/(tabs)/billing/programs/autoPay")}
             />
             {/* Add strip functionality here as it opens the same page on billing/index. Not using the Program card as it has unique properties */}
             <TouchableOpacity activeOpacity={1} onPress={handleSubscription} className="bg-section rounded-lg overflow-hidden">
@@ -123,13 +125,13 @@ export default function Programs() {
                title="Levelized Billing"
                description="Levelized Billing helps residential customers keep bills level, despite extreme temperatures."
                buttonText="Learn more and enroll"
-               onPress={() => console.log("Levelized Billing")}
+               onPress={() => router.push("/(tabs)/billing/programs/levelizedBilling")}
             />
             <ProgramCard
                title="Paperless Billing"
                description="Eliminate paper bills and receive electronic bill alerts. It's easy, safe, and good for the environment."
                buttonText="Learn more and enroll"
-               onPress={() => console.log("Paperless Billing")}
+               onPress={() => router.push("/(tabs)/billing/programs/paperlessBilling")}
             />
          </View>
       );
@@ -140,7 +142,7 @@ export default function Programs() {
                title="Round It Up"
                description="Help your neighbors imporve their home's energy efficiency by automatically rounding your monthly bill up to the next dollar"
                buttonText="Learn more and enroll"
-               onPress={() => console.log("Round It Up")}
+               onPress={() => router.push("/(tabs)/billing/programs/roundUp")}
             />
             <ProgramCard
                title="Project Help"
