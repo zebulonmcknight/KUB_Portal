@@ -39,8 +39,13 @@ export const signup = async (req: Request, res: Response) => {
     } catch (error: any) {
         console.error('Signup error details:', error);
         console.error('message', error.message);  
+
+        if (error.status === 409) {
+            return res.status(409).json({ error: error.message}); 
+        }
         // return the error description or if null, 'Signup Failed' 
-        return res.status(401).json({error: error.response?.data?.message || 'Signup Failed'}); 
+        console.log ('Auth0 error data:', error.response?.data); 
+        return res.status(401).json({error: error.response?.data?.message || error.response?.data?.description || 'Signup Failed'}); 
     }
 }
 

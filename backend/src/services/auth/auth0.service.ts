@@ -30,6 +30,8 @@ export class Auth0Service {
     }
 
     async signup(email: string, password: string, account_number: string, first_name?: string, last_name?: string, phone?: string) {
+        await this.checkKubAccountAvailable(account_number); 
+        
         await axios.post(`https://${AUTH0_DOMAIN}/dbconnections/signup`, {
             client_id: AUTH0_CLIENT_ID,
             email,
@@ -41,6 +43,30 @@ export class Auth0Service {
         });
 
         return await this.login(email, password, account_number);
+    }
+
+    private async checkKubAccountAvailable(account_number: string) {
+        const { data, error } = await supabase
+            .from('kub_accounts')
+            .select('account_number, is_registered')
+            .eq('account_number', account_number)
+            .maybeSingle();
+
+        if (error) {
+            const err: any = new Error('Database error during account verification.');
+            err.status = 500;
+            throw err;
+        }
+        if (!data) {
+            const err: any = new Error('No matching service account found.');
+            err.status = 404;
+            throw err;
+        }
+        if (data.is_registered) {
+            const err: any = new Error('An app account already exists for this service account.');
+            err.status = 409;
+            throw err;
+        }
     }
 
     async verifyKubAccount(account_number: string, ssn_last4: string, zip: string) {
@@ -78,7 +104,7 @@ export class Auth0Service {
         const phone = payload.user_metadata?.phone ?? null;
         const formattedPhone = phone ? this.formatPhone(phone) : null;
 
-        await supabase.from('dev_users').upsert({
+        const { error } = await supabase.from('dev_users').upsert({
             id: user.sub,
             email: user.email,
             first_name: user.given_name || null,
@@ -86,6 +112,17 @@ export class Auth0Service {
             phone: formattedPhone, 
             ...(account_number && {account_number})
         }, { onConflict: 'id' });
+
+        if (error) {
+            if (error.code === '23505') {
+                const err: any = new Error('An app account already exists for this service account.'); 
+                err.status = 409; 
+                throw err; 
+            }
+            const err: any = new Error('Database error during user sync function.'); 
+            err.status = 500; 
+            throw err; 
+        }
 
         if (account_number) {
             await supabase
