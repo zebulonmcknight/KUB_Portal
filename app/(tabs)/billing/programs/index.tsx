@@ -1,6 +1,7 @@
 import ScreenHeader from "@/components/headerStyle";
+import { useStripe } from "@stripe/stripe-react-native";
 import { useState } from "react";
-import { Linking, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
 
 // Interface for the card
 interface ProgramCardProps {
@@ -25,6 +26,70 @@ function ProgramCard({ title, description, buttonText, onPress }: ProgramCardPro
 
 export default function Programs() {
 
+   // paymentSheet used for card processing/payment confirmation
+   const { initPaymentSheet, presentPaymentSheet } = useStripe();
+   // to prevent the user from clicking the button again why the request is still processing
+   const [loading, setLoading] = useState(false);
+   const [billAmount, setBillAmount] = useState(200.00);
+
+   // invoke the backend API to handle the subscription payment request
+   const handleSubscription = async () => {
+      try {
+         // button has been clicked so lock it from being clicked again
+         setLoading(true);
+
+         // pass the email of the user to the backend for customer creation/subscription invocation
+         const response = await fetch(
+            // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
+            "http://localhost:3000/api/billing/newCustomerSubscription",
+            {
+               method: "POST",
+               headers: {"Content-Type": "application/json"},
+               body: JSON.stringify({ email: "testuser@gmail.com"}),
+            }
+         );
+
+         // obtain the clientSecret from successful subscription creation
+         const { clientSecret } = await response.json();
+
+         // output error message and return if clientSecret is not obtained
+         if( !clientSecret ){
+            Alert.alert("Error", "No client secret returned from server");
+            return;
+         }
+
+         // initialize the payment screen tied to the current customer requesting payment services
+         const { error: initError } = await initPaymentSheet({
+            merchantDisplayName: "KUB",
+            paymentIntentClientSecret: clientSecret,
+         });
+
+         // if the payment screen cannot be initialized for any reason, output error message and return
+         if( initError ){
+            Alert.alert("Error", initError.message);
+            return;
+         }
+
+         // actually present the initialized payment screen to the user
+         const { error: paymentError } = await presentPaymentSheet();
+
+         // if an error returns during the payment process, output Payment failed along with the error message
+         // if there are no errors returned, the payment was successful and the subscription is officially active
+         if( paymentError ){
+            Alert.alert("Payment failed", paymentError.message);
+         }else{
+            Alert.alert("Payment Successful", "Thank you for your payment.");
+            setBillAmount(0);
+         }
+      // catch any other errors not handled explicity
+      }catch( error: any) {
+         Alert.alert("Error", error.message);
+      // regardless of if errors are caught or not, reset the button so it can be clicked once more
+      } finally {
+         setLoading(false);
+      }
+   }
+
    // Use this state to determine which page we are rendering (payment, billing, giving)
    // Can also use this variable as our 'focused' variable to highlight the current button that is selected
    const [tab, setTab] = useState("payment");
@@ -39,12 +104,16 @@ export default function Programs() {
                buttonText="Learn more and enroll"
                onPress={() => console.log("AutoPay")}
             />
-            <ProgramCard 
-               title="One Time Payment" 
-               description="Securely save your banking information to conveniently make payments."
-               buttonText="Pay Now"
-               onPress={() => console.log("One Time Payment")}
-            />
+            {/* Add strip functionality here as it opens the same page on billing/index. Not using the Program card as it has unique properties */}
+            <TouchableOpacity activeOpacity={1} onPress={handleSubscription} className="bg-section rounded-lg overflow-hidden">
+               <Text className="p-4 font-sans text-text_main text-2xl tracking-wide">One Time Payment</Text>
+               <Text className="px-4 pb-4 font-sans text-text_main text-lg tracking-wide">
+                  Securely save your banking information to conveniently make payments.
+               </Text>
+               <TouchableOpacity onPress={handleSubscription} className="border-t items-center py-5">
+                  <Text className="font-bold text-text_main tracking-widest">Pay Now</Text>
+               </TouchableOpacity>
+            </TouchableOpacity>
          </View>
       );
    } else if( tab === "billing" ){
