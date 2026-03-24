@@ -33,6 +33,33 @@ export const createCustomerSubscription = async (
     });
 };
 
+// method to report electric usage
+export const reportElectricUsage = async (
+    stripeId: string,
+    kwh: string,
+) => {
+    return await stripe.billing.meterEvents.create({
+        event_name: 'electric_meter',
+        payload: {
+            stripe_customer_id: stripeId,
+            value: kwh
+        }
+    });
+}
+
+// method to update the number of units
+export const reportWaterOrWasteUsage = async (
+    itemSubscriptionId: string,
+    numUnits: number
+) => {
+    return await stripe.subscriptionItems.update(itemSubscriptionId, {
+        quantity: numUnits
+    });   
+}
+
+// disable/enable auto-pay
+
+
 // // marks the subscription incomplete if payment is required so frontend can handle payment
 // payment_behavior: 'default_incomplete',
 // // return the client_secret to frontend Stripe SDK in order to confirm payment

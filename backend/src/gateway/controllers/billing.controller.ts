@@ -72,7 +72,9 @@ export const newCustomerSubscription = async (req: Request, res: Response) => {
 
         // ensure subscription created successfully and retrieve subscription ID
         const stripeSubscriptionId = subscription.id;
-        if( !stripeSubscriptionId ){
+        const wasteSubscriptionId = subscription.items.data[1].id
+        const waterSubscriptionId = subscription.items.data[2].id
+        if( !stripeSubscriptionId || !wasteSubscriptionId || !waterSubscriptionId ){
             return res.status(500).json({ error: 'Subscription Creation Failed' });
         }
         
@@ -82,6 +84,8 @@ export const newCustomerSubscription = async (req: Request, res: Response) => {
                 user_id: userId,
                 stripe_customer_id: stripeId,
                 stripe_subscription_id: stripeSubscriptionId,
+                waste_subscription_id: wasteSubscriptionId,
+                water_subscription_id: waterSubscriptionId,
                 autopay_enabled: false
             }, { onConflict: 'user_id' });
 
