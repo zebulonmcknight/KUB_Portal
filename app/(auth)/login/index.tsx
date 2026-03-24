@@ -1,5 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React from "react";
 import { Image, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -8,6 +9,18 @@ export default function Login() {
 
   const router = useRouter();
   const { height } = useWindowDimensions();
+
+  const handleLogin = async () => {
+    const token_expiry = await SecureStore.getItemAsync('token_expiry');
+    const access_token = await SecureStore.getItemAsync('access_token');
+
+    // If valid token exists dont prompt user to enter login information
+    if( token_expiry && access_token  && (Date.now() < parseInt(token_expiry)) ){
+      router.push("/(tabs)/billing");
+      return;
+    }
+    router.push("/(auth)/login/credentials"); // Otherwise prompt
+  }
 
   return (
 
@@ -50,7 +63,7 @@ export default function Login() {
           />
       </View>
 
-        <TouchableOpacity onPress={() => router.push("/(auth)/login/credentials")}
+        <TouchableOpacity onPress={() => handleLogin()}
           className="bg-active_icon rounded-xl justify-center items-center py-3.5 mx-6"
         >
           <Text className="text-text_main text-lg font-semibold tracking-wide w-full text-center">LOGIN</Text>

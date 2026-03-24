@@ -45,7 +45,8 @@
         }
       ],
       "expo-font",
-      "@stripe/stripe-react-native"
+      "@stripe/stripe-react-native",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

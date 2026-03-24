@@ -37,6 +37,22 @@ export default function CreateLogin() {
   // Function to send the information the user entered to the backend to verify that they are an existing customer
   const checkInfo = async () => {
     try{
+
+      const response = await fetch('http://localhost:3000/api/auth/verifyKubAccount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            account_number: accountNumber,
+            ssn_last4: ssn,
+            zip: zipCode
+        }),
+      });
+
+      // Make sure we have a valid response
+      if( !response.ok ){
+        throw new Error();
+      }
+
       router.push("/(auth)/createLogin/contactEmail"); // Send the user to the next page
     }
     catch(error: any) {

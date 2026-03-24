@@ -30,7 +30,7 @@ export const signup = async (req: Request, res: Response) => {
         }
 
         const signup = await auth0Service.signup(email, password, account_number, first_name, last_name, phone);
-        
+
         const stripeSubscriptionResponse = await fetch(
             "http://localhost:3000/api/billing/newCustomerSubscription",
             {

@@ -14,22 +14,43 @@ export default function CreateLogin() {
   const [showAlert, setShowAlert] = useState(false); // State to control the visibility of the custom alert at the header
   const [showSuccess, setShowSuccess] = useState(false); // State to control the visibility of the custom alert after successful account creation
   
-  // This is used to track what the user is typing
-  const { password, setPassword } = useRegistration();
+  // Since we are at the end of signup route, import all values so we can set them to be empty
+  const { password, setPassword, email, setEmail, accountNumber, setAccountNumber, zipCode, setZipCode, ssn, setSSN } = useRegistration();
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isVisible, setIsVisible] = useState(false);
   const [confirmationIsVisible, setConfirmationIsVisible] = useState(false);
 
-
   const authCreation = async () => {
     try{
-      // Do some backend stuff
+      // Make a call to our signup api sending the information from our registration context
+      const response = await fetch( 'http://localhost:3000/api/auth/signup',{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            email: email,
+            password: password,
+            account_number: accountNumber
+        }),
+      });
 
-      // catch some errors
+      if( !response.ok ){
+        throw new Error();
+      }
 
-      // if successful reset stuff
+      // pull them to check values, no need to store them here
+      const {access_token, expires_in} = await response.json();
+
+      // Make sure our values are valid
+      if( !access_token || !expires_in ){
+        throw new Error("Something went wrong. Please try again.");
+      }
+
+      // if successful reset the values so that context can get cleared
       setPassword("");
-      setConfirmPassword("");
+      setEmail("");
+      setAccountNumber("");
+      setZipCode("");
+      setSSN("");
 
       // Lets our alert render when its a success.
       setShowSuccess(true);

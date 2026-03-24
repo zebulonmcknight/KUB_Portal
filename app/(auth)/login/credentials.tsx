@@ -1,8 +1,10 @@
+import { useAuth } from "@/components/authContext";
 import FloatingInput from "@/components/floatingInput";
 import ScreenHeader from "@/components/headerStyle";
 import Entypo from '@expo/vector-icons/Entypo';
 import { Checkbox } from "expo-checkbox";
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,6 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Credentials() {
 
    const router = useRouter();
+   const { setAccessToken } = useAuth();
 
    // This is used to track what the user is typing
    const [email, setEmail] = useState("");
@@ -25,8 +28,6 @@ export default function Credentials() {
    const validPassword = password.length >= 4;
 
    const handleLogin = async () => {
-      console.log("Logging in with:", email, password);
-
       try{
          setLoading(true); // button has been clicked so lock it from being clicked again
 
@@ -46,7 +47,6 @@ export default function Credentials() {
          }
 
          const { access_token, expires_in } = await response.json();
-         console.log("Here data:", access_token, expires_in);
 
          if( !access_token ){
             Alert.alert("Error", "Incorrect Username/Password. Please try again.");
@@ -59,6 +59,13 @@ export default function Credentials() {
          }
 
          // Securely store the tokens so that they can be referenced later
+         if(stayLoggedIn){
+            await SecureStore.setItemAsync('access_token', access_token);
+            await SecureStore.setItemAsync('token_expiry', (Date.now() + expires_in * 1000).toString()); // convert to milliseconds
+         }
+         else{
+            setAccessToken(access_token);
+         }
 
          router.replace(("/(tabs)/billing"));
 

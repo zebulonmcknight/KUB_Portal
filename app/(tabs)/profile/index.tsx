@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
@@ -316,10 +317,18 @@ export default function ProfileScreen({
   };
 
   const router = useRouter();
+  const handleStorageCleanup = async () => {
+    // On logout delete the stored keys
+    await SecureStore.deleteItemAsync('access_token');
+    await SecureStore.deleteItemAsync('token_expiry');
+
+    // Redirect to login page
+    router.replace("/(auth)/login")
+  }
   const handleLogout = () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Log Out", style: "destructive", onPress: () => router.replace("/(auth)/login") },
+      { text: "Log Out", style: "destructive", onPress: () => {handleStorageCleanup()} },
     ]);
   };
 

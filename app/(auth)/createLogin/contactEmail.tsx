@@ -4,7 +4,7 @@ import { useRegistration } from "@/components/registrationContext";
 import { useRouter } from "expo-router";
 import { Text, TouchableOpacity, View } from "react-native";
 
-// Similarly to the forgotUsername page where we check the email the user has entered
+// Check the email the user has entered
 
 export default function ForgotPassword() {
 
