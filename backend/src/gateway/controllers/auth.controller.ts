@@ -29,7 +29,19 @@ export const signup = async (req: Request, res: Response) => {
             return res.status(400).json({error: 'Email, password, and account_number are required'}); 
         }
 
-        const signup = await auth0Service.signup(email, password, account_number, first_name, last_name, phone); 
+        const signup = await auth0Service.signup(email, password, account_number, first_name, last_name, phone);
+        
+        const stripeSubscriptionResponse = await fetch(
+            "http://localhost:3000/api/billing/newCustomerSubscription",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${signup.access_token}`
+                }
+            }
+        )
+
         return res.status(201).json({
             message: 'Signup Successful',
             access_token: signup.access_token, 

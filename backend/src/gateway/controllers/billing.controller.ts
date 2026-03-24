@@ -4,13 +4,33 @@ import { Request, Response } from 'express';
 import { createCustomer } from '../../services/stripeService';
 import { createCustomerSubscription } from '../../services/stripeService';
 import dotenv from 'dotenv';
+import { supabase } from '../../database/supabase';
 dotenv.config();
 
 // for demo purposes of creating a customer and setting up a subscription
 export const newCustomerSubscription = async (req: Request, res: Response) => {
     // try to create the customer and corresponding subscription, catch all errors and return server side error otherwise
     try {
-        const { email } = req.body;
+        // get the userId from middleware authorization
+        const userId = (req as any).userId
+        console.log(userId)
+        // extract user email from supabase
+        const { data, error: queryError } = await supabase
+            .from('dev_users')
+            .select('email')
+            .eq('id', userId)
+            .single()
+        
+        if( queryError ){
+            return res.status(500).json({ error: queryError.message })
+        }
+        // if the database query resulted in no response
+        if( !data ){
+            return res.status(400).json({ error: 'User Not Found'})
+        }
+
+        // set the email from database response
+        const email = data.email
         // if email is not retrieved from frontend request
         if( !email ){
             return res.status(400).json({ error: 'Email is required' });
@@ -19,96 +39,61 @@ export const newCustomerSubscription = async (req: Request, res: Response) => {
         const customer = await createCustomer(email);
 
         // extract the customer id
-        const customerId = customer.id;
+        const stripeId = customer.id;
 
-        // hard code priceId
-        const priceId = process.env.STRIPE_PRICE_ID!;
+        // hard code price IDs
+        const electricId = process.env.STRIPE_ELECTRIC_ID!;
+        const wasteWaterId = process.env.STRIPE_WASTE_WATER_ID!;
+        const waterId = process.env.STRIPE_WATER_ID!;
 
-                // if either the customerId or the priceId are not retrieved from the frontend request
-        if( !customerId || !priceId ){
-            return res.status(400).json({ error: 'customerId and priceId are required' });
+        // if either the stripeId or the price IDs are not retrieved from the frontend request
+        if( !stripeId || !electricId || !wasteWaterId || !waterId ){
+            return res.status(400).json({ error: 'stripeId and price IDs are required' });
         }
 
         // create the subscription
-        const subscription = await createCustomerSubscription( customerId, priceId );
+        const subscription = await createCustomerSubscription( stripeId, electricId, wasteWaterId, waterId );
 
-        // fix ts type errors and obtain the client_secret for payment confirmation on frontend
-        let clientSecret: string | undefined;
-        const latestInvoice = subscription.latest_invoice;
-        if( latestInvoice && typeof latestInvoice !== 'string' ){
-            const confirmationSecret = latestInvoice.confirmation_secret;
+        // // fix ts type errors and obtain the client_secret for payment confirmation on frontend
+        // let clientSecret: string | undefined;
+        // const latestInvoice = subscription.latest_invoice;
+        // if( latestInvoice && typeof latestInvoice !== 'string' ){
+        //     const confirmationSecret = latestInvoice.confirmation_secret;
 
-            if( confirmationSecret ){
-                clientSecret = confirmationSecret.client_secret;
-            }
+        //     if( confirmationSecret ){
+        //         clientSecret = confirmationSecret.client_secret;
+        //     }
+        // }
+
+        // // ensure clientSecret exists
+        // if( !clientSecret ){
+        //     return res.status(500).json({ error: 'Failed to retrieve client secret from subscription'});
+        // }
+
+        // ensure subscription created successfully and retrieve subscription ID
+        const stripeSubscriptionId = subscription.id;
+        if( !stripeSubscriptionId ){
+            return res.status(500).json({ error: 'Subscription Creation Failed' });
         }
+        
+        const { error: postError } = await supabase
+            .from('billing_profiles')
+            .upsert({
+                user_id: userId,
+                stripe_customer_id: stripeId,
+                stripe_subscription_id: stripeSubscriptionId,
+                autopay_enabled: false
+            }, { onConflict: 'user_id' });
 
-        // ensure clientSecret exists
-        if( !clientSecret ){
-            return res.status(500).json({ error: 'Failed to retrieve client secret from subscription'});
+        if( postError ){
+            return res.status(500).json({ error: 'Database Post Failure' });
         }
-
-        res.json({ clientSecret: clientSecret })
+        res.json({ success: true})
     }
+
     // if any uncaught error arise
     catch (error: any) {
         console.error(error);
         res.status(500).json({ error: 'Failed to create customer/subscription' });
     }
 }
-
-// create a customer within Stripe using Stripe API call in stripeService.ts
-export const createBillingCustomer = async (req : Request, res: Response) => {
-    // try to make the post, catch all errors and return server side error otherwise
-    try {
-        const { email } = req.body;
-        // if email is not retrieved from frontend request
-        if( !email ){
-            return res.status(400).json({ error: 'Email is required' });
-        }
-        // create the customer
-        const customer = await createCustomer(email);
-
-        // return the customer.id (WILL NEED TO PLACE CUSTOMER ID IN DATABASE)
-        res.json({ message: 'Customer Created', customerId: customer.id });
-    }
-    catch (error: any) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to create customer' });
-    }
-};
-
-// this will need to be adjusted to grab necessary information from the DB rather than hardcoded in the request
-export const createBillingCustomerSubscription = async (req: Request, res: Response) => {
-    // try to make the post, catch all errors and return server side error otherwise
-    try {
-        const { customerId, priceId } = req.body;
-
-        // if either the customerId or the priceId are not retrieved from the frontend request
-        if( !customerId || !priceId ){
-            return res.status(400).json({ error: 'customerId and priceId are required' });
-        }
-
-        // create the subscription
-        const subscription = await createCustomerSubscription( customerId, priceId );
-
-        // fix ts type errors and obtain the client_secret for payment confirmation on frontend
-        let clientSecret: string | undefined;
-        const latestInvoice = subscription.latest_invoice;
-        if( latestInvoice && typeof latestInvoice !== 'string' ){
-            const confirmationSecret = latestInvoice.confirmation_secret;
-
-            if( confirmationSecret ){
-                clientSecret = confirmationSecret.client_secret;
-            }
-        }
-        
-        // return the subscription id along with the client secret
-        res.json({ message: 'Subscription created', subscriptionId: subscription.id, clientSecret});
-    }
-    // catch any error and return a server side error
-    catch (error: any) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to create subscription' });
-    }
-};
