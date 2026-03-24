@@ -13,7 +13,6 @@ export const newCustomerSubscription = async (req: Request, res: Response) => {
     try {
         // get the userId from middleware authorization
         const userId = (req as any).userId
-        console.log(userId)
         // extract user email from supabase
         const { data, error: queryError } = await supabase
             .from('dev_users')
