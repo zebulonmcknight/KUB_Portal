@@ -16,10 +16,10 @@ export default function CustomAlert({ message, visible, onClose }: CustomAlertPr
             <View className="flex-1 justify-center items-center bg-black/50 px-6">
                {/* This creates the actual alert box */}
                <View className="bg-zinc-600 p-6">
-                  <Text className="text-text_main text-lg font-sans">{message}</Text>
+                  <Text className="text-text_main text-lg font-sans leading-normal">{message}</Text>
                   {/* Need this one to put the 'OK' at the end of the box. */}
                   <View className="items-end">
-                     <TouchableOpacity onPress={onClose} className="px-2 py-1">
+                     <TouchableOpacity onPress={onClose} className="px-2 pt-4">
                         <Text className="text-text_main text-base font-bold">OK</Text>
                      </TouchableOpacity>
                   </View>

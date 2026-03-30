@@ -1,18 +1,10 @@
-import { Stack } from "expo-router";
+import ScreenHeader from "@/components/headerStyle";
 import { Linking, Pressable, Text, TouchableOpacity, View } from "react-native";
 
 export default function StartService() {
   return (
     <View className="flex-1 justify-center items-center">
-      <Stack.Screen 
-         options={{
-            title: "Start Service", // Set the header title for this screen
-            headerStyle: {
-               backgroundColor: '#3377F4', // Match the header background to active theme
-            },
-            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-         }}
-      />
+      <ScreenHeader title="Start Service" />
       <View className="justify-start pt-4">
         <Text className="text-text_main font-sans text-2xl tracking-wide px-6 pt-4 pb-6">
           Start service easily and quickly.

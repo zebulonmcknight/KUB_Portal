@@ -1,6 +1,7 @@
 import CustomAlert from '@/components/customAlert';
+import ScreenHeader from '@/components/headerStyle';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { Stack, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useState } from 'react';
 import { Linking, Text, TouchableOpacity, View } from "react-native";
 
@@ -12,15 +13,7 @@ export default function Help() {
   
   return (
     <View className="flex-1 justify-center items-center">
-      <Stack.Screen 
-         options={{
-            title: "Need Help?", // Set the header title for this screen
-            headerStyle: {
-               backgroundColor: '#3377F4', // Match the header background to active theme
-            },
-            headerShadowVisible: false, // Remove the shadow underneath header for seamless integration with background
-         }}
-      />
+      <ScreenHeader title="Need Help?" />
       {/* Buttons that lead to the nested pages */}
       <View className="flex-1 justify-start left-4 pt-4">
         <Text className="text-text_main font-sans text-2xl tracking-wide p-4">
@@ -30,12 +23,6 @@ export default function Help() {
           <TouchableOpacity onPress={() => router.push("/(auth)/help/forgotPassword")} className="border-b border-section p-4">
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I can't remember my password.
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.push("/(auth)/help/forgotUsername")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
-              I can't remember my username.
             </Text>
           </TouchableOpacity>
 

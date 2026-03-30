@@ -4,7 +4,7 @@
     "slug": "KUB_Portal",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/kub-splash-logo.png",
     "scheme": "kubportal",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,24 +13,23 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/images/kub-splash-logo.png",
+        "monochromeImage": "./assets/images/kub-splash-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/kub-splash-logo.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/kub-splash-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
@@ -39,7 +38,15 @@
           }
         }
       ],
-      "expo-font"
+      [
+        "@stripe/stripe-react-native",
+        {
+          "merchantIdentifier": "merchant.com.yourcompany.appname"
+        }
+      ],
+      "expo-font",
+      "@stripe/stripe-react-native",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,

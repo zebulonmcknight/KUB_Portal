@@ -24,7 +24,7 @@ export default function TabsLayout () {
             tabBarStyle: {
                backgroundColor: '#091C3C', // Match the tab bar background to the app's theme
                shadowColor: 'transparent', // Remove the shadown of the tab bar for seamless integration with background
-               height: 106, // Height used in Figma design
+               height: 90,
                width: '100%',
                position: 'absolute',
                overflow: 'hidden',
