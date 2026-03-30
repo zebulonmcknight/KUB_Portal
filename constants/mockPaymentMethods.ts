@@ -1,4 +1,4 @@
-export type PaymentMethod =
+export type PaymentMethodType =
   | {
       id: string;
       type: "card";
@@ -18,7 +18,7 @@ export type PaymentMethod =
       isDefault: boolean;
     };
 
-export const mockPaymentMethods: PaymentMethod[] = [
+export const mockPaymentMethods: PaymentMethodType[] = [
   {
     id: "pm_1OqKz2LkdIwHu7ix3qHsYj2d",
     type: "card",
