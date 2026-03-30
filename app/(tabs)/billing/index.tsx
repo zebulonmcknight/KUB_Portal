@@ -1,57 +1,126 @@
+import { useAuth } from "@/components/authContext";
 import { icons } from "@/constants/icons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStripe } from "@stripe/stripe-react-native";
-import { addMonths, format, setDate } from "date-fns";
+import { format } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useRouter } from "expo-router";
-import { useState } from "react";
-import { Alert, Image, Linking, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import { ActivityIndicator, Alert, Image, Linking, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+// Define the shape of what we receive from getCurrentBill
+type BillData = {
+  totalAmountDue: number;
+  dueDate: string | null;
+  isAutoPay: boolean;
+  status: string;
+  lineItems: { service: string; units: number; amount: number }[];
+  invoicePdf: string | null
+}
 
 export default function Billing() {
+
+  // Gets the token from our auth context
+  const { getToken } = useAuth();
+  
   const router = useRouter();
   // paymentSheet used for card processing/payment confirmation
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   // to prevent the user from clicking the button again why the request is still processing
   const [loading, setLoading] = useState(false);
+  // to prevent display of null values while fetching bill data
+  const [billLoading, setBillLoading] = useState(true);
+  const [billData, setBillData] = useState<BillData | null>(null);
 
-  const [billAmount, setBillAmount] = useState(200.00);
+  const [pdfLoading, setPdfLoading] = useState(false);
 
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
   const { height } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
+  
+  // This will fetch the current bills data to display due data and amount due, as well as check invoice status
+  const fetchBillData = async () => {
+    setBillLoading(true);
+    try{
 
-  // Calculate the current billing period and set payment due date.
-  const today = new Date(); // Get todays date
-  let paymentDate = setDate(today, 2); // Start by setting due date to 2nd of current month
+      // If valid token exists fetch the bill data from the backend
+      const access_token = await getToken();
+  
+      if( !access_token ){
+        Alert.alert("Session Expired", "Please log in again")
+        return;
+      }
 
-  // Actual KUB app generates roughly 12th or 13th of the month so using that as reference we can say if todays date is after those, then change the due date to next month as its a new billing cycle.
-  if( today.getDate() >= 12 ){
-    paymentDate = addMonths(paymentDate, 1); // add 1 month
+      const response = await fetch(
+        "http://localhost:3000/api/billing/getCurrentBill",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${access_token}`
+          },
+        }
+      );
+
+      if( !response.ok ){
+        Alert.alert("Error", "Failed to fetch billing data");
+        return;
+      }
+      const data  = await response.json();
+      setBillData(data);
+    } catch (error:any) {
+        Alert.alert("Error", error.message);
+    }
+    finally{
+      setBillLoading(false);
+    }
   }
 
-  // Format the date (Ex: Mar 2, 2026)
-  const paymentDateFormatted = format(paymentDate, "MMM d, yyyy");
+  // use effect to run the fetch each time we navigate back to screen. This is to keep info up to date
+  // Useful if user pays through one time payment button in programs route
+  useFocusEffect(
+    useCallback(() => {
+      fetchBillData();
+    }, [])
+  );
 
-  // invoke the backend API to handle the subscription payment request
-  const handleSubscription = async () => {
+  // Since the due date can be null if they dont have previous invoice we account for that here
+  const formattedDueDate = billData?.dueDate
+    ? format(new Date(billData.dueDate), "MMM dd, yyyy")
+    : "-";
+
+  // invoke the backend API to handle the payment request
+  const handlePayment = async () => {
     try {
       // button has been clicked so lock it from being clicked again
       setLoading(true);
 
-      // pass the email of the user to the backend for customer creation/subscription invocation
+      const access_token = await getToken();
+
+      if( !access_token ){
+        Alert.alert("Session Expired", "Please log in again")
+        return;
+      }
+
+      // get the client secret for the open invoice
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "http://localhost:3000/api/billing/newCustomerSubscription",
+        "http://localhost:3000/api/billing/payInvoice",
         {
           method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ email: "testuser@gmail.com"}),
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${access_token}`
+          },
         }
       );
 
-      // obtain the clientSecret from successful subscription creation
+      if( !response.ok ){
+        Alert.alert("Error", "Failed to initialize payment");
+      }
+
+      // obtain the clientSecret from successful intent creation
       const { clientSecret } = await response.json();
 
       // output error message and return if clientSecret is not obtained
@@ -80,8 +149,8 @@ export default function Billing() {
       if( paymentError ){
         Alert.alert("Payment failed", paymentError.message);
       }else{
-        Alert.alert("Payment Successful", "Thank you for your payment.");
-        setBillAmount(0);
+        // refresh the bill data to reflect the payment
+        await fetchBillData();
       }
     // catch any other errors not handled explicity
     }catch( error: any) {
@@ -90,6 +159,32 @@ export default function Billing() {
     } finally {
       setLoading(false);
     }
+  }
+
+  // Function to open the invoice
+  const openPDF = async () => {
+      try {
+          setPdfLoading(true);
+          if( !billData?.invoicePdf ){
+              Alert.alert("Error", "No invoice available");
+              return;
+          }
+          await Linking.openURL(billData.invoicePdf);
+      } catch (error: any) {
+          Alert.alert("Error", error.message);
+      } finally {
+          setPdfLoading(false);
+      }
+  }
+
+  // Show a loading indicator if waiting on api call or if we have no billData yet
+  // Should only run on first instance
+  if( billLoading && !billData ){
+    return (
+        <SafeAreaView className="flex-1 bg-primary items-center justify-center">
+            <ActivityIndicator size="large" color="#3377F4" />
+        </SafeAreaView>
+    );
   }
   return (
     <SafeAreaView className="flex-1 bg-primary">
@@ -124,13 +219,13 @@ export default function Billing() {
             <Text className="text-text_main font-bold text-3xl text-left w-full p-6 mt-4">Welcome</Text>
               <View className="flex-row justify-between w-full mt-4 px-20">
                 <Text className="text-text_main font-sans text-base">Payment Due</Text>
-                <Text className="text-text_main font-bold text-base">{paymentDateFormatted}</Text>
+                <Text className="text-text_main font-bold text-base">{formattedDueDate}</Text>
               </View>
           </View>
 
           <View className="w-full items-center">
             <Text className="text-text_main font-bold text-7xl">
-              ${billAmount.toFixed(2)}
+              ${billData ? billData.totalAmountDue.toFixed(2) : '0.00'}
             </Text>
 
             <View className="items-center px-6 py-3 rounded-xl mt-6">
@@ -143,9 +238,11 @@ export default function Billing() {
           <View className="w-full px-8">
             {/* create the Subscribe button */}
             <TouchableOpacity
-              onPress={handleSubscription}
-              disabled={loading} // disables the button while request is processing
-              className="bg-active_icon p-4 rounded-xl w-full items-center mb-2"
+              onPress={handlePayment}
+              disabled={loading || billData?.status !== "open"} // disables the button while request is processing
+              className={` p-4 rounded-xl w-full items-center mb-2 ${
+                billData?.status === "open" ? "bg-active_icon" : "bg-active_icon/50"
+              }`}
             >
               {/* if the request is current processing, output processing, otherwise output subscribe */}
               <Text className="text-text_main font-semibold text-xl">
@@ -153,10 +250,13 @@ export default function Billing() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity className="p-4 rounded-xl w-full items-center mb-8">
-              {/* if the request is current processing, output processing, otherwise output subscribe */}
+            <TouchableOpacity 
+              onPress={openPDF}
+              disabled={pdfLoading || !billData?.invoicePdf}
+              className="p-4 rounded-xl w-full items-center mb-8"
+            >
               <Text className="text-text_main font-semibold text-xl">
-                VIEW BILL
+                {pdfLoading ? "Loading..." : "VIEW BILL"}
               </Text>
             </TouchableOpacity>
           </View>

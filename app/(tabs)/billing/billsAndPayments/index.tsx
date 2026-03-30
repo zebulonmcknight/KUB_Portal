@@ -3,11 +3,9 @@ import { icons } from "@/constants/icons";
 import { billingData } from "@/constants/mockBillingData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { format, parseISO } from "date-fns";
-import * as FileSystem from "expo-file-system/legacy";
 import { useRouter } from "expo-router";
-import * as Sharing from "expo-sharing";
 import { useState } from "react";
-import { Alert, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, Linking, Text, TouchableOpacity, View } from "react-native";
 
 export default function BillsAndPayments() {
    const router = useRouter();
@@ -18,10 +16,7 @@ export default function BillsAndPayments() {
    const openPDF = async (url:string, id: string) => {
       try{
          setLoadingId(id); // Set only that specific ID to a loading state so it doesnt affect others
-         if( !FileSystem.cacheDirectory ) return;
-         const localUri = FileSystem.cacheDirectory + "invoice.pdf"; // Set the location to download the pdf
-         await FileSystem.downloadAsync(url, localUri); // download pdf at that url to the localUri
-         await Sharing.shareAsync(localUri); // Opens the sharing menu on device
+         await Linking.openURL(url);
       } catch (error:any){
          Alert.alert("Error", error.message);
       }

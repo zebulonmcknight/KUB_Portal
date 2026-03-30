@@ -78,14 +78,14 @@ export const reportWaterOrWasteUsage = async (
 export const getCustomerInvoice = async ( stripeId: string ) => {
 
     // Get the most recent open invoice
-    const openInvoices = await stripe.invoices.list({customer: stripeId, status: 'open', limit: 1 })
+    const openInvoices = await stripe.invoices.list({customer: stripeId, status: 'open', limit: 1, expand: ["data.confirmation_secret"]});
     if( openInvoices.data.length > 0 ){
         return { invoice: openInvoices.data[0], status: 'open' }; // if it exists return the invoice
     }
     
     // Will run this if no open invoice, get the most recent paid
-    const paidInvoices = await stripe.invoices.list({customer: stripeId, status: 'paid', limit: 1 })
-    if( paidInvoices ){
+    const paidInvoices = await stripe.invoices.list({customer: stripeId, status: 'paid', limit: 1});
+    if( paidInvoices.data.length > 0 ){
         return { invoice: paidInvoices.data[0], status: 'paid' };
     }
 

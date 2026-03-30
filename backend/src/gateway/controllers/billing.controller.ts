@@ -3,7 +3,11 @@
 import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import { supabase } from '../../database/supabase';
-import { attachPaymentMethod, createCustomer, createCustomerSubscription, disableAutoPay, enableAutoPay, getCustomerInvoice, reportElectricUsage, reportWaterOrWasteUsage } from '../../services/stripeService';
+import {
+    attachPaymentMethod, createCustomer, createCustomerSubscription,
+    disableAutoPay, enableAutoPay,
+    getCustomerInvoice, reportElectricUsage, reportWaterOrWasteUsage
+} from '../../services/stripeService';
 dotenv.config();
 
 // for demo purposes of creating a customer and setting up a subscription
@@ -143,7 +147,8 @@ export const getCurrentBill = async (req: Request, res: Response) => {
                 dueDate: null,
                 isAutoPay: autopayEnabled,
                 status: 'none',
-                lineItems: []
+                lineItems: [],
+                invoicePdf: null
             });
         }
 
@@ -167,7 +172,8 @@ export const getCurrentBill = async (req: Request, res: Response) => {
             dueDate,
             isAutoPay: autopayEnabled,
             status,
-            lineItems
+            lineItems,
+            invoicePdf: invoice?.invoice_pdf ?? null
         });
     }
     // If any uncaught error arise
@@ -320,5 +326,45 @@ export const submitUsage = async (req: Request, res: Response) => {
     catch( error: any ){
         console.error(error);
         return res.status(500).json({ error: 'Failed to submit usage' });
+    }
+}
+
+export const payInvoice = async ( req: Request, res: Response ) => {
+    try{
+        const userId = (req as any).userId;
+
+        // get the stripe id for the customer, used for paymentIntent
+        const { data, error: queryError } = await supabase
+            .from("billing_profiles")
+            .select("stripe_customer_id")
+            .eq("user_id", userId)
+            .single()
+
+        if( queryError ){
+            return res.status(500).json({ error: queryError.message })
+        }
+        if( !data ){
+            return res.status(404).json({ error: "User not found" })
+        }
+
+        // get their latest invoice
+        const { invoice, status } = await getCustomerInvoice(data.stripe_customer_id);
+
+        // if they dont have one open no need to pay
+        if( status !== "open" || !invoice ){
+            return res.status(400).json({ error: "No open invoice" });
+        }
+
+        const clientSecret = invoice.confirmation_secret?.client_secret;
+
+        if( !clientSecret ){
+            return res.status(500).json({ error: 'No client secret found on invoice' });
+        }
+
+        return res.status(200).json({ clientSecret });
+
+    } catch( error: any ){
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to pay invoice' });
     }
 }

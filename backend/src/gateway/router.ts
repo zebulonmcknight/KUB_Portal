@@ -5,7 +5,7 @@ import { Router } from 'express';
 // dictate that we choose one format and stick with it.  
 import { profile } from './controllers/account.controller';
 import * as authController from './controllers/auth.controller';
-import { cancelAutoPay, enrollAutoPay, getCurrentBill, newCustomerSubscription, submitUsage } from './controllers/billing.controller';
+import { cancelAutoPay, enrollAutoPay, getCurrentBill, newCustomerSubscription, payInvoice, submitUsage } from './controllers/billing.controller';
 import { get_user_by_email } from './controllers/user.controller';
 import { checkJwt, extractUserID } from './middleware/auth';
 
@@ -26,6 +26,7 @@ router.post('/billing/newCustomerSubscription', checkJwt, extractUserID, newCust
 router.post('/billing/autopay/enroll', checkJwt, extractUserID, enrollAutoPay);
 router.post('/billing/autopay/cancel', checkJwt, extractUserID, cancelAutoPay);
 router.post('/billing/submitUsage', checkJwt, extractUserID, submitUsage);
+router.post('/billing/payInvoice', checkJwt, extractUserID, payInvoice);
 
 router.post('/account/profile', profile); 
 

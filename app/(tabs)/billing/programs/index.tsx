@@ -1,3 +1,4 @@
+import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useRouter } from "expo-router";
@@ -31,45 +32,58 @@ export default function Programs() {
    const { initPaymentSheet, presentPaymentSheet } = useStripe();
    // to prevent the user from clicking the button again why the request is still processing
    const [loading, setLoading] = useState(false);
-   const [billAmount, setBillAmount] = useState(200.00);
    const router = useRouter();
+   const {getToken} = useAuth();
 
-   // invoke the backend API to handle the subscription payment request
-   const handleSubscription = async () => {
+   // invoke the backend API to handle the payment request
+   const handlePayment = async () => {
       try {
          // button has been clicked so lock it from being clicked again
          setLoading(true);
 
-         // pass the email of the user to the backend for customer creation/subscription invocation
+         const access_token = await getToken();
+
+         if( !access_token ){
+         Alert.alert("Session Expired", "Please log in again")
+         return;
+         }
+
+         // get the client secret for the open invoice
          const response = await fetch(
             // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-            "http://localhost:3000/api/billing/newCustomerSubscription",
+            "http://localhost:3000/api/billing/payInvoice",
             {
                method: "POST",
-               headers: {"Content-Type": "application/json"},
-               body: JSON.stringify({ email: "testuser@gmail.com"}),
+               headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${access_token}`
+               },
             }
          );
 
-         // obtain the clientSecret from successful subscription creation
+         if( !response.ok ){
+         Alert.alert("Error", "Failed to initialize payment");
+         }
+
+         // obtain the clientSecret from successful intent creation
          const { clientSecret } = await response.json();
 
          // output error message and return if clientSecret is not obtained
          if( !clientSecret ){
-            Alert.alert("Error", "No client secret returned from server");
-            return;
+         Alert.alert("Error", "No client secret returned from server");
+         return;
          }
 
          // initialize the payment screen tied to the current customer requesting payment services
          const { error: initError } = await initPaymentSheet({
-            merchantDisplayName: "KUB",
-            paymentIntentClientSecret: clientSecret,
+         merchantDisplayName: "KUB",
+         paymentIntentClientSecret: clientSecret,
          });
 
          // if the payment screen cannot be initialized for any reason, output error message and return
          if( initError ){
-            Alert.alert("Error", initError.message);
-            return;
+         Alert.alert("Error", initError.message);
+         return;
          }
 
          // actually present the initialized payment screen to the user
@@ -78,10 +92,7 @@ export default function Programs() {
          // if an error returns during the payment process, output Payment failed along with the error message
          // if there are no errors returned, the payment was successful and the subscription is officially active
          if( paymentError ){
-            Alert.alert("Payment failed", paymentError.message);
-         }else{
-            Alert.alert("Payment Successful", "Thank you for your payment.");
-            setBillAmount(0);
+         Alert.alert("Payment failed", paymentError.message);
          }
       // catch any other errors not handled explicity
       }catch( error: any) {
@@ -107,12 +118,12 @@ export default function Programs() {
                onPress={() => router.push("/(tabs)/billing/programs/autoPay")}
             />
             {/* Add strip functionality here as it opens the same page on billing/index. Not using the Program card as it has unique properties */}
-            <TouchableOpacity activeOpacity={1} onPress={handleSubscription} className="bg-section rounded-lg overflow-hidden">
+            <TouchableOpacity activeOpacity={1} onPress={handlePayment} className="bg-section rounded-lg overflow-hidden">
                <Text className="p-4 font-sans text-text_main text-2xl tracking-wide">One Time Payment</Text>
                <Text className="px-4 pb-4 font-sans text-text_main text-lg tracking-wide">
                   Securely save your banking information to conveniently make payments.
                </Text>
-               <TouchableOpacity onPress={handleSubscription} className="border-t items-center py-5">
+               <TouchableOpacity onPress={handlePayment} className="border-t items-center py-5">
                   <Text className="font-bold text-text_main tracking-widest">Pay Now</Text>
                </TouchableOpacity>
             </TouchableOpacity>
