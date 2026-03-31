@@ -2,19 +2,18 @@ import CustomAlert from "@/components/customAlert";
 import FloatingInput from "@/components/floatingInput";
 import ScreenHeader from "@/components/headerStyle";
 import { useRegistration } from "@/components/registrationContext";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function CreateLogin() {
-
   const router = useRouter(); // Allows us to send user to other pages.
 
   const [showHeaderAlert, setShowHeaderAlert] = useState(false); // State to control the visibility of the custom alert at the header
   const [showAccountAlert, setShowAccountAlert] = useState(false); // State to control the visibility of the alert inside the account number text box
   const [showError, setShowError] = useState(false); // State to control the visibility of the alert when info entered doesn't match an account on record.
-  
+
   // This is used to track what the user is typing
   const { accountNumber, setAccountNumber } = useRegistration();
   const { zipCode, setZipCode } = useRegistration();
@@ -36,36 +35,41 @@ export default function CreateLogin() {
 
   // Function to send the information the user entered to the backend to verify that they are an existing customer
   const checkInfo = async () => {
-    try{
-
-      const response = await fetch('http://localhost:3000/api/auth/verifyKubAccount', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+    try {
+      const response = await fetch(
+        "http://192.168.1.198:3000/api/auth/verifyKubAccount",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
             account_number: accountNumber,
             ssn_last4: ssn,
-            zip: zipCode
-        }),
-      });
+            zip: zipCode,
+          }),
+        },
+      );
 
       // Make sure we have a valid response
-      if( !response.ok ){
+      if (!response.ok) {
         throw new Error();
       }
 
       router.push("/(auth)/createLogin/contactEmail"); // Send the user to the next page
-    }
-    catch(error: any) {
+    } catch (error: any) {
       setShowError(true);
     }
   };
 
   return (
     <View className="flex-1 justify-center">
-      <ScreenHeader title="Create Login" onPress={() => setShowHeaderAlert(true)} />
+      <ScreenHeader
+        title="Create Login"
+        onPress={() => setShowHeaderAlert(true)}
+      />
       <View className="flex-1 justify-start px-6 pt-4">
         <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
-          Register your account to view and pay your bill, monitor usage, and more.
+          Register your account to view and pay your bill, monitor usage, and
+          more.
         </Text>
 
         {/* Use input component to make input boxes for the information we need from the user */}
@@ -78,17 +82,26 @@ export default function CreateLogin() {
           keyType="next"
           onSubmitEditing={() => zipCodeRef.current?.focus()}
           alertIcon={
-            <TouchableOpacity onPress={() => setShowAccountAlert(true)} className="p-4">
-              <MaterialIcons name="info" size={24} color="white"/>
+            <TouchableOpacity
+              onPress={() => setShowAccountAlert(true)}
+              className="p-4"
+            >
+              <MaterialIcons name="info" size={24} color="white" />
             </TouchableOpacity>
           }
         />
         <CustomAlert
           message={
             <Text>
-              Your account number appears in the upper right corner of your paper bill, or on the Summary and History and Manage Account screens when you log into the KUB website. It is 10 digits long.
-              If your account number is not recognized, please call customer service at{' '}
-              <Text onPress={ () => Linking.openURL(`tel:${8655242911}`)} className="underline">
+              Your account number appears in the upper right corner of your
+              paper bill, or on the Summary and History and Manage Account
+              screens when you log into the KUB website. It is 10 digits long.
+              If your account number is not recognized, please call customer
+              service at{" "}
+              <Text
+                onPress={() => Linking.openURL(`tel:${8655242911}`)}
+                className="underline"
+              >
                 (865) 524-2911
               </Text>
               .
@@ -110,7 +123,8 @@ export default function CreateLogin() {
         />
 
         <Text className="text-text_main font-sans text-base tracking-wide pt-6 w-full">
-          Please confirm the last 4 digits of your Social Security (or Tax ID) Number.
+          Please confirm the last 4 digits of your Social Security (or Tax ID)
+          Number.
         </Text>
 
         <FloatingInput
@@ -126,11 +140,10 @@ export default function CreateLogin() {
         <TouchableOpacity
           disabled={!isReady}
           className={`mt-6 rounded-xl items-center ${
-            isReady ? 'bg-[#3377F4]' : 'bg-[#3377F4]/50'
+            isReady ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
           }`}
           onPress={checkInfo}
         >
-
           {/* NEED TO CONNECT THIS TO AUTH0!!!!! */}
           {/* Have to make sure they are a customer before allowing them to continue further. */}
           <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
@@ -143,11 +156,18 @@ export default function CreateLogin() {
       <CustomAlert
         message={
           <Text>
-            You must already have an active account with Knoxville Utilities Board before signing up to use our online services. If you are not yet a KUB customer, please visit{' '}
-            <Text onPress={ () => Linking.openURL("https://www.kub.org/start-stop-service")} className="underline">
+            You must already have an active account with Knoxville Utilities
+            Board before signing up to use our online services. If you are not
+            yet a KUB customer, please visit{" "}
+            <Text
+              onPress={() =>
+                Linking.openURL("https://www.kub.org/start-stop-service")
+              }
+              className="underline"
+            >
               www.kub.org/start-stop-service
-            </Text>
-            {' '}to get started.
+            </Text>{" "}
+            to get started.
           </Text>
         }
         visible={showHeaderAlert}
@@ -157,7 +177,8 @@ export default function CreateLogin() {
       <CustomAlert
         message={
           <Text>
-            There was a problem registering your account. Please try again later, or call 865-524-2911 for assistance if the problem persists.
+            There was a problem registering your account. Please try again
+            later, or call 865-524-2911 for assistance if the problem persists.
           </Text>
         }
         visible={showError}

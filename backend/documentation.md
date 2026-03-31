@@ -3,6 +3,7 @@
 ## Setup
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) v18 or higher
 - npm
 
@@ -14,16 +15,16 @@ npm install
 npm run dev
 ```
 
-The server runs on `http://localhost:3000`. Confirm it's up by hitting the health check:
+The server runs on `http://192.168.1.198:3000`. Confirm it's up by hitting the health check:
 
 ```bash
-curl http://localhost:3000/health
+curl http://192.168.1.198:3000/health
 ```
 
 ### Environment Variables
 
-You will need a `.env` file in the `backend/` directory. 
-It will need to contain: 
+You will need a `.env` file in the `backend/` directory.
+It will need to contain:
 
 ```
 PORT=3000
@@ -44,7 +45,7 @@ AUTH0_AUDIENCE=
 
 AUTH0_CLIENT_ID=
 
-AUTH0_CLIENT_SECRET= 
+AUTH0_CLIENT_SECRET=
 ```
 
 All of these values should be retrievable from their respective providers platforms, but some are hard to find through all the menus. Reach out if you need assistance finding any environment variables.
@@ -59,19 +60,19 @@ Creates a new user account and returns an access token.
 
 **Request Body**
 
-| Field | Type | Required |
-|---|---|---|
-| `email` | string | yes |
-| `password` | string | yes |
-| `account_number` | string | yes |
-| `first_name` | string | no |
-| `last_name` | string | no |
-| `phone` | string | no |
+| Field            | Type   | Required |
+| ---------------- | ------ | -------- |
+| `email`          | string | yes      |
+| `password`       | string | yes      |
+| `account_number` | string | yes      |
+| `first_name`     | string | no       |
+| `last_name`      | string | no       |
+| `phone`          | string | no       |
 
 **Example**
 
 ```javascript
-const response = await fetch('http://localhost:3000/api/auth/signup', {
+const response = await fetch('http://192.168.1.198:3000/api/auth/signup', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -101,10 +102,10 @@ const data = await response.json();
 
 **Error Responses**
 
-| Status | Cause |
-|---|---|
-| 400 | Missing email or password |
-| 401 | Signup failed (e.g. email already exists, weak password) |
+| Status | Cause                                                    |
+| ------ | -------------------------------------------------------- |
+| 400    | Missing email or password                                |
+| 401    | Signup failed (e.g. email already exists, weak password) |
 
 ---
 
@@ -114,21 +115,21 @@ Authenticates an existing user and returns an access token.
 
 **Request Body**
 
-| Field | Type | Required |
-|---|---|---|
-| `email` | string | yes |
-| `password` | string | yes |
+| Field      | Type   | Required |
+| ---------- | ------ | -------- |
+| `email`    | string | yes      |
+| `password` | string | yes      |
 
 **Example**
 
 ```javascript
-const response = await fetch('http://localhost:3000/api/auth/login', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const response = await fetch("http://192.168.1.198:3000/api/auth/login", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    email: 'user@example.com',
-    password: 'Password123!'
-  })
+    email: "user@example.com",
+    password: "Password123!",
+  }),
 });
 
 const data = await response.json();
@@ -146,10 +147,10 @@ const data = await response.json();
 
 **Error Responses**
 
-| Status | Cause |
-|---|---|
-| 400 | Missing email or password |
-| 401 | Invalid credentials |
+| Status | Cause                     |
+| ------ | ------------------------- |
+| 400    | Missing email or password |
+| 401    | Invalid credentials       |
 
 ---
 
@@ -158,10 +159,9 @@ const data = await response.json();
 Store the access token after login/signup and attach it to subsequent authenticated requests as a Bearer token. Otherwise middleware may block your request.
 
 ```javascript
-const response = await fetch('http://localhost:3000/api/some/endpoint', {
+const response = await fetch("http://192.168.1.198:3000/api/some/endpoint", {
   headers: {
-    'Authorization': `Bearer ${access_token}`
-  }
+    Authorization: `Bearer ${access_token}`,
+  },
 });
 ```
-

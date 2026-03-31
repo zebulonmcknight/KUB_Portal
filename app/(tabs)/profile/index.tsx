@@ -1,10 +1,13 @@
+import { icons } from "@/constants/icons";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Animated,
+  Image,
   KeyboardAvoidingView,
+  Linking,
   Modal,
   Platform,
   SafeAreaView,
@@ -285,6 +288,10 @@ export default function ProfileScreen({
     close();
   };
 
+  const handlePushNotifications = () => {
+    Linking.openSettings();
+  };
+
   const saveEmail = () => {
     const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailDraft);
     if (!valid) {
@@ -319,16 +326,22 @@ export default function ProfileScreen({
   const router = useRouter();
   const handleStorageCleanup = async () => {
     // On logout delete the stored keys
-    await SecureStore.deleteItemAsync('access_token');
-    await SecureStore.deleteItemAsync('token_expiry');
+    await SecureStore.deleteItemAsync("access_token");
+    await SecureStore.deleteItemAsync("token_expiry");
 
     // Redirect to login page
-    router.replace("/(auth)/login")
-  }
+    router.replace("/(auth)/login");
+  };
   const handleLogout = () => {
     Alert.alert("Log Out", "Are you sure you want to log out?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Log Out", style: "destructive", onPress: () => {handleStorageCleanup()} },
+      {
+        text: "Log Out",
+        style: "destructive",
+        onPress: () => {
+          handleStorageCleanup();
+        },
+      },
     ]);
   };
 
@@ -354,7 +367,7 @@ export default function ProfileScreen({
         </View>
 
         {/* Settings rows */}
-        <View style={styles.section}>
+        <View>
           <RowButton
             label="Mailing Preference"
             value={mailing === "paperless" ? "Paperless" : "Physical Mail"}
@@ -370,35 +383,55 @@ export default function ProfileScreen({
 
         <Text style={styles.sectionHeader}>Contacts &amp; Notifications</Text>
 
-        <View style={styles.section}>
+        <View>
           <RowButton
-            icon={<EmailIcon />}
+            icon={
+              <Image source={icons.email} style={{ width: 18, height: 18 }} />
+            }
             label="Primary Email"
             value={email}
             onPress={() => open("email")}
           />
           <Divider />
           <RowButton
-            icon={<PhoneIcon />}
+            icon={
+              <Image source={icons.phone} style={{ width: 18, height: 18 }} />
+            }
             label="Phone"
             value={phone}
             onPress={() => open("phone")}
           />
           <Divider />
           <RowButton
-            icon={<ContactsIcon />}
+            icon={
+              <Image
+                source={icons.phonebook}
+                style={{ width: 18, height: 18 }}
+              />
+            }
             label="Alternate Contacts"
             chevron={false}
           />
           <Divider />
           <RowButton
-            icon={<BellIcon />}
+            icon={
+              <Image
+                source={icons.notifications}
+                style={{ width: 18, height: 18 }}
+              />
+            }
             label="Push Notifications"
             chevron={false}
+            onPress={handlePushNotifications}
           />
           <Divider />
           <RowButton
-            icon={<FeedbackIcon />}
+            icon={
+              <Image
+                source={icons.feedback}
+                style={{ width: 18, height: 18 }}
+              />
+            }
             label="App Feedback"
             onPress={() => open("feedback")}
           />
@@ -410,7 +443,10 @@ export default function ProfileScreen({
           onPress={handleLogout}
           activeOpacity={0.7}
         >
-          <LogoutIcon />
+          <Image
+            source={icons.logout}
+            style={{ width: 18, height: 18, tintColor: "#e05c5c" }}
+          />
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
@@ -458,7 +494,7 @@ export default function ProfileScreen({
         <Text style={modalStyles.fieldLabel}>New Password</Text>
         <TextInput
           style={modalStyles.textInput}
-          placeholder="Min. 8 characters"
+          placeholder="Min. 12 characters"
           placeholderTextColor="#4a6080"
           secureTextEntry
           value={passwordDraft}

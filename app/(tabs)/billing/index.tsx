@@ -6,7 +6,17 @@ import { format } from "date-fns";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, Image, Linking, ScrollView, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
+import {
+  ActivityIndicator,
+  Alert,
+  Image,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Define the shape of what we receive from getCurrentBill
@@ -16,14 +26,13 @@ type BillData = {
   isAutoPay: boolean;
   status: string;
   lineItems: { service: string; units: number; amount: number }[];
-  invoicePdf: string | null
-}
+  invoicePdf: string | null;
+};
 
 export default function Billing() {
-
   // Gets the token from our auth context
   const { getToken } = useAuth();
-  
+
   const router = useRouter();
   // paymentSheet used for card processing/payment confirmation
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
@@ -38,17 +47,16 @@ export default function Billing() {
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
   const { height } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
-  
+
   // This will fetch the current bills data to display due data and amount due, as well as check invoice status
   const fetchBillData = async () => {
     setBillLoading(true);
-    try{
-
+    try {
       // If valid token exists fetch the bill data from the backend
       const access_token = await getToken();
-  
-      if( !access_token ){
-        Alert.alert("Session Expired", "Please log in again")
+
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
         return;
       }
 
@@ -58,31 +66,30 @@ export default function Billing() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${access_token}`
+            Authorization: `Bearer ${access_token}`,
           },
-        }
+        },
       );
 
-      if( !response.ok ){
+      if (!response.ok) {
         Alert.alert("Error", "Failed to fetch billing data");
         return;
       }
-      const data  = await response.json();
+      const data = await response.json();
       setBillData(data);
-    } catch (error:any) {
-        Alert.alert("Error", error.message);
-    }
-    finally{
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
       setBillLoading(false);
     }
-  }
+  };
 
   // use effect to run the fetch each time we navigate back to screen. This is to keep info up to date
   // Useful if user pays through one time payment button in programs route
   useFocusEffect(
     useCallback(() => {
       fetchBillData();
-    }, [])
+    }, []),
   );
 
   // Since the due date can be null if they dont have previous invoice we account for that here
@@ -98,8 +105,8 @@ export default function Billing() {
 
       const access_token = await getToken();
 
-      if( !access_token ){
-        Alert.alert("Session Expired", "Please log in again")
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
         return;
       }
 
@@ -111,12 +118,12 @@ export default function Billing() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${access_token}`
+            Authorization: `Bearer ${access_token}`,
           },
-        }
+        },
       );
 
-      if( !response.ok ){
+      if (!response.ok) {
         Alert.alert("Error", "Failed to initialize payment");
       }
 
@@ -124,7 +131,7 @@ export default function Billing() {
       const { clientSecret } = await response.json();
 
       // output error message and return if clientSecret is not obtained
-      if( !clientSecret ){
+      if (!clientSecret) {
         Alert.alert("Error", "No client secret returned from server");
         return;
       }
@@ -136,7 +143,7 @@ export default function Billing() {
       });
 
       // if the payment screen cannot be initialized for any reason, output error message and return
-      if( initError ){
+      if (initError) {
         Alert.alert("Error", initError.message);
         return;
       }
@@ -146,44 +153,44 @@ export default function Billing() {
 
       // if an error returns during the payment process, output Payment failed along with the error message
       // if there are no errors returned, the payment was successful and the subscription is officially active
-      if( paymentError ){
+      if (paymentError) {
         Alert.alert("Payment failed", paymentError.message);
-      }else{
+      } else {
         // refresh the bill data to reflect the payment
         await fetchBillData();
       }
-    // catch any other errors not handled explicity
-    }catch( error: any) {
+      // catch any other errors not handled explicity
+    } catch (error: any) {
       Alert.alert("Error", error.message);
-    // regardless of if errors are caught or not, reset the button so it can be clicked once more
+      // regardless of if errors are caught or not, reset the button so it can be clicked once more
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   // Function to open the invoice
   const openPDF = async () => {
-      try {
-          setPdfLoading(true);
-          if( !billData?.invoicePdf ){
-              Alert.alert("Error", "No invoice available");
-              return;
-          }
-          await Linking.openURL(billData.invoicePdf);
-      } catch (error: any) {
-          Alert.alert("Error", error.message);
-      } finally {
-          setPdfLoading(false);
+    try {
+      setPdfLoading(true);
+      if (!billData?.invoicePdf) {
+        Alert.alert("Error", "No invoice available");
+        return;
       }
-  }
+      await Linking.openURL(billData.invoicePdf);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setPdfLoading(false);
+    }
+  };
 
   // Show a loading indicator if waiting on api call or if we have no billData yet
   // Should only run on first instance
-  if( billLoading && !billData ){
+  if (billLoading && !billData) {
     return (
-        <SafeAreaView className="flex-1 bg-primary items-center justify-center">
-            <ActivityIndicator size="large" color="#3377F4" />
-        </SafeAreaView>
+      <SafeAreaView className="flex-1 bg-primary items-center justify-center">
+        <ActivityIndicator size="large" color="#3377F4" />
+      </SafeAreaView>
     );
   }
   return (
@@ -192,46 +199,60 @@ export default function Billing() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{paddingBottom: tabBarHeight}}
+        contentContainerStyle={{ paddingBottom: tabBarHeight }}
       >
-        <View className="w-full justify-between" style={{height: height * .55}}>
+        <View
+          className="w-full justify-between"
+          style={{ height: height * 0.55 }}
+        >
           {/* Get the image to take up 60% of screen and use absolute so that it doesnt affect other components. Doing 60% to blend image into background */}
-          <Image 
+          <Image
             source={require("@/assets/images/mountains.jpg")}
             resizeMode="cover" // Will zoom in the image until it fits that specified size (60% in our case).
             className="top-0 w-full absolute h-full"
             style={{
-              transform: [{ translateY: -height * .07}]
+              transform: [{ translateY: -height * 0.07 }],
             }}
           />
 
           {/* Add a gradient to same area that image takes up. This helps blend the image to the primary background. */}
           <LinearGradient
-            colors={ ["rgba(5, 139, 235, 1)", "rgba(5, 139, 235, .6)", "rgba(22, 44, 83, 1)"] }
+            colors={[
+              "rgba(5, 139, 235, 1)",
+              "rgba(5, 139, 235, .6)",
+              "rgba(22, 44, 83, 1)",
+            ]}
             locations={[0, 0.2, 1]}
             start={{ x: 0, y: 0 }}
-            end={{x: 0, y: .8}}
-
+            end={{ x: 0, y: 0.8 }}
             className="absolute top-0 w-full h-full"
           />
 
           <View>
-            <Text className="text-text_main font-bold text-3xl text-left w-full p-6 mt-4">Welcome</Text>
-              <View className="flex-row justify-between w-full mt-4 px-20">
-                <Text className="text-text_main font-sans text-base">Payment Due</Text>
-                <Text className="text-text_main font-bold text-base">{formattedDueDate}</Text>
-              </View>
+            <Text className="text-text_main font-bold text-3xl text-left w-full p-6 mt-4">
+              Welcome
+            </Text>
+            <View className="flex-row justify-between w-full mt-4 px-20">
+              <Text className="text-text_main font-sans text-base">
+                Payment Due
+              </Text>
+              <Text className="text-text_main font-bold text-base">
+                {formattedDueDate}
+              </Text>
+            </View>
           </View>
 
           <View className="w-full items-center">
             <Text className="text-text_main font-bold text-7xl">
-              ${billData ? billData.totalAmountDue.toFixed(2) : '0.00'}
+              ${billData ? billData.totalAmountDue.toFixed(2) : "0.00"}
             </Text>
 
             <View className="items-center px-6 py-3 rounded-xl mt-6">
               {/* I added a slight dark background here like the blurred part in your image! */}
               <Text className="text-text_main text-lg">200 W Hill Ave</Text>
-              <Text className="text-inactive_text text-lg">Account 8764872181</Text>
+              <Text className="text-inactive_text text-lg">
+                Account 8764872181
+              </Text>
             </View>
           </View>
 
@@ -241,7 +262,9 @@ export default function Billing() {
               onPress={handlePayment}
               disabled={loading || billData?.status !== "open"} // disables the button while request is processing
               className={` p-4 rounded-xl w-full items-center mb-2 ${
-                billData?.status === "open" ? "bg-active_icon" : "bg-active_icon/50"
+                billData?.status === "open"
+                  ? "bg-active_icon"
+                  : "bg-active_icon/50"
               }`}
             >
               {/* if the request is current processing, output processing, otherwise output subscribe */}
@@ -250,7 +273,7 @@ export default function Billing() {
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               onPress={openPDF}
               disabled={pdfLoading || !billData?.invoicePdf}
               className="p-4 rounded-xl w-full items-center mb-8"
@@ -263,36 +286,62 @@ export default function Billing() {
         </View>
 
         <View className="w-full">
-          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/billsAndPayments")} className="border-b border-section py-4 flex-row mx-4 items-center">
-            <Image source={icons.billing} style={{width: 18, height: 18}}/>
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/billing/billsAndPayments")}
+            className="border-b border-section py-4 flex-row mx-4 items-center"
+          >
+            <Image source={icons.billing} style={{ width: 18, height: 18 }} />
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bills & Payments
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/paymentMethod")} className="border-b border-section py-4 flex-row mx-4 items-center">
-            <Image source={icons.payment_method} style={{width: 18, height: 18}}/>
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/billing/paymentMethod")}
+            className="border-b border-section py-4 flex-row mx-4 items-center"
+          >
+            <Image
+              source={icons.payment_method}
+              style={{ width: 18, height: 18 }}
+            />
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Payment Method
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/programs")} className="border-b border-section py-4 flex-row mx-4 items-center">
-            <Image source={icons.payment_program} style={{width: 18, height: 18}}/>
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/billing/programs")}
+            className="border-b border-section py-4 flex-row mx-4 items-center"
+          >
+            <Image
+              source={icons.payment_program}
+              style={{ width: 18, height: 18 }}
+            />
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bill & Payment Programs
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => Linking.openURL("https://www.kub.org/fiber-shopping")} className="border-b border-section py-4 flex-row mx-4 items-center">
-            <Image source={icons.fiber} style={{width: 18, height: 18}}/>
+          <TouchableOpacity
+            onPress={() =>
+              Linking.openURL("https://www.kub.org/fiber-shopping")
+            }
+            className="border-b border-section py-4 flex-row mx-4 items-center"
+          >
+            <Image source={icons.fiber} style={{ width: 18, height: 18 }} />
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Fiber
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(tabs)/billing/promotions")} className="border-b border-section flex-row mx-4 py-4 items-center">
-            <Image source={icons.promotions} style={{width: 18, height: 18}} />
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/billing/promotions")}
+            className="border-b border-section flex-row mx-4 py-4 items-center"
+          >
+            <Image
+              source={icons.promotions}
+              style={{ width: 18, height: 18 }}
+            />
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Offers & Promotions
             </Text>

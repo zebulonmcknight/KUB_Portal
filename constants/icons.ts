@@ -17,22 +17,35 @@ import highlightedChatbot from "@/assets/icons/highlighted-chatbot-icon.png";
 import highlightedOutages from "@/assets/icons/highlighted-outages-icon.png";
 import highlightedProfile from "@/assets/icons/highlighted-profile-icon.png";
 
+import email from "@/assets/icons/email.png";
+import feedback from "@/assets/icons/feedback.png";
+import logout from "@/assets/icons/logout.png";
+import notifications from "@/assets/icons/notifications.png";
+import phone from "@/assets/icons/phone.png";
+import phonebook from "@/assets/icons/phonebook.png";
+
 export const icons = {
-   billing,
-   profile,
-   outages,
-   chatbot,
-   fiber,
-   invoice,
-   paid_bill,
-   payment_method,
-   payment_program,
-   promotions
+  billing,
+  profile,
+  outages,
+  chatbot,
+  fiber,
+  invoice,
+  paid_bill,
+  payment_method,
+  payment_program,
+  promotions,
+  email,
+  feedback,
+  logout,
+  notifications,
+  phone,
+  phonebook,
 };
 
 export const highlightedIcons = {
-   highlightedBilling,
-   highlightedChatbot,
-   highlightedOutages,
-   highlightedProfile
+  highlightedBilling,
+  highlightedChatbot,
+  highlightedOutages,
+  highlightedProfile,
 };
