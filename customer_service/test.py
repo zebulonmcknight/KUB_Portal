@@ -4,7 +4,7 @@ import time
 start = time.time()
 
 response = requests.post(
-    "http://localhost:8000/chat",
+    "https://snappy-orville-leathern.ngrok-free.dev/chat",
     json={"question": "How pay bill?"})
 
 end = time.time()

@@ -6,13 +6,13 @@ import {
   FlatList,
   KeyboardAvoidingView,
   Platform,
-  SafeAreaView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
 // --->Backend integration point for Kevin<---
@@ -30,7 +30,7 @@ async function sendMessageToBackend(userMessage: string): Promise<string> {
   );
 
   const data = await response.json();
-  return data.reply();
+  return data.response;
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -163,7 +163,8 @@ export default function QAChat() {
         ...prev,
         { id: (Date.now() + 1).toString(), from: "bot", text: reply },
       ]);
-    } catch {
+    } catch( error: any ) {
+      console.log(error.message);
       setMessages((prev) => [
         ...prev,
         {
