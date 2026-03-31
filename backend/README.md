@@ -27,25 +27,24 @@ echo "PORT=3000" > .env
 echo "NODE_ENV=development" > .env
 ```
 
-
-
 ### 4. Start Development Server
 
 ```bash
 npm run dev
 ```
 
-Server will start on `http://localhost:3000`
+Server will start on `http://192.168.1.198:3000`
 
 ### 5. Verify It's Running
 
-In a seperate terminal instance: 
+In a seperate terminal instance:
 
 ```bash
-curl http://localhost:3000/health
+curl http://192.168.1.198:3000/health
 ```
 
 Expected response:
+
 ```json
 {
   "status": "ok",

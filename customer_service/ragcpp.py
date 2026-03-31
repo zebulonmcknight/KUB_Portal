@@ -15,7 +15,7 @@ supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_PUBLIC_K
 if HF_TOKEN:= os.getenv("HF_TOKEN"):
     os.environ['HF_TOKEN'] = HF_TOKEN
 
-client = OpenAI(api_key="none", base_url="http://localhost:11434/v1")
+client = OpenAI(api_key="none", base_url="http://192.168.1.198:11434/v1")
 MODEL = os.getenv("MODEL")
 
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
