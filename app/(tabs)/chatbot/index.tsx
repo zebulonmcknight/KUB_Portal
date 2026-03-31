@@ -1,17 +1,17 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import React, { useEffect, useRef, useState } from "react";
 import {
-   ActivityIndicator,
-   Animated,
-   FlatList,
-   KeyboardAvoidingView,
-   Platform,
-   SafeAreaView,
-   StyleSheet,
-   Text,
-   TextInput,
-   TouchableOpacity,
-   View,
+  ActivityIndicator,
+  Animated,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import Svg, { Path } from "react-native-svg";
 
@@ -20,18 +20,17 @@ import Svg, { Path } from "react-native-svg";
 // Replace this function with your real API call.
 // Receives the user message string, returns the bot reply string.
 async function sendMessageToBackend(userMessage: string): Promise<string> {
-  // Example:
-  // const res = await fetch("https://your-api.com/chat", {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ message: userMessage }),
-  // });
-  // const data = await res.json();
-  // return data.reply;
+  const response = await fetch(
+    "https://snappy-orville-leathern.ngrok-free.dev/chat",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ question: userMessage }),
+    },
+  );
 
-  // ── Stub: simulates a delayed bot reply ──
-  await new Promise((r) => setTimeout(r, 1400));
-  return `You said: "${userMessage}"`;
+  const data = await response.json();
+  return data.reply();
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
