@@ -33,18 +33,15 @@ export default function CreateLogin() {
   const authCreation = async () => {
     try {
       // Make a call to our signup api sending the information from our registration context
-      const response = await fetch(
-        "http://192.168.1.198:3000/api/auth/signup",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email,
-            password: password,
-            account_number: accountNumber,
-          }),
-        },
-      );
+      const response = await fetch("http://localhost:3000/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          account_number: accountNumber,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error();

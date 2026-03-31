@@ -37,7 +37,7 @@ export default function CreateLogin() {
   const checkInfo = async () => {
     try {
       const response = await fetch(
-        "http://192.168.1.198:3000/api/auth/verifyKubAccount",
+        "http://localhost:3000/api/auth/verifyKubAccount",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

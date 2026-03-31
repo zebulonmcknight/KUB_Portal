@@ -15,10 +15,10 @@ npm install
 npm run dev
 ```
 
-The server runs on `http://192.168.1.198:3000`. Confirm it's up by hitting the health check:
+The server runs on `http://localhost:3000`. Confirm it's up by hitting the health check:
 
 ```bash
-curl http://192.168.1.198:3000/health
+curl http://localhost:3000/health
 ```
 
 ### Environment Variables
@@ -72,7 +72,7 @@ Creates a new user account and returns an access token.
 **Example**
 
 ```javascript
-const response = await fetch('http://192.168.1.198:3000/api/auth/signup', {
+const response = await fetch('http://localhost:3000/api/auth/signup', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
@@ -123,7 +123,7 @@ Authenticates an existing user and returns an access token.
 **Example**
 
 ```javascript
-const response = await fetch("http://192.168.1.198:3000/api/auth/login", {
+const response = await fetch("http://localhost:3000/api/auth/login", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -159,7 +159,7 @@ const data = await response.json();
 Store the access token after login/signup and attach it to subsequent authenticated requests as a Bearer token. Otherwise middleware may block your request.
 
 ```javascript
-const response = await fetch("http://192.168.1.198:3000/api/some/endpoint", {
+const response = await fetch("http://localhost:3000/api/some/endpoint", {
   headers: {
     Authorization: `Bearer ${access_token}`,
   },
