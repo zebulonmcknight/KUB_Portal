@@ -7,12 +7,12 @@ import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 
-export default function CreateLogin() {
+export default function CreatePassword() {
   const router = useRouter();
 
   const [showAlert, setShowAlert] = useState(false); // State to control the visibility of the custom alert at the header
   const [showSuccess, setShowSuccess] = useState(false); // State to control the visibility of the custom alert after successful account creation
-
+  const [loading, setLoading] = useState(false);
   // Since we are at the end of signup route, import all values so we can set them to be empty
   const {
     password,
@@ -32,6 +32,7 @@ export default function CreateLogin() {
 
   const authCreation = async () => {
     try {
+      setLoading(true);
       // Make a call to our signup api sending the information from our registration context
       const response = await fetch("http://localhost:3000/api/auth/signup", {
         method: "POST",
@@ -67,6 +68,9 @@ export default function CreateLogin() {
     } catch (error: any) {
       // catch errors not explicitly handled
       Alert.alert("Error", error.message);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -156,14 +160,14 @@ export default function CreateLogin() {
         />
 
         <TouchableOpacity
-          disabled={!isReady}
+          disabled={!isReady || loading}
           className={`mt-6 rounded-xl items-center ${
-            isReady ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
+            (isReady && !loading) ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
           }`}
           onPress={authCreation}
         >
           <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
-            Create Login
+            {loading ? "Creating..." : "Create Login"}
           </Text>
         </TouchableOpacity>
       </View>

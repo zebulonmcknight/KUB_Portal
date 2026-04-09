@@ -13,6 +13,7 @@ export default function CreateLogin() {
   const [showHeaderAlert, setShowHeaderAlert] = useState(false); // State to control the visibility of the custom alert at the header
   const [showAccountAlert, setShowAccountAlert] = useState(false); // State to control the visibility of the alert inside the account number text box
   const [showError, setShowError] = useState(false); // State to control the visibility of the alert when info entered doesn't match an account on record.
+  const [loading, setLoading] = useState(false);
 
   // This is used to track what the user is typing
   const { accountNumber, setAccountNumber } = useRegistration();
@@ -36,6 +37,7 @@ export default function CreateLogin() {
   // Function to send the information the user entered to the backend to verify that they are an existing customer
   const checkInfo = async () => {
     try {
+      setLoading(true)
       const response = await fetch(
         "http://localhost:3000/api/auth/verifyKubAccount",
         {
@@ -57,6 +59,9 @@ export default function CreateLogin() {
       router.push("/(auth)/createLogin/contactEmail"); // Send the user to the next page
     } catch (error: any) {
       setShowError(true);
+    }
+    finally{
+      setLoading(false);
     }
   };
 
@@ -138,16 +143,16 @@ export default function CreateLogin() {
         />
 
         <TouchableOpacity
-          disabled={!isReady}
+          disabled={!isReady || loading}
           className={`mt-6 rounded-xl items-center ${
-            isReady ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
+            (isReady && !loading) ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
           }`}
           onPress={checkInfo}
         >
           {/* NEED TO CONNECT THIS TO AUTH0!!!!! */}
           {/* Have to make sure they are a customer before allowing them to continue further. */}
           <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
-            NEXT
+            {loading ? "Verifying..." : "NEXT"}
           </Text>
         </TouchableOpacity>
       </View>

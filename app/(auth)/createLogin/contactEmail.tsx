@@ -6,7 +6,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 
 // Check the email the user has entered
 
-export default function ForgotPassword() {
+export default function ContactEmail() {
 
   const router = useRouter();
 

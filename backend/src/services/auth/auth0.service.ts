@@ -45,6 +45,14 @@ export class Auth0Service {
         return await this.login(email, password, account_number);
     }
 
+    async resetPassword(email: string) {
+        await axios.post(`https://${AUTH0_DOMAIN}/dbconnections/change_password`, {
+            client_id: AUTH0_CLIENT_ID,
+            email,
+            connection: 'Username-Password-Authentication'
+        });
+    }
+
     private async checkKubAccountAvailable(account_number: string) {
         const { data, error } = await supabase
             .from('kub_accounts')

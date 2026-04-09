@@ -1,5 +1,6 @@
 import { useAuth } from "@/components/authContext";
 import { icons } from "@/constants/icons";
+import { useBillData } from "@/hooks/useBillData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStripe } from "@stripe/stripe-react-native";
 import { format } from "date-fns";
@@ -7,89 +8,37 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-  ActivityIndicator,
-  Alert,
-  Image,
-  Linking,
-  ScrollView,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
+    ActivityIndicator,
+    Alert,
+    Image,
+    Linking,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    useWindowDimensions,
+    View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-// Define the shape of what we receive from getCurrentBill
-type BillData = {
-  totalAmountDue: number;
-  dueDate: string | null;
-  isAutoPay: boolean;
-  status: string;
-  lineItems: { service: string; units: number; amount: number }[];
-  invoicePdf: string | null;
-};
 
 export default function Billing() {
   // Gets the token from our auth context
   const { getToken } = useAuth();
-
+  const { billData, billLoading, fetchBillData } = useBillData();
   const router = useRouter();
   // paymentSheet used for card processing/payment confirmation
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
   // to prevent the user from clicking the button again why the request is still processing
   const [loading, setLoading] = useState(false);
-  // to prevent display of null values while fetching bill data
-  const [billLoading, setBillLoading] = useState(true);
-  const [billData, setBillData] = useState<BillData | null>(null);
-
   const [pdfLoading, setPdfLoading] = useState(false);
 
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
   const { height } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
 
-  // This will fetch the current bills data to display due data and amount due, as well as check invoice status
-  const fetchBillData = async () => {
-    setBillLoading(true);
-    try {
-      // If valid token exists fetch the bill data from the backend
-      const access_token = await getToken();
-
-      if (!access_token) {
-        Alert.alert("Session Expired", "Please log in again");
-        return;
-      }
-
-      const response = await fetch(
-        "http://localhost:3000/api/billing/getCurrentBill",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
-
-      if (!response.ok) {
-        Alert.alert("Error", "Failed to fetch billing data");
-        return;
-      }
-      const data = await response.json();
-      setBillData(data);
-    } catch (error: any) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setBillLoading(false);
-    }
-  };
-
-  // use effect to run the fetch each time we navigate back to screen. This is to keep info up to date
-  // Useful if user pays through one time payment button in programs route
   useFocusEffect(
     useCallback(() => {
       fetchBillData();
-    }, []),
+    }, [])
   );
 
   // Since the due date can be null if they dont have previous invoice we account for that here
@@ -262,7 +211,7 @@ export default function Billing() {
               onPress={handlePayment}
               disabled={loading || billData?.status !== "open"} // disables the button while request is processing
               className={` p-4 rounded-xl w-full items-center mb-2 ${
-                billData?.status === "open"
+                loading || billData?.status === "open"
                   ? "bg-active_icon"
                   : "bg-active_icon/50"
               }`}

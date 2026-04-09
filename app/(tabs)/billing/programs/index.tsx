@@ -1,8 +1,9 @@
 import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
+import { useBillData } from "@/hooks/useBillData";
 import { useStripe } from "@stripe/stripe-react-native";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
 
 // Interface for the card
@@ -51,6 +52,13 @@ export default function Programs() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { getToken } = useAuth();
+  const { billData, billLoading, fetchBillData } = useBillData();
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchBillData();
+    }, [])
+  );
 
   // invoke the backend API to handle the payment request
   const handlePayment = async () => {
@@ -138,7 +146,12 @@ export default function Programs() {
         <TouchableOpacity
           activeOpacity={1}
           onPress={handlePayment}
-          className="bg-section rounded-lg overflow-hidden"
+          disabled={loading || billData?.status !== "open"}
+          className={`bg-section rounded-lg overflow-hidden ${
+            loading || billData?.status !== "open" 
+              ? "opacity-50" 
+              : "opacity-100"
+          }`}
         >
           <Text className="p-4 font-sans text-text_main text-2xl tracking-wide">
             One Time Payment
@@ -149,10 +162,11 @@ export default function Programs() {
           </Text>
           <TouchableOpacity
             onPress={handlePayment}
+            disabled={loading || billData?.status !== "open"}
             className="border-t items-center py-5"
           >
             <Text className="font-bold text-text_main tracking-widest">
-              Pay Now
+              {loading ? "Processing..." : "Pay Now"}
             </Text>
           </TouchableOpacity>
         </TouchableOpacity>

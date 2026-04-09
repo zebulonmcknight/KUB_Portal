@@ -114,6 +114,19 @@ export const disableAutoPay = async ( subscriptionId: string ) => {
     });
 }
 
+// method for setupsheet, so user can enter card info when enrolling in autopay. doesnt charge them just saves card
+export const createSetupIntent = async (stripeId: string) => {
+    return await stripe.setupIntents.create({
+        customer: stripeId,
+        payment_method_types: ['card'],
+    });
+}
+
+// setupIntent only returns Id so need this to retrieve the actual data
+export const retrieveSetupIntent = async (setupIntentId: string) => {
+    return await stripe.setupIntents.retrieve(setupIntentId);
+}
+
 // // marks the subscription incomplete if payment is required so frontend can handle payment
 // payment_behavior: 'default_incomplete',
 // // return the client_secret to frontend Stripe SDK in order to confirm payment
