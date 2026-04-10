@@ -5,7 +5,19 @@ import { Router } from 'express';
 // dictate that we choose one format and stick with it.  
 import { profile } from './controllers/account.controller';
 import * as authController from './controllers/auth.controller';
-import { cancelAutoPay, enrollAutoPay, getCurrentBill, newCustomerSubscription, payInvoice, setupAutoPay, submitUsage } from './controllers/billing.controller';
+import {
+   addPaymentMethod,
+   cancelAutoPay,
+   enrollAutoPay,
+   getCurrentBill,
+   getPaymentMethodsController,
+   newCustomerSubscription,
+   payInvoice,
+   removePaymentMethodController,
+   setDefaultPaymentMethodController,
+   setupAutoPay,
+   submitUsage
+} from './controllers/billing.controller';
 import { get_user_by_email } from './controllers/user.controller';
 import { checkJwt, extractUserID } from './middleware/auth';
 
@@ -29,10 +41,14 @@ router.post('/billing/autopay/enroll', checkJwt, extractUserID, enrollAutoPay);
 router.post('/billing/autopay/cancel', checkJwt, extractUserID, cancelAutoPay);
 router.post('/billing/submitUsage', checkJwt, extractUserID, submitUsage);
 router.post('/billing/payInvoice', checkJwt, extractUserID, payInvoice);
+router.post('/billing/paymentMethods/add', checkJwt, extractUserID, addPaymentMethod);
+router.post('/billing/paymentMethods/remove', checkJwt, extractUserID, removePaymentMethodController);
+router.post('/billing/paymentMethods/setDefault', checkJwt, extractUserID, setDefaultPaymentMethodController);
 
 router.post('/account/profile', profile); 
 
 router.get('/user/get_user', checkJwt, extractUserID, get_user_by_email);  
 router.get('/billing/getCurrentBill', checkJwt, extractUserID, getCurrentBill);
+router.get('/billing/paymentMethods', checkJwt, extractUserID, getPaymentMethodsController);
 
 export default router;

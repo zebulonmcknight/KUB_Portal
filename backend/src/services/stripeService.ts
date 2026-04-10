@@ -93,9 +93,29 @@ export const getCustomerInvoice = async ( stripeId: string ) => {
     return { invoice: null, status: 'none' };
 }
 
-// method to save a payment method and link it to customer. Used when they enroll in autopay
+// method to save a payment method and link it to customer
 export const attachPaymentMethod = async ( stripeId: string, paymentMethodId: string ) => {
     return await stripe.paymentMethods.attach(paymentMethodId, { customer: stripeId });
+}
+
+// Retrieve all payment methods attached to a customer, including which is set as default
+export const getPaymentMethods = async (stripeId: string) => {
+    // Fetch both in parallel since neither depends on the other
+    const [paymentMethods, customer] = await Promise.all([
+        stripe.paymentMethods.list({ customer: stripeId, type: 'card' }),
+        stripe.customers.retrieve(stripeId),
+    ]);
+
+    // Extract the default payment method ID from the customer object
+    // Cast needed because retrieve can return a DeletedCustomer which has no invoice_settings
+    const defaultPaymentMethodId = (customer as Stripe.Customer).invoice_settings?.default_payment_method as string ?? null;
+
+    return { paymentMethods: paymentMethods.data, defaultPaymentMethodId };
+}
+
+// Detach a payment method from a customer
+export const removePaymentMethod = async (paymentMethodId: string) => {
+    return await stripe.paymentMethods.detach(paymentMethodId);
 }
 
 // method to change their payment method to autopay
@@ -125,6 +145,15 @@ export const createSetupIntent = async (stripeId: string) => {
 // setupIntent only returns Id so need this to retrieve the actual data
 export const retrieveSetupIntent = async (setupIntentId: string) => {
     return await stripe.setupIntents.retrieve(setupIntentId);
+}
+
+// Set the customer's default payment method for invoices
+export const setDefaultPaymentMethod = async (stripeId: string, paymentMethodId: string) => {
+    return await stripe.customers.update(stripeId, {
+        invoice_settings: {
+            default_payment_method: paymentMethodId,
+        },
+    });
 }
 
 // // marks the subscription incomplete if payment is required so frontend can handle payment

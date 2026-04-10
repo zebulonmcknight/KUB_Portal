@@ -8,8 +8,12 @@ import {
     createSetupIntent,
     disableAutoPay,
     enableAutoPay,
-    getCustomerInvoice, reportElectricUsage, reportWaterOrWasteUsage,
-    retrieveSetupIntent
+    getCustomerInvoice,
+    getPaymentMethods,
+    removePaymentMethod,
+    reportElectricUsage, reportWaterOrWasteUsage,
+    retrieveSetupIntent,
+    setDefaultPaymentMethod
 } from '../../services/stripeService';
 dotenv.config();
 
@@ -186,6 +190,135 @@ export const getCurrentBill = async (req: Request, res: Response) => {
     }
 }
 
+// Returns all saved payment methods for the current user
+export const getPaymentMethodsController = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).userId;
+
+        const { data, error: queryError } = await supabase
+            .from('billing_profiles')
+            .select('stripe_customer_id')
+            .eq('user_id', userId)
+            .single();
+
+        if (queryError){
+            return res.status(500).json({ error: queryError.message });
+        }
+        if (!data){
+            return res.status(404).json({ error: 'User Not Found' });
+        }
+
+         const { paymentMethods, defaultPaymentMethodId } = await getPaymentMethods(data.stripe_customer_id);
+
+        // Map to only what the frontend needs
+        // use left side of ?? if it exists otherwise right hand side
+        const methods = paymentMethods.map(payMethod => ({
+            id: payMethod.id,
+            brand: payMethod.card?.brand ?? 'unknown',
+            last4: payMethod.card?.last4 ?? '****',
+            expMonth: payMethod.card?.exp_month ?? 0,
+            expYear: payMethod.card?.exp_year ?? 0,
+            isDefault: payMethod.id === defaultPaymentMethodId,
+        }));
+
+        return res.status(200).json({ methods });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to retrieve payment methods' });
+    }
+}
+
+// Detaches a payment method from the customer's Stripe account
+export const removePaymentMethodController = async (req: Request, res: Response) => {
+    try {
+        const { paymentMethodId } = req.body;
+
+        if (!paymentMethodId) {
+            return res.status(400).json({ error: 'paymentMethodId is required' });
+        }
+
+        await removePaymentMethod(paymentMethodId);
+
+        return res.status(200).json({ success: true });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to remove payment method' });
+    }
+}
+
+// Adds a new payment method via a completed SetupIntent
+// Frontend presents SetupSheet, completes it, then sends the setupIntentId here
+export const addPaymentMethod = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).userId;
+        const { setupIntentId } = req.body;
+
+        if (!setupIntentId) {
+            return res.status(400).json({ error: 'setupIntentId is required' });
+        }
+
+        const { data, error: queryError } = await supabase
+            .from('billing_profiles')
+            .select('stripe_customer_id')
+            .eq('user_id', userId)
+            .single();
+
+        if (queryError) return res.status(500).json({ error: queryError.message });
+        if (!data) return res.status(404).json({ error: 'User Not Found' });
+
+        // Retrieve the completed SetupIntent to get the payment method ID
+        const setupIntent = await retrieveSetupIntent(setupIntentId);
+        const paymentMethodId = setupIntent.payment_method as string;
+
+        if (!paymentMethodId) {
+            return res.status(400).json({ error: 'No payment method found on setup intent' });
+        }
+
+        // Attach the payment method to the Stripe customer
+        await attachPaymentMethod(data.stripe_customer_id, paymentMethodId);
+
+        // After attaching the payment method, check if it's their first
+        // If so, automatically set it as default so the customer always has one
+        const existingMethods = await getPaymentMethods(data.stripe_customer_id);
+        if (existingMethods.paymentMethods.length === 1) {
+            await setDefaultPaymentMethod(data.stripe_customer_id, paymentMethodId);
+        }
+
+        return res.status(200).json({ success: true });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to add payment method' });
+    }
+}
+
+// Sets a payment method as the customer's default for invoices
+export const setDefaultPaymentMethodController = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).userId;
+        const { paymentMethodId } = req.body;
+
+        if (!paymentMethodId) {
+            return res.status(400).json({ error: 'paymentMethodId is required' });
+        }
+
+        const { data, error: queryError } = await supabase
+            .from('billing_profiles')
+            .select('stripe_customer_id')
+            .eq('user_id', userId)
+            .single();
+
+        if (queryError) return res.status(500).json({ error: queryError.message });
+        if (!data) return res.status(404).json({ error: 'User Not Found' });
+
+        await setDefaultPaymentMethod(data.stripe_customer_id, paymentMethodId);
+
+        return res.status(200).json({ success: true });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to set default payment method' });
+    }
+}
+
 export const setupAutoPay = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).userId;
@@ -218,17 +351,17 @@ export const enrollAutoPay = async (req: Request, res: Response) => {
         // get the userId from middleware
         const userId = (req as any).userId;
         
-        const { setupIntentId } = req.body;
-        if (!setupIntentId) {
-            return res.status(400).json({ error: 'setupIntentId is required' });
+        const { setupIntentId, paymentMethodId: existingPaymentMethodId } = req.body;
+
+        if (!setupIntentId && !existingPaymentMethodId) {
+            return res.status(400).json({ error: 'setupIntentId or paymentMethodId is required' });
         }
 
-        const setupIntent = await retrieveSetupIntent(setupIntentId);
-        const paymentMethodId = setupIntent.payment_method as string; // can get the paymentMethodId from the setupIntent, generated by stripe
-        
-        // paymentMethodId is required to attach a card and enable autopay
-        if( !paymentMethodId ){
-            return res.status(400).json({ error: 'paymentMethodId is required' });
+        // If using existing payment method skip the SetupIntent retrieval
+        const paymentMethodId = existingPaymentMethodId ?? (await retrieveSetupIntent(setupIntentId)).payment_method as string;
+
+        if (!paymentMethodId) {
+            return res.status(400).json({ error: 'No payment method found' });
         }
 
         // get the stripe customer and subscription IDs from the database
@@ -248,8 +381,16 @@ export const enrollAutoPay = async (req: Request, res: Response) => {
         const stripeId = data.stripe_customer_id;
         const subscriptionId = data.stripe_subscription_id;
 
-        // card must be attached to the customer before it can be set as the default payment method on the subscription
-        await attachPaymentMethod(stripeId, paymentMethodId);
+        // Only attach if using a new card via SetupIntent, existing cards are already attached
+        if (!existingPaymentMethodId) {
+            await attachPaymentMethod(stripeId, paymentMethodId);
+    
+            // Auto-set as default if this is their first payment method
+            const existingMethods = await getPaymentMethods(stripeId);
+            if (existingMethods.paymentMethods.length === 1) {
+                await setDefaultPaymentMethod(stripeId, paymentMethodId);
+            }
+        }
         await enableAutoPay(subscriptionId, paymentMethodId);
 
         // Update the database to reflect the new autopay status
