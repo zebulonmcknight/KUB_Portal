@@ -1,28 +1,18 @@
 import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
+import PaymentPicker, { PaymentMethod } from "@/components/paymentPicker";
 import { useBillData } from "@/hooks/useBillData";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-   ActivityIndicator,
-   Alert,
-   Linking,
-   Modal,
-   Text,
-   TouchableOpacity,
-   View,
+    ActivityIndicator,
+    Alert,
+    Linking,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
-
-// Shape of a payment method returned from our backend
-type PaymentMethod = {
-   id: string;
-   brand: string;
-   last4: string;
-   expMonth: number;
-   expYear: number;
-   isDefault: boolean;
-};
 
 export default function AutoPay() {
    const { getToken } = useAuth();
@@ -153,6 +143,7 @@ export default function AutoPay() {
          }
 
          // The setupIntentId is embedded in the clientSecret before '_secret_'
+         // e.g. "seti_ABC123_secret_XYZ" → "seti_ABC123"
          // Backend uses this to retrieve the completed intent and extract the payment method
          const setupIntentId = clientSecret.split("_secret_")[0];
          await enrollWithIntent(access_token, setupIntentId);
@@ -225,7 +216,8 @@ export default function AutoPay() {
    const handleCancel = () => {
       Alert.alert("Cancel AutoPay", "Are you sure you want to cancel AutoPay?", [
          { text: "No" },
-         { text: "Yes",
+         {
+            text: "Yes",
             onPress: async () => {
                try {
                   setLoading(true);
@@ -261,9 +253,6 @@ export default function AutoPay() {
       ]);
    };
 
-   // The currently selected card object, used to display in the collapsed dropdown
-   const selectedCard = methods.find(m => m.id === selectedId);
-
    // Show spinner on initial load before any data exists
    // Subsequent refreshes update silently without blocking the UI
    if (billLoading && !billData) {
@@ -289,7 +278,7 @@ export default function AutoPay() {
                You will continue to receive a monthly statement that looks like a normal bill, but which shows Amount to be drafted. You can unenroll from AutoPay at any time.
             </Text>
 
-            {/* "Learn more" is tappable, "about AutoPay" is plain text */}
+            {/* "Learn more" is tappable, "about AutoPay" is plain text inline */}
             <Text
                className="text-active_icon font-sans text-xl"
                onPress={() => Linking.openURL("https://www.kub.org/bills-payments/autopay")}
@@ -314,125 +303,29 @@ export default function AutoPay() {
             </TouchableOpacity>
          </View>
 
-         {/* Payment method selection moda, slides up from bottom */}
-         <Modal
+         {/* Payment method picker modal */}
+         <PaymentPicker
             visible={modalVisible}
-            transparent
-            animationType="slide"
-            onRequestClose={() => setModalVisible(false)}
-         >
-            {/* Semi-transparent backdrop, tapping outside closes the modal */}
-            <TouchableOpacity
-               className="flex-1 bg-black/50"
-               activeOpacity={1}
-               onPress={() => setModalVisible(false)}
-            />
-
-            <View className="bg-primary rounded-t-2xl p-6 gap-4">
-               {/* Header row with title and X close button */}
-               <View className="flex-row justify-between items-center">
-                  <Text className="text-text_main font-bold text-xl tracking-wide">
-                     Select Payment Method
-                  </Text>
-                  <TouchableOpacity onPress={() => setModalVisible(false)}>
-                     <Text className="text-text_main text-2xl px-2">✕</Text>
-                  </TouchableOpacity>
-               </View>
-
-               {methodsLoading ? (
-                  <ActivityIndicator size="large" color="#3377F4" />
-               ) : (
-                  <>
-                     {/* Collapsed dropdown showing selected card, tapping expands the list */}
-                     <TouchableOpacity
-                        onPress={() => setDropdownOpen(!dropdownOpen)}
-                        className="bg-section rounded-xl p-4 flex-row justify-between items-center"
-                     >
-                        <View>
-                           {selectedCard ? (
-                              <>
-                                 <Text className="text-text_main font-sans text-base">
-                                    {selectedCard.brand.toUpperCase()} **** {selectedCard.last4}
-                                 </Text>
-                                 <Text className="text-inactive_text text-sm font-sans">
-                                    EXP. {String(selectedCard.expMonth).padStart(2, "0")}/{String(selectedCard.expYear).slice(-2)}
-                                 </Text>
-                              </>
-                           ) : (
-                              <Text className="text-inactive_text font-sans text-base">
-                                 No card selected
-                              </Text>
-                           )}
-                        </View>
-                        {/* Arrow flips when dropdown is open */}
-                        <Text className="text-text_main text-lg">
-                           {dropdownOpen ? "▲" : "▼"}
-                        </Text>
-                     </TouchableOpacity>
-
-                     {/* Expanded card list, only visible when dropdown is open */}
-                     {dropdownOpen && (
-                        <View className="bg-section rounded-xl overflow-hidden">
-                           {methods.map(method => (
-                              <TouchableOpacity
-                                 key={method.id}
-                                 onPress={() => {
-                                    setSelectedId(method.id);
-                                    setDropdownOpen(false);
-                                 }}
-                                 className={`p-4 flex-row justify-between items-center border-b border-inactive_icon ${
-                                    method.id === selectedId ? "bg-active_icon/20" : ""
-                                 }`}
-                              >
-                                 <View>
-                                    <Text className="text-text_main font-sans text-base">
-                                       {method.brand.toUpperCase()} **** {method.last4}
-                                    </Text>
-                                    <Text className="text-inactive_text text-sm font-sans">
-                                       EXP. {String(method.expMonth).padStart(2, "0")}/{String(method.expYear).slice(-2)}
-                                    </Text>
-                                 </View>
-                                 {/* Checkmark on the currently selected card */}
-                                 {method.id === selectedId && (
-                                    <Text className="text-active_icon text-xl">✓</Text>
-                                 )}
-                              </TouchableOpacity>
-                           ))}
-
-                           {/* Add New Card option at the bottom of the expanded list */}
-                           <TouchableOpacity
-                              onPress={async () => {
-                                 const access_token = await getToken();
-                                 if (!access_token) {
-                                    Alert.alert("Session Expired", "Please log in again");
-                                    return;
-                                 }
-                                 await handleAddNewCard(access_token);
-                              }}
-                              className="p-4 flex-row justify-between items-center"
-                           >
-                              <Text className="text-active_icon font-sans text-base">
-                                 Add New Card
-                              </Text>
-                              <Text className="text-active_icon text-xl">+</Text>
-                           </TouchableOpacity>
-                        </View>
-                     )}
-
-                     {/* Confirm button, enrolls with the currently selected card */}
-                     <TouchableOpacity
-                        onPress={handleConfirmExisting}
-                        disabled={!selectedId}
-                        className={`rounded-xl items-center bg-[#3377F4] mt-2 ${!selectedId ? "opacity-50" : "opacity-100"}`}
-                     >
-                        <Text className="text-text_main font-bold tracking-widest text-lg p-4">
-                           CONFIRM
-                        </Text>
-                     </TouchableOpacity>
-                  </>
-               )}
-            </View>
-         </Modal>
+            onClose={() => setModalVisible(false)}
+            methods={methods}
+            methodsLoading={methodsLoading}
+            selectedId={selectedId}
+            onSelectId={(id) => {
+               setSelectedId(id);
+               setDropdownOpen(false);
+            }}
+            dropdownOpen={dropdownOpen}
+            onToggleDropdown={() => setDropdownOpen(!dropdownOpen)}
+            onConfirm={handleConfirmExisting}
+            onAddNew={async () => {
+               const access_token = await getToken();
+               if (!access_token) {
+                  Alert.alert("Session Expired", "Please log in again");
+                  return;
+               }
+               await handleAddNewCard(access_token);
+            }}
+         />
       </View>
    );
 }

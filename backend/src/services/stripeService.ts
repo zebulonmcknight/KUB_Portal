@@ -142,6 +142,13 @@ export const createSetupIntent = async (stripeId: string) => {
     });
 }
 
+// Confirms a PaymentIntent with a saved payment method directly
+export const confirmPaymentIntent = async (paymentIntentId: string, paymentMethodId: string) => {
+    return await stripe.paymentIntents.confirm(paymentIntentId, {
+        payment_method: paymentMethodId,
+    });
+}
+
 // setupIntent only returns Id so need this to retrieve the actual data
 export const retrieveSetupIntent = async (setupIntentId: string) => {
     return await stripe.setupIntents.retrieve(setupIntentId);
@@ -153,6 +160,14 @@ export const setDefaultPaymentMethod = async (stripeId: string, paymentMethodId:
         invoice_settings: {
             default_payment_method: paymentMethodId,
         },
+    });
+}
+
+// Fetches invoices for a customer, most recent 100
+export const getInvoiceHistory = async (stripeId: string) => {
+    return await stripe.invoices.list({
+        customer: stripeId,
+        limit: 100,
     });
 }
 

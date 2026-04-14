@@ -1,19 +1,91 @@
+import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
 import { icons } from "@/constants/icons";
-import { billingData } from "@/constants/mockBillingData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { format, parseISO } from "date-fns";
-import { useRouter } from "expo-router";
-import { useState } from "react";
-import { Alert, FlatList, Image, Linking, Text, TouchableOpacity, View } from "react-native";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import {
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    Image,
+    Linking,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
+
+// Types matching what the backend returns from getInvoiceHistoryController
+type InvoiceItem = {
+   type: "invoice";
+   id: string;
+   invoiceDate: string;
+   amountDue: number;
+   dueDate: string | null;
+   invoicePdf: string | null;
+};
+
+type PaymentItem = {
+   type: "payment";
+   id: string;
+   paymentDate: string;
+   paymentAmount: number;
+   paymentType: string;
+   paymentStatus: string;
+   invoiceId: string;
+};
+
+type BillingItem = InvoiceItem | PaymentItem;
 
 export default function BillsAndPayments() {
+   const { getToken } = useAuth();
    const router = useRouter();
    const tabBarHeight = useBottomTabBarHeight();
 
+   const [billingData, setBillingData] = useState<BillingItem[]>([]);
+   const [dataLoading, setDataLoading] = useState(true);
    const [loadingId, setLoadingId] = useState<string | null>(null);
 
-   const openPDF = async (url:string, id: string) => {
+   // Fetch invoice history on each focus
+   useFocusEffect(
+      useCallback(() => {
+         fetchHistory();
+      }, [])
+   );
+
+   const fetchHistory = async () => {
+      setDataLoading(true);
+      try {
+         const access_token = await getToken();
+         if (!access_token) {
+            Alert.alert("Session Expired", "Please log in again");
+            return;
+         }
+
+         const response = await fetch("http://localhost:3000/api/billing/invoiceHistory", {
+            method: "GET",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
+
+         if (!response.ok) {
+            Alert.alert("Error", "Failed to fetch billing history");
+            return;
+         }
+
+         const { items } = await response.json();
+         setBillingData(items);
+      } catch (error: any) {
+         Alert.alert("Error", error.message);
+      } finally {
+         setDataLoading(false);
+      }
+   };
+
+   const openPDF = async (url: string, id: string) => {
       try{
          setLoadingId(id); // Set only that specific ID to a loading state so it doesnt affect others
          await Linking.openURL(url);
@@ -23,6 +95,16 @@ export default function BillsAndPayments() {
       finally{
          setLoadingId(null); // Afterwards set the id to null to revert state
       }
+   }
+
+   // Show spinner on initial load only
+   if (dataLoading && billingData.length === 0) {
+      return (
+         <View className="flex-1 justify-center items-center">
+            <ScreenHeader title="Bills & Payments" />
+            <ActivityIndicator size="large" color="#3377F4" />
+         </View>
+      );
    }
 
    return (
@@ -38,7 +120,14 @@ export default function BillsAndPayments() {
             if( item.type === "payment" ){
                return(
                   // If the user wants to view their payment send them to the dynamic routing with the id of said payment attached
-                  <TouchableOpacity onPress={() => router.push(`/(tabs)/billing/billsAndPayments/${item.id}`)} className="border-b border-section p-3 flex-row mx-4 items-center gap-4">
+                  // Payment data is passed as a JSON param to avoid making the same fetch on the detail screen
+                  <TouchableOpacity
+                     onPress={() => router.push({
+                        pathname: "/(tabs)/billing/billsAndPayments/[paymentId]",
+                        params: { paymentId: item.id, payment: JSON.stringify(item) }
+                     })}
+                     className="border-b border-section p-3 flex-row mx-4 items-center gap-4"
+                  >
                      <Image source={icons.paid_bill} style={{width: 14, height: 14}}/>
                      <View className="flex-col">
                         <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
@@ -54,8 +143,14 @@ export default function BillsAndPayments() {
             }
             return(
                // Other option is viewing the invoice. As of now we download a publicly available pdf to cache and then open sharing for the user.
-               // In production build will use react-native-viewer to view the pdf instead of sharing it.
-               <TouchableOpacity onPress={() => openPDF(item.pdfUrl, item.id)} className="border-b border-section p-3 flex-row mx-4 items-center gap-4">
+               // invoicePdf can be null if Stripe hasn't finalized the invoice yet so have alert statement
+               <TouchableOpacity
+                  onPress={() => item.invoicePdf
+                     ? openPDF(item.invoicePdf, item.id)
+                     : Alert.alert("Unavailable", "No PDF available for this invoice.")
+                  }
+                  className="border-b border-section p-3 flex-row mx-4 items-center gap-4"
+               >
                   <Image source={icons.invoice} style={{width: 14, height: 14}}/>
                   <View className="flex-col">
                      <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">

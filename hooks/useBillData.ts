@@ -7,6 +7,7 @@ export type BillData = {
   totalAmountDue: number;
   dueDate: string | null;
   isAutoPay: boolean;
+  isPaperless: boolean;
   status: string;
   lineItems: { service: string; units: number; amount: number }[];
   invoicePdf: string | null;

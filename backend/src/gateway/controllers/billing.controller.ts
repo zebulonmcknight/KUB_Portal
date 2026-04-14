@@ -4,11 +4,14 @@ import dotenv from 'dotenv';
 import { Request, Response } from 'express';
 import { supabase } from '../../database/supabase';
 import {
-    attachPaymentMethod, createCustomer, createCustomerSubscription,
+    attachPaymentMethod,
+    confirmPaymentIntent,
+    createCustomer, createCustomerSubscription,
     createSetupIntent,
     disableAutoPay,
     enableAutoPay,
     getCustomerInvoice,
+    getInvoiceHistory,
     getPaymentMethods,
     removePaymentMethod,
     reportElectricUsage, reportWaterOrWasteUsage,
@@ -128,7 +131,7 @@ export const getCurrentBill = async (req: Request, res: Response) => {
         // extract user information from database
         const { data, error: queryError } = await supabase
             .from('billing_profiles')
-            .select('stripe_customer_id, autopay_enabled')
+            .select('stripe_customer_id, autopay_enabled, paperless_enabled')
             .eq('user_id', userId)
             .single()
 
@@ -143,6 +146,7 @@ export const getCurrentBill = async (req: Request, res: Response) => {
         // get the information from the database
         const stripeId = data.stripe_customer_id;
         const autopayEnabled = data.autopay_enabled;
+        const paperlessEnabled = data.paperless_enabled
         
         // use stripeId to fetch any recent invoices
         const { invoice, status } = await getCustomerInvoice(stripeId);
@@ -153,6 +157,7 @@ export const getCurrentBill = async (req: Request, res: Response) => {
                 totalAmountDue: 0,
                 dueDate: null,
                 isAutoPay: autopayEnabled,
+                isPaperless: paperlessEnabled,
                 status: 'none',
                 lineItems: [],
                 invoicePdf: null
@@ -178,6 +183,7 @@ export const getCurrentBill = async (req: Request, res: Response) => {
             totalAmountDue,
             dueDate,
             isAutoPay: autopayEnabled,
+            isPaperless: paperlessEnabled,
             status,
             lineItems,
             invoicePdf: invoice?.invoice_pdf ?? null
@@ -187,6 +193,71 @@ export const getCurrentBill = async (req: Request, res: Response) => {
     catch( error: any ){
         console.error(error);
         return res.status(500).json({ error: 'Failed to retrieve customer bill' });
+    }
+}
+
+// Returns full invoice and payment history for the current user
+// Each paid invoice produces both an invoice row and a payment row in the combined list
+export const getInvoiceHistoryController = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).userId;
+
+        const { data, error: queryError } = await supabase
+            .from('billing_profiles')
+            .select('stripe_customer_id')
+            .eq('user_id', userId)
+            .single();
+
+        if (queryError){
+            return res.status(500).json({ error: queryError.message });
+        }
+        if (!data){
+            return res.status(404).json({ error: 'User Not Found' });
+        }
+        const invoices = await getInvoiceHistory(data.stripe_customer_id);
+
+        // Build the combined list, each invoice becomes an invoice row,
+        // and each paid invoice also produces a corresponding payment row
+        const items: any[] = [];
+
+        for (const invoice of invoices.data) {
+            // Push payment row first if paid, then the invoice it belongs to
+            if (invoice.status === 'paid') {
+                const paymentType = invoice.collection_method === 'charge_automatically'
+                    ? 'Card Payment'
+                    : 'Electronic Payment';
+
+                items.push({
+                    type: 'payment',
+                    id: `pay_${invoice.id}`,
+                    paymentDate: invoice.status_transitions.paid_at
+                        ? new Date(invoice.status_transitions.paid_at * 1000).toISOString()
+                        : new Date(invoice.created * 1000).toISOString(),
+                    paymentAmount: invoice.amount_paid / 100,
+                    paymentType,
+                    paymentStatus: 'Completed',
+                    invoiceId: invoice.id,
+                });
+            }
+
+            // Invoice row always pushed after its payment
+            items.push({
+                type: 'invoice',
+                id: invoice.id,
+                invoiceDate: new Date(invoice.created * 1000).toISOString(),
+                amountDue: invoice.amount_due / 100,
+                dueDate: invoice.due_date
+                    ? new Date(invoice.due_date * 1000).toISOString()
+                    : null,
+                invoicePdf: invoice.invoice_pdf ?? null,
+            });
+        }
+
+        // return the combined list of invoices and paid invoices
+        return res.status(200).json({ items });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to retrieve invoice history' });
     }
 }
 
@@ -509,6 +580,8 @@ export const submitUsage = async (req: Request, res: Response) => {
 export const payInvoice = async ( req: Request, res: Response ) => {
     try{
         const userId = (req as any).userId;
+        // optional — if provided, confirm the PaymentIntent server-side with the saved card
+        const { paymentMethodId } = req.body;
 
         // get the stripe id for the customer, used for paymentIntent
         const { data, error: queryError } = await supabase
@@ -538,10 +611,59 @@ export const payInvoice = async ( req: Request, res: Response ) => {
             return res.status(500).json({ error: 'No client secret found on invoice' });
         }
 
+        // If a saved payment method was provided, confirm the PaymentIntent directly on the backend, dont need to show sheet
+        if( paymentMethodId ){
+            // PaymentIntent ID is embedded in the clientSecret before '_secret_'
+            const paymentIntentId = clientSecret.split('_secret_')[0];
+            const result = await confirmPaymentIntent(paymentIntentId, paymentMethodId);
+
+            if( result.status !== 'succeeded' ){
+                return res.status(400).json({ error: 'Payment failed' });
+            }
+
+            return res.status(200).json({ success: true });
+        }
+
         return res.status(200).json({ clientSecret });
 
     } catch( error: any ){
         console.error(error);
         return res.status(500).json({ error: 'Failed to pay invoice' });
+    }
+}
+
+// Toggles paperless billing on or off for the current user
+export const togglePaperless = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).userId;
+
+        // Get current paperless status
+        const { data, error: queryError } = await supabase
+            .from('billing_profiles')
+            .select('paperless_enabled')
+            .eq('user_id', userId)
+            .single();
+
+        if (queryError){
+            return res.status(500).json({ error: queryError.message });
+        }
+        if (!data){
+            return res.status(404).json({ error: 'User Not Found' });
+        }
+
+        // Flip the current value
+        const { error: updateError } = await supabase
+            .from('billing_profiles')
+            .update({ paperless_enabled: !data.paperless_enabled })
+            .eq('user_id', userId);
+
+        if (updateError){
+            return res.status(500).json({ error: updateError.message });
+        }
+        
+        return res.status(200).json({ success: true, isPaperless: !data.paperless_enabled });
+    } catch (error: any) {
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to toggle paperless billing' });
     }
 }

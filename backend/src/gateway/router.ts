@@ -10,13 +10,15 @@ import {
    cancelAutoPay,
    enrollAutoPay,
    getCurrentBill,
+   getInvoiceHistoryController,
    getPaymentMethodsController,
    newCustomerSubscription,
    payInvoice,
    removePaymentMethodController,
    setDefaultPaymentMethodController,
    setupAutoPay,
-   submitUsage
+   submitUsage,
+   togglePaperless
 } from './controllers/billing.controller';
 import { get_user_by_email } from './controllers/user.controller';
 import { checkJwt, extractUserID } from './middleware/auth';
@@ -44,11 +46,13 @@ router.post('/billing/payInvoice', checkJwt, extractUserID, payInvoice);
 router.post('/billing/paymentMethods/add', checkJwt, extractUserID, addPaymentMethod);
 router.post('/billing/paymentMethods/remove', checkJwt, extractUserID, removePaymentMethodController);
 router.post('/billing/paymentMethods/setDefault', checkJwt, extractUserID, setDefaultPaymentMethodController);
+router.post('/billing/paperless/toggle', checkJwt, extractUserID, togglePaperless);
 
 router.post('/account/profile', profile); 
 
 router.get('/user/get_user', checkJwt, extractUserID, get_user_by_email);  
 router.get('/billing/getCurrentBill', checkJwt, extractUserID, getCurrentBill);
 router.get('/billing/paymentMethods', checkJwt, extractUserID, getPaymentMethodsController);
+router.get('/billing/invoiceHistory', checkJwt, extractUserID, getInvoiceHistoryController);
 
 export default router;

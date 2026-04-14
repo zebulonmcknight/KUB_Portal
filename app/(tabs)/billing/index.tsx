@@ -1,4 +1,6 @@
 import { useAuth } from "@/components/authContext";
+import PayNowModal from "@/components/payNowModal";
+import { PaymentMethod } from "@/components/paymentPicker";
 import { icons } from "@/constants/icons";
 import { useBillData } from "@/hooks/useBillData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -31,6 +33,13 @@ export default function Billing() {
   const [loading, setLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
 
+  // Payment method selection state for PAY NOW modal
+  const [methods, setMethods] = useState<PaymentMethod[]>([]);
+  const [methodsLoading, setMethodsLoading] = useState(false);
+  const [payModalVisible, setPayModalVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
   const { height } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
@@ -47,17 +56,121 @@ export default function Billing() {
     : "-";
 
   // invoke the backend API to handle the payment request
+  // Fetches saved payment methods and pre-selects the default card
+  // Returns the array directly so callers can use it immediately without waiting for state to update
+  const fetchMethods = async (): Promise<PaymentMethod[]> => {
+    setMethodsLoading(true);
+    try {
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return [];
+      }
+
+      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        Alert.alert("Error", "Failed to fetch payment methods");
+        return [];
+      }
+
+      const { methods: fetched } = await response.json();
+      const sorted = [...fetched].reverse();
+      setMethods(sorted);
+
+      // Pre-select the default card, fall back to first card if no default set
+      const defaultCard = sorted.find((m: PaymentMethod) => m.isDefault);
+      setSelectedId(defaultCard?.id ?? sorted[0]?.id ?? null);
+
+      return sorted;
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+      return [];
+    } finally {
+      setMethodsLoading(false);
+    }
+  };
+
+  // Called when PAY NOW is tapped, fetches methods first then decides which flow to use
   const handlePayment = async () => {
+    try{
+      setLoading(true);
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return;
+      }
+
+      // Use returned array directly to avoid timing issue
+      const fetched = await fetchMethods();
+
+      // If no saved methods skip the modal and go straight to PaymentSheet
+      if (fetched.length === 0) {
+        await handlePayWithNewCard(access_token);
+        return;
+      }
+
+      setPayModalVisible(true);
+    } catch( error: any){
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pays the invoice using a saved card, backend confirms the PaymentIntent directly
+  const handlePayWithExisting = async () => {
+    if (!selectedId) return;
+    setPayModalVisible(false);
     try {
       // button has been clicked so lock it from being clicked again
       setLoading(true);
 
       const access_token = await getToken();
-
       if (!access_token) {
         Alert.alert("Session Expired", "Please log in again");
         return;
       }
+
+      const response = await fetch(
+        // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
+        "http://localhost:3000/api/billing/payInvoice",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ paymentMethodId: selectedId }),
+        },
+      );
+
+      if (!response.ok) {
+        Alert.alert("Error", "Payment failed");
+        return;
+      }
+
+      // refresh the bill data to reflect the payment
+      await fetchBillData();
+      Alert.alert("Success", "Your payment was successful.");
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pays the invoice using a new card via the PaymentSheet
+  const handlePayWithNewCard = async (access_token: string) => {
+    try {
+      setLoading(true);
+      setPayModalVisible(false);
 
       // get the client secret for the open invoice
       const response = await fetch(
@@ -74,6 +187,7 @@ export default function Billing() {
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to initialize payment");
+        return;
       }
 
       // obtain the clientSecret from successful intent creation
@@ -108,7 +222,6 @@ export default function Billing() {
         // refresh the bill data to reflect the payment
         await fetchBillData();
       }
-      // catch any other errors not handled explicity
     } catch (error: any) {
       Alert.alert("Error", error.message);
       // regardless of if errors are caught or not, reset the button so it can be clicked once more
@@ -174,7 +287,12 @@ export default function Billing() {
             locations={[0, 0.2, 1]}
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 0.8 }}
-            className="absolute top-0 w-full h-full"
+            style={{
+              position: 'absolute',
+              top: 0,
+              width: '100%',
+              height: '100%',
+            }}
           />
 
           <View>
@@ -297,6 +415,32 @@ export default function Billing() {
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      {/* Pay Now full page modal */}
+      <PayNowModal
+        visible={payModalVisible}
+        onClose={() => setPayModalVisible(false)}
+        methods={methods}
+        methodsLoading={methodsLoading}
+        selectedId={selectedId}
+        onSelectId={(id) => {
+          setSelectedId(id);
+          setDropdownOpen(false);
+        }}
+        dropdownOpen={dropdownOpen}
+        onToggleDropdown={() => setDropdownOpen(!dropdownOpen)}
+        onConfirm={handlePayWithExisting}
+        onAddNew={async () => {
+          const access_token = await getToken();
+          if (!access_token) {
+            Alert.alert("Session Expired", "Please log in again");
+            return;
+          }
+          await handlePayWithNewCard(access_token);
+        }}
+        totalAmountDue={billData?.totalAmountDue ?? 0}
+        dueDate={billData?.dueDate ?? null}
+      />
     </SafeAreaView>
   );
 }

@@ -1,11 +1,20 @@
 import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
+import PayNowModal from "@/components/payNowModal";
+import { PaymentMethod } from "@/components/paymentPicker";
 import { useBillData } from "@/hooks/useBillData";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
+import {
+    Alert,
+    Linking,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
+// Shape of a payment method returned from our backend
 // Interface for the card
 interface ProgramCardProps {
   title: string;
@@ -54,24 +63,139 @@ export default function Programs() {
   const { getToken } = useAuth();
   const { billData, billLoading, fetchBillData } = useBillData();
 
+  // Payment method selection state for Pay Now modal
+  const [methods, setMethods] = useState<PaymentMethod[]>([]);
+  const [methodsLoading, setMethodsLoading] = useState(false);
+  const [payModalVisible, setPayModalVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
   useFocusEffect(
     useCallback(() => {
       fetchBillData();
     }, [])
   );
 
-  // invoke the backend API to handle the payment request
+  // Fetches saved payment methods, pre-selects the default card, and returns the list
+  // Returns the array directly so callers can use it immediately without waiting for state to update
+  const fetchMethods = async (): Promise<PaymentMethod[]> => {
+    setMethodsLoading(true);
+    try {
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return [];
+      }
+
+      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+
+      if (!response.ok) {
+        Alert.alert("Error", "Failed to fetch payment methods");
+        return [];
+      }
+
+      const { methods: fetched } = await response.json();
+
+      // Stripe returns newest first so reverse for oldest to newest display order
+      const sorted = [...fetched].reverse();
+      setMethods(sorted);
+
+      // Pre-select the default card, fall back to first card if no default set
+      const defaultCard = sorted.find((m: PaymentMethod) => m.isDefault);
+      setSelectedId(defaultCard?.id ?? sorted[0]?.id ?? null);
+
+      return sorted;
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+      return [];
+    } finally {
+      setMethodsLoading(false);
+    }
+  };
+
+  // Called when Pay Now is tapped — fetches methods first then decides which flow to use
   const handlePayment = async () => {
     try {
       // button has been clicked so lock it from being clicked again
       setLoading(true);
 
       const access_token = await getToken();
-
       if (!access_token) {
         Alert.alert("Session Expired", "Please log in again");
         return;
       }
+
+      // Use returned array directly to avoid stale state timing issue
+      const fetched = await fetchMethods();
+
+      // If no saved methods skip the modal and go straight to PaymentSheet
+      if (fetched.length === 0) {
+        await handlePayWithNewCard(access_token);
+        return;
+      }
+
+      setPayModalVisible(true);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pays the invoice using a saved card — backend confirms the PaymentIntent directly
+  const handlePayWithExisting = async () => {
+    if (!selectedId) return;
+    setPayModalVisible(false);
+
+    try {
+      // button has been clicked so lock it from being clicked again
+      setLoading(true);
+
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return;
+      }
+
+      const response = await fetch(
+        // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
+        "http://localhost:3000/api/billing/payInvoice",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ paymentMethodId: selectedId }),
+        },
+      );
+
+      if (!response.ok) {
+        Alert.alert("Error", "Payment failed");
+        return;
+      }
+
+      // refresh the bill data to reflect the payment
+      await fetchBillData();
+      Alert.alert("Success", "Your payment was successful.");
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Pays the invoice using a new card via the PaymentSheet
+  const handlePayWithNewCard = async (access_token: string) => {
+    try {
+      setLoading(true);
+      setPayModalVisible(false);
 
       // get the client secret for the open invoice
       const response = await fetch(
@@ -119,7 +243,7 @@ export default function Programs() {
       if (paymentError) {
         Alert.alert("Payment failed", paymentError.message);
       }
-      // catch any other errors not handled explicity
+      // catch any other errors not handled explicitly
     } catch (error: any) {
       Alert.alert("Error", error.message);
       // regardless of if errors are caught or not, reset the button so it can be clicked once more
@@ -148,8 +272,8 @@ export default function Programs() {
           onPress={handlePayment}
           disabled={loading || billData?.status !== "open"}
           className={`bg-section rounded-lg overflow-hidden ${
-            loading || billData?.status !== "open" 
-              ? "opacity-50" 
+            loading || billData?.status !== "open"
+              ? "opacity-50"
               : "opacity-100"
           }`}
         >
@@ -281,6 +405,32 @@ export default function Programs() {
         {/* Conditional rendering */}
         {tabContent}
       </View>
+
+      {/* Pay Now full page modal */}
+      <PayNowModal
+        visible={payModalVisible}
+        onClose={() => setPayModalVisible(false)}
+        methods={methods}
+        methodsLoading={methodsLoading}
+        selectedId={selectedId}
+        onSelectId={(id) => {
+          setSelectedId(id);
+          setDropdownOpen(false);
+        }}
+        dropdownOpen={dropdownOpen}
+        onToggleDropdown={() => setDropdownOpen(!dropdownOpen)}
+        onConfirm={handlePayWithExisting}
+        onAddNew={async () => {
+          const access_token = await getToken();
+          if (!access_token) {
+            Alert.alert("Session Expired", "Please log in again");
+            return;
+          }
+          await handlePayWithNewCard(access_token);
+        }}
+        totalAmountDue={billData?.totalAmountDue ?? 0}
+        dueDate={billData?.dueDate ?? null}
+      />
     </View>
   );
 }

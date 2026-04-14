@@ -1,18 +1,32 @@
 import ScreenHeader from '@/components/headerStyle';
-import { mockPayments } from '@/constants/mockBillingData';
 import { format, parseISO } from 'date-fns';
 import { useLocalSearchParams } from 'expo-router';
 import { Text, View } from 'react-native';
 
+// Shape of payment data passed as a route param from billsAndPayments/index
+type PaymentItem = {
+   id: string;
+   paymentDate: string;
+   paymentAmount: number;
+   paymentType: string;
+   paymentStatus: string;
+   invoiceId: string;
+};
+
 export default function PaidInvoice() {
 
-   const { paymentId } = useLocalSearchParams(); // Grab the ID that is attached to the page URL in billsAndPayments/index. Each payment has its own unique ID.
-   const payment = mockPayments.find(p => p.id === paymentId); // Once we obtain the ID we serach the file for it to retrieve all of its information.
+   const { payment: paymentParam } = useLocalSearchParams();
+
+   // Payment data was passed as a JSON string param to avoid a second fetch on this screen
+   const payment: PaymentItem | null = paymentParam
+      ? JSON.parse(paymentParam as string)
+      : null;
 
    // Error check to make sure app doesn't crash if there is no matching payment.
-   if( !payment ){
+   if (!payment) {
       return (
          <View className="flex-1 justify-center items-center">
+            <ScreenHeader title="Payment Detail" />
             <Text className="text-text_main font-bold text-lg">Payment not found.</Text>
          </View>
       );
