@@ -6,7 +6,7 @@ import { supabase } from '../../database/supabase';
 import {
     attachPaymentMethod, createCustomer, createCustomerSubscription,
     disableAutoPay, enableAutoPay,
-    getCustomerInvoice, reportElectricUsage, reportWaterOrWasteUsage
+    getCustomerInvoice, getPaymentMethods, reportElectricUsage, reportWaterOrWasteUsage
 } from '../../services/stripeService';
 dotenv.config();
 
@@ -366,5 +366,38 @@ export const payInvoice = async ( req: Request, res: Response ) => {
     } catch( error: any ){
         console.error(error);
         return res.status(500).json({ error: 'Failed to pay invoice' });
+    }
+}
+
+export const paymentMethods = async (req: Request, res: Response) => {
+    try {
+        // get the userId from middleware
+        const userId = (req as any).userId;
+
+        // get the stripe customer ID from the database
+        const { data, error: queryError } = await supabase
+            .from('billing_profiles')
+            .select('stripe_customer_id')
+            .eq('user_id', userId)
+            .single();
+
+        if( queryError ){
+            return res.status(500).json({ error: queryError.message });
+        }
+        if( !data ){
+            return res.status(404).json({ error: 'User Not Found' });
+        }
+
+        const stripeId = data.stripe_customer_id;
+
+        // retrieve all card payment methods attached to this customer
+        const paymentMethodsList = await getPaymentMethods(stripeId);
+
+        return res.status(200).json({ paymentMethods: paymentMethodsList.data });
+    }
+    // If any uncaught error arise
+    catch( error: any ){
+        console.error(error);
+        return res.status(500).json({ error: 'Failed to retrieve payment methods' });
     }
 }

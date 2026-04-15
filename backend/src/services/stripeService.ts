@@ -114,6 +114,11 @@ export const disableAutoPay = async ( subscriptionId: string ) => {
     });
 }
 
+// method to retrieve all payment methods attached to a customer
+export const getPaymentMethods = async ( stripeId: string ) => {
+    return await stripe.customers.listPaymentMethods(stripeId, { type: 'card' });
+}
+
 // // marks the subscription incomplete if payment is required so frontend can handle payment
 // payment_behavior: 'default_incomplete',
 // // return the client_secret to frontend Stripe SDK in order to confirm payment
