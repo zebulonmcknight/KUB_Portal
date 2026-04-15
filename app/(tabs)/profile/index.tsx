@@ -361,7 +361,15 @@ export default function ProfileScreen({
           <Text style={styles.accountDetail}>
             Account # {user.accountNumber}
           </Text>
-          <TouchableOpacity style={styles.manageBtn} activeOpacity={0.8}>
+          <TouchableOpacity
+            style={styles.manageBtn}
+            activeOpacity={0.8}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/profile/manageYourService",
+              })
+            }
+          >
             <Text style={styles.manageBtnText}>MANAGE YOUR SERVICE</Text>
           </TouchableOpacity>
         </View>
@@ -402,16 +410,25 @@ export default function ProfileScreen({
             onPress={() => open("phone")}
           />
           <Divider />
-          <RowButton
-            icon={
-              <Image
-                source={icons.phonebook}
-                style={{ width: 18, height: 18 }}
-              />
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() =>
+              router.push({
+                pathname: "/(tabs)/profile/alternateContacts",
+              })
             }
-            label="Alternate Contacts"
-            chevron={false}
-          />
+          >
+            <RowButton
+              icon={
+                <Image
+                  source={icons.phonebook}
+                  style={{ width: 18, height: 18 }}
+                />
+              }
+              label="Alternate Contacts"
+              chevron={false}
+            />
+          </TouchableOpacity>
           <Divider />
           <RowButton
             icon={
@@ -436,6 +453,7 @@ export default function ProfileScreen({
             onPress={() => open("feedback")}
           />
         </View>
+        <Divider />
 
         {/* Logout */}
         <TouchableOpacity
@@ -682,7 +700,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 16,
     paddingVertical: 14,
   },
   rowIcon: { marginRight: 12 },
@@ -692,7 +709,6 @@ const styles = StyleSheet.create({
   divider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.06)",
-    marginLeft: 16,
   },
   logoutRow: {
     flexDirection: "row",

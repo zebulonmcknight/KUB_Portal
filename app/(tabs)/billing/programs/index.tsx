@@ -6,13 +6,7 @@ import { useBillData } from "@/hooks/useBillData";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import {
-    Alert,
-    Linking,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
 
 // Shape of a payment method returned from our backend
 // Interface for the card
@@ -73,7 +67,7 @@ export default function Programs() {
   useFocusEffect(
     useCallback(() => {
       fetchBillData();
-    }, [])
+    }, []),
   );
 
   // Fetches saved payment methods, pre-selects the default card, and returns the list
@@ -87,13 +81,16 @@ export default function Programs() {
         return [];
       }
 
-      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
+      const response = await fetch(
+        "http://localhost:3000/api/billing/paymentMethods",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch payment methods");

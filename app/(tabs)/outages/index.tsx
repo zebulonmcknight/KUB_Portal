@@ -21,7 +21,7 @@ const STARTING_COORDINATES = {
 };
 
 const LEGEND = [
-  { label: "1-9", color: "grey" },
+  { label: "1-9", color: "yellow" },
   { label: "10-49", color: "blue" },
   { label: "50-199", color: "green" },
   { label: "200-499", color: "purple" },
@@ -41,7 +41,7 @@ const FAKE_OUTAGES = [
     latitude: 36.08,
     longitude: -83.95,
     range: "1-9",
-    color: "grey",
+    color: "yellow",
   },
   {
     id: 3,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0d1b2e",
   },
   map: {
-    height: height * 0.6,
+    height: height * 0.45,
   },
   panel: {
     backgroundColor: "#0d1b2e",

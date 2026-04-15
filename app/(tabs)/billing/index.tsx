@@ -47,7 +47,7 @@ export default function Billing() {
   useFocusEffect(
     useCallback(() => {
       fetchBillData();
-    }, [])
+    }, []),
   );
 
   // Since the due date can be null if they dont have previous invoice we account for that here
@@ -67,13 +67,16 @@ export default function Billing() {
         return [];
       }
 
-      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
+      const response = await fetch(
+        "http://localhost:3000/api/billing/paymentMethods",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch payment methods");
@@ -99,7 +102,7 @@ export default function Billing() {
 
   // Called when PAY NOW is tapped, fetches methods first then decides which flow to use
   const handlePayment = async () => {
-    try{
+    try {
       setLoading(true);
       const access_token = await getToken();
       if (!access_token) {
@@ -117,7 +120,7 @@ export default function Billing() {
       }
 
       setPayModalVisible(true);
-    } catch( error: any){
+    } catch (error: any) {
       Alert.alert("Error", error.message);
     } finally {
       setLoading(false);
@@ -288,10 +291,10 @@ export default function Billing() {
             start={{ x: 0, y: 0 }}
             end={{ x: 0, y: 0.8 }}
             style={{
-              position: 'absolute',
+              position: "absolute",
               top: 0,
-              width: '100%',
-              height: '100%',
+              width: "100%",
+              height: "100%",
             }}
           />
 

@@ -4,7 +4,14 @@ import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { ActivityIndicator, Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+    ActivityIndicator,
+    Alert,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 
 // Shape of paymentMethod returned from our backend
 type PaymentMethod = {
@@ -16,341 +23,365 @@ type PaymentMethod = {
   isDefault: boolean;
 };
 
-export default function PaymentMethod(){
-   const router = useRouter();
-   const { getToken } = useAuth();
-   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-   const tabBarHeight = useBottomTabBarHeight();
+export default function PaymentMethod() {
+  const router = useRouter();
+  const { getToken } = useAuth();
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+  const tabBarHeight = useBottomTabBarHeight();
 
-   const [methods, setMethods] = useState<PaymentMethod[]>([]);
-   const [methodsLoading, setMethodsLoading] = useState(false);
-   const [loading, setLoading] = useState(false); // for add payment button
-   const [menuOpenId, setMenuOpenId] = useState<string | null>(null); // tracks which rows menu is open
-   const [loadingId, setLoadingId] = useState<string | null>(null); // tracks which row is doing an action
+  const [methods, setMethods] = useState<PaymentMethod[]>([]);
+  const [methodsLoading, setMethodsLoading] = useState(false);
+  const [loading, setLoading] = useState(false); // for add payment button
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null); // tracks which rows menu is open
+  const [loadingId, setLoadingId] = useState<string | null>(null); // tracks which row is doing an action
 
-   // fetch saved payment methods on focus so list stays updated after add/delete
-   useFocusEffect(
-      useCallback(() => {
-         fetchMethods();
-      }, [])
-   );
+  // fetch saved payment methods on focus so list stays updated after add/delete
+  useFocusEffect(
+    useCallback(() => {
+      fetchMethods();
+    }, []),
+  );
 
-   const fetchMethods = async () => {
-      try {
-         setMethodsLoading(true);
-         const access_token = await getToken();
-         if (!access_token) {
-            Alert.alert("Session Expired", "Please log in again");
-            return;
-         }
-
-         const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
-            method: "GET",
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${access_token}`,
-            },
-         });
-
-         if (!response.ok) {
-            Alert.alert("Error", "Failed to fetch payment methods");
-            return;
-         }
-
-         const { methods } = await response.json();
-
-         // Pin default to top, sort the rest oldest to newest by Stripe's created order
-         // Stripe returns cards newest first so we reverse for the non-default ones
-         const sorted = [...methods].reverse();
-         setMethods(sorted);
-         
-      } catch (error: any) {
-         Alert.alert("Error", error.message);
+  const fetchMethods = async () => {
+    try {
+      setMethodsLoading(true);
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return;
       }
-      finally{
-         setMethodsLoading(false);
-      }
-   };
 
-   // Detaches the card from the Stripe customer and refreshes the list
-   const handleDelete = async (id: string) => {
-      Alert.alert("Remove Card", "Are you sure you want to remove this card?",
-         [
-            { text: "No" },
-            { text: "Yes",
-               onPress: async () => {
-                  try {
-                     setLoadingId(id);
-                     setMenuOpenId(null);
-                     const access_token = await getToken();
-                     if (!access_token) {
-                        Alert.alert("Session Expired", "Please log in again");
-                        return;
-                     }
-
-                     const response = await fetch("http://localhost:3000/api/billing/paymentMethods/remove", {
-                        method: "POST",
-                        headers: {
-                           "Content-Type": "application/json",
-                           Authorization: `Bearer ${access_token}`,
-                        },
-                        body: JSON.stringify({ paymentMethodId: id }),
-                     });
-
-                     if (!response.ok) {
-                        Alert.alert("Error", "Failed to remove payment method");
-                        return;
-                     }
-
-                     await fetchMethods();
-                  } catch (error: any) {
-                     Alert.alert("Error", error.message);
-                  } finally {
-                     setLoadingId(null);
-                  }
-               },
-            },
-         ]
+      const response = await fetch(
+        "http://localhost:3000/api/billing/paymentMethods",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+        },
       );
-   };
 
-   // Updates the customer's default payment method on Stripe and refreshes
-   const handleSetDefault = async (id: string) => {
-      try {
-         setLoadingId(id);
-         setMenuOpenId(null);
-         const access_token = await getToken();
-         if (!access_token) {
-            Alert.alert("Session Expired", "Please log in again");
-            return;
-         }
-
-         const response = await fetch("http://localhost:3000/api/billing/paymentMethods/setDefault", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${access_token}`,
-            },
-            body: JSON.stringify({ paymentMethodId: id }),
-         });
-
-         if (!response.ok) {
-            Alert.alert("Error", "Failed to set default payment method");
-            return;
-         }
-
-         await fetchMethods();
-      } catch (error: any) {
-         Alert.alert("Error", error.message);
-      } finally {
-         setLoadingId(null);
+      if (!response.ok) {
+        Alert.alert("Error", "Failed to fetch payment methods");
+        return;
       }
-   };
 
-   // Launches SetupSheet to collect a new card, then saves it via addPaymentMethod endpoint
-   const handleAddNew = async () => {
-      try {
-         setLoading(true);
-         const access_token = await getToken();
-         if (!access_token) {
-            Alert.alert("Session Expired", "Please log in again");
-            return;
-         }
+      const { methods } = await response.json();
 
-         // Create a SetupIntent to initialize the sheet
-         const setupResponse = await fetch("http://localhost:3000/api/billing/autopay/setup", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${access_token}`,
-            },
-         });
+      // Pin default to top, sort the rest oldest to newest by Stripe's created order
+      // Stripe returns cards newest first so we reverse for the non-default ones
+      const sorted = [...methods].reverse();
+      setMethods(sorted);
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setMethodsLoading(false);
+    }
+  };
 
-         if (!setupResponse.ok) {
-            Alert.alert("Error", "Failed to initialize card setup");
-            return;
-         }
+  // Detaches the card from the Stripe customer and refreshes the list
+  const handleDelete = async (id: string) => {
+    Alert.alert("Remove Card", "Are you sure you want to remove this card?", [
+      { text: "No" },
+      {
+        text: "Yes",
+        onPress: async () => {
+          try {
+            setLoadingId(id);
+            setMenuOpenId(null);
+            const access_token = await getToken();
+            if (!access_token) {
+              Alert.alert("Session Expired", "Please log in again");
+              return;
+            }
 
-         const { clientSecret } = await setupResponse.json();
+            const response = await fetch(
+              "http://localhost:3000/api/billing/paymentMethods/remove",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${access_token}`,
+                },
+                body: JSON.stringify({ paymentMethodId: id }),
+              },
+            );
 
-         if (!clientSecret) {
-            Alert.alert("Error", "No client secret returned from server");
-            return;
-         }
+            if (!response.ok) {
+              Alert.alert("Error", "Failed to remove payment method");
+              return;
+            }
 
-         const { error: initError } = await initPaymentSheet({
-            merchantDisplayName: "KUB",
-            setupIntentClientSecret: clientSecret,
-         });
+            await fetchMethods();
+          } catch (error: any) {
+            Alert.alert("Error", error.message);
+          } finally {
+            setLoadingId(null);
+          }
+        },
+      },
+    ]);
+  };
 
-         if (initError) {
-            Alert.alert("Error", initError.message);
-            return;
-         }
-
-         const { error: sheetError } = await presentPaymentSheet();
-         if (sheetError) {
-            Alert.alert("Error", sheetError.message);
-            return;
-         }
-
-         // Extract setupIntentId from clientSecret and save the payment method
-         const setupIntentId = clientSecret.split("_secret_")[0];
-
-         const addResponse = await fetch("http://localhost:3000/api/billing/paymentMethods/add", {
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               Authorization: `Bearer ${access_token}`,
-            },
-            body: JSON.stringify({ setupIntentId }),
-         });
-
-         if (!addResponse.ok) {
-            Alert.alert("Error", "Failed to save payment method");
-            return;
-         }
-
-         await fetchMethods();
-      } catch (error: any) {
-         Alert.alert("Error", error.message);
-      } finally {
-         setLoading(false);
+  // Updates the customer's default payment method on Stripe and refreshes
+  const handleSetDefault = async (id: string) => {
+    try {
+      setLoadingId(id);
+      setMenuOpenId(null);
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return;
       }
-   };
 
-   const renderPaymentMethod = (item: PaymentMethod) => {
-      const isMenuOpen = menuOpenId === item.id;
-      const isItemLoading = loadingId === item.id;
-
-      return (
-         <View
-            key={item.id}
-            className="border-b border-section py-4 flex-row items-center justify-between"
-         >
-            <View className="gap-1">
-               {/* Default badge shown inline with card type */}
-               <View className="flex-row items-center gap-2">
-                  <Text className="text-text_main text-xl font-sans tracking-wide">
-                     Credit / Debit Card
-                  </Text>
-                  {item.isDefault && (
-                     <View className="bg-active_icon px-2 py-0.5 rounded-full">
-                        <Text className="text-text_main text-xs font-bold">Default</Text>
-                     </View>
-                  )}
-               </View>
-               <Text className="text-inactive_text text-sm font-sans tracking-wide">
-                  **** {item.last4}
-               </Text>
-               <Text className="text-inactive_text text-sm font-sans tracking-wide">
-                  {item.brand.toUpperCase()}    EXP. {String(item.expMonth).padStart(2, "0")}/{String(item.expYear).slice(-2)}
-               </Text>
-            </View>
-
-            <View className="items-end">
-               {isItemLoading ? (
-                  <ActivityIndicator size="small" color="#3377F4" className="p-4" />
-               ) : (
-                  <TouchableOpacity
-                     onPress={() => setMenuOpenId(isMenuOpen ? null : item.id)}
-                     className="py-1"
-                  >
-                     <Text className="text-blue-500 text-2xl p-4 leading-none">⋮</Text>
-                  </TouchableOpacity>
-               )}
-
-               {isMenuOpen && (
-                  <View className="bg-section mr-4 rounded-lg overflow-hidden">
-                     {/* Only show Set as Default if not already default */}
-                     {!item.isDefault && methods.length > 1 && (
-                        <TouchableOpacity
-                           onPress={() => handleSetDefault(item.id)}
-                           className="px-4 py-2 border-b border-inactive_icon"
-                        >
-                           <Text className="text-text_main text-base font-sans">Set as Default</Text>
-                        </TouchableOpacity>
-                     )}
-                     <TouchableOpacity
-                        onPress={() => handleDelete(item.id)}
-                        className="px-4 py-2"
-                     >
-                        <Text className="text-red-500 text-base font-sans">Delete</Text>
-                     </TouchableOpacity>
-                  </View>
-               )}
-            </View>
-         </View>
+      const response = await fetch(
+        "http://localhost:3000/api/billing/paymentMethods/setDefault",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ paymentMethodId: id }),
+        },
       );
-   };
 
-   if (methodsLoading && methods.length === 0) {
-      return (
-         <View className="flex-1 justify-center items-center">
-            <ScreenHeader title="Payment Method" />
-            <ActivityIndicator size="large" color="#3377F4" />
-         </View>
+      if (!response.ok) {
+        Alert.alert("Error", "Failed to set default payment method");
+        return;
+      }
+
+      await fetchMethods();
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoadingId(null);
+    }
+  };
+
+  // Launches SetupSheet to collect a new card, then saves it via addPaymentMethod endpoint
+  const handleAddNew = async () => {
+    try {
+      setLoading(true);
+      const access_token = await getToken();
+      if (!access_token) {
+        Alert.alert("Session Expired", "Please log in again");
+        return;
+      }
+
+      // Create a SetupIntent to initialize the sheet
+      const setupResponse = await fetch(
+        "http://localhost:3000/api/billing/autopay/setup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+        },
       );
-   }
 
-   return (
-      <View className="flex-1">
-         <ScreenHeader title="Payment Method" />
-         <ScrollView
-         showsVerticalScrollIndicator={false}
-         contentContainerStyle={{ paddingBottom: tabBarHeight }}
-         >
-         <View className="ml-4 mt-12">
-            <Text className="text-text_main tracking-wide text-xl font-bold">
-               Saved Payment Methods
+      if (!setupResponse.ok) {
+        Alert.alert("Error", "Failed to initialize card setup");
+        return;
+      }
+
+      const { clientSecret } = await setupResponse.json();
+
+      if (!clientSecret) {
+        Alert.alert("Error", "No client secret returned from server");
+        return;
+      }
+
+      const { error: initError } = await initPaymentSheet({
+        merchantDisplayName: "KUB",
+        setupIntentClientSecret: clientSecret,
+      });
+
+      if (initError) {
+        Alert.alert("Error", initError.message);
+        return;
+      }
+
+      const { error: sheetError } = await presentPaymentSheet();
+      if (sheetError) {
+        Alert.alert("Error", sheetError.message);
+        return;
+      }
+
+      // Extract setupIntentId from clientSecret and save the payment method
+      const setupIntentId = clientSecret.split("_secret_")[0];
+
+      const addResponse = await fetch(
+        "http://localhost:3000/api/billing/paymentMethods/add",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+          },
+          body: JSON.stringify({ setupIntentId }),
+        },
+      );
+
+      if (!addResponse.ok) {
+        Alert.alert("Error", "Failed to save payment method");
+        return;
+      }
+
+      await fetchMethods();
+    } catch (error: any) {
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const renderPaymentMethod = (item: PaymentMethod) => {
+    const isMenuOpen = menuOpenId === item.id;
+    const isItemLoading = loadingId === item.id;
+
+    return (
+      <View
+        key={item.id}
+        className="border-b border-section py-4 flex-row items-center justify-between"
+      >
+        <View className="gap-1">
+          {/* Default badge shown inline with card type */}
+          <View className="flex-row items-center gap-2">
+            <Text className="text-text_main text-xl font-sans tracking-wide">
+              Credit / Debit Card
             </Text>
+            {item.isDefault && (
+              <View className="bg-active_icon px-2 py-0.5 rounded-full">
+                <Text className="text-text_main text-xs font-bold">
+                  Default
+                </Text>
+              </View>
+            )}
+          </View>
+          <Text className="text-inactive_text text-sm font-sans tracking-wide">
+            **** {item.last4}
+          </Text>
+          <Text className="text-inactive_text text-sm font-sans tracking-wide">
+            {item.brand.toUpperCase()} EXP.{" "}
+            {String(item.expMonth).padStart(2, "0")}/
+            {String(item.expYear).slice(-2)}
+          </Text>
+        </View>
 
-            {methods.map(renderPaymentMethod)}
-
-            {/* Add Payment Method row */}
+        <View className="items-end">
+          {isItemLoading ? (
+            <ActivityIndicator size="small" color="#3377F4" className="p-4" />
+          ) : (
             <TouchableOpacity
-               onPress={handleAddNew}
-               disabled={loading}
-               className={`border-b border-section flex-row items-center justify-between ${loading ? "opacity-50" : "opacity-100"}`}
+              onPress={() => setMenuOpenId(isMenuOpen ? null : item.id)}
+              className="py-1"
             >
-               <Text className="text-text_main text-xl font-sans tracking-wide">
-               {loading ? "Processing..." : "Add Payment Method"}
-               </Text>
-               <Text className="text-blue-500 p-4 text-2xl">+</Text>
+              <Text className="text-blue-500 text-2xl p-4 leading-none">⋮</Text>
             </TouchableOpacity>
+          )}
 
-            <Text className="text-text_main tracking-wide text-xl font-bold mt-10">
-               Other Payment Methods
-            </Text>
-
-            <View className="gap-2 mt-4">
-               <TouchableOpacity
-                  onPress={() => router.push("/(tabs)/billing/paymentMethod/payInPerson")}
-                  className="border-b border-section py-2"
-               >
-                  <Text className="text-text_main tracking-wide text-xl font-sans">
-                     Pay In Person
+          {isMenuOpen && (
+            <View className="bg-section mr-4 rounded-lg overflow-hidden">
+              {/* Only show Set as Default if not already default */}
+              {!item.isDefault && methods.length > 1 && (
+                <TouchableOpacity
+                  onPress={() => handleSetDefault(item.id)}
+                  className="px-4 py-2 border-b border-inactive_icon"
+                >
+                  <Text className="text-text_main text-base font-sans">
+                    Set as Default
                   </Text>
-               </TouchableOpacity>
-               <TouchableOpacity
-                  onPress={() => router.push("/(tabs)/billing/paymentMethod/payByPhone")}
-                  className="border-b border-section py-2"
-               >
-                  <Text className="text-text_main tracking-wide text-xl font-sans">
-                     Pay By Phone
-                  </Text>
-               </TouchableOpacity>
-               <TouchableOpacity
-                  onPress={() => router.push("/(tabs)/billing/paymentMethod/payByMail")}
-                  className="border-b border-section py-2"
-               >
-                  <Text className="text-text_main tracking-wide text-xl font-sans">
-                     Pay By Mail
-                  </Text>
-               </TouchableOpacity>
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity
+                onPress={() => handleDelete(item.id)}
+                className="px-4 py-2"
+              >
+                <Text className="text-red-500 text-base font-sans">Delete</Text>
+              </TouchableOpacity>
             </View>
-         </View>
-         </ScrollView>
+          )}
+        </View>
       </View>
-   );
+    );
+  };
+
+  if (methodsLoading && methods.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <ScreenHeader title="Payment Method" />
+        <ActivityIndicator size="large" color="#3377F4" />
+      </View>
+    );
+  }
+
+  return (
+    <View className="flex-1">
+      <ScreenHeader title="Payment Method" />
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: tabBarHeight }}
+      >
+        <View className="ml-4 mt-12">
+          <Text className="text-text_main tracking-wide text-xl font-bold">
+            Saved Payment Methods
+          </Text>
+
+          {methods.map(renderPaymentMethod)}
+
+          {/* Add Payment Method row */}
+          <TouchableOpacity
+            onPress={handleAddNew}
+            disabled={loading}
+            className={`border-b border-section flex-row items-center justify-between ${loading ? "opacity-50" : "opacity-100"}`}
+          >
+            <Text className="text-text_main text-xl font-sans tracking-wide">
+              {loading ? "Processing..." : "Add Payment Method"}
+            </Text>
+            <Text className="text-blue-500 p-4 text-2xl">+</Text>
+          </TouchableOpacity>
+
+          <Text className="text-text_main tracking-wide text-xl font-bold mt-10">
+            Other Payment Methods
+          </Text>
+
+          <View className="gap-2 mt-4">
+            <TouchableOpacity
+              onPress={() =>
+                router.push("/(tabs)/billing/paymentMethod/payInPerson")
+              }
+              className="border-b border-section py-2"
+            >
+              <Text className="text-text_main tracking-wide text-xl font-sans">
+                Pay In Person
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                router.push("/(tabs)/billing/paymentMethod/payByPhone")
+              }
+              className="border-b border-section py-2"
+            >
+              <Text className="text-text_main tracking-wide text-xl font-sans">
+                Pay By Phone
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                router.push("/(tabs)/billing/paymentMethod/payByMail")
+              }
+              className="border-b border-section py-2"
+            >
+              <Text className="text-text_main tracking-wide text-xl font-sans">
+                Pay By Mail
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </View>
+  );
 }

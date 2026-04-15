@@ -23,11 +23,9 @@ export const login = async (req: Request, res: Response) => {
     console.error("Login error details:", error);
     console.error("message: ", error.message);
     // return the error description or if null, 'Login Failed'
-    return res
-      .status(401)
-      .json({
-        error: error.response?.data?.error_description || "Login Failed",
-      });
+    return res.status(401).json({
+      error: error.response?.data?.error_description || "Login Failed",
+    });
   }
 };
 
@@ -134,13 +132,18 @@ export const resetPassword = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     if (!email) {
-        return res.status(400).json({ error: "Email is required" });
+      return res.status(400).json({ error: "Email is required" });
     }
 
     await auth0Service.resetPassword(email);
 
-    return res.status(200).json({ message: "If an account exists for that email, a reset link has been sent." });
+    return res.status(200).json({
+      message:
+        "If an account exists for that email, a reset link has been sent.",
+    });
   } catch (error: any) {
-    return res.status(error.status || 500).json({ error: error.message || "Password reset failed" });
+    return res
+      .status(error.status || 500)
+      .json({ error: error.message || "Password reset failed" });
   }
 };

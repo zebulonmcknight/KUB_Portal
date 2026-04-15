@@ -18,17 +18,20 @@ export default function ForgotPassword() {
   // Checks: "1 or more characters" @ "1 or more characters" . "1 or more characters"
   const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
- const resetPassword = async () => {
+  const resetPassword = async () => {
     try {
       setLoading(true);
       // Make a call to our signup api sending the information from our registration context
-      const response = await fetch("http://localhost:3000/api/auth/resetPassword", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:3000/api/auth/resetPassword",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: email,
+          }),
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Something went wrong. Please try again.");
@@ -42,8 +45,7 @@ export default function ForgotPassword() {
     } catch (error: any) {
       // catch errors not explicitly handled
       Alert.alert("Error", error.message);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -67,7 +69,7 @@ export default function ForgotPassword() {
         <TouchableOpacity
           disabled={!validEmail || loading}
           className={`mt-6 rounded-xl items-center ${
-            (validEmail && !loading) ? 'bg-[#3377F4]' : 'bg-[#3377F4]/50'
+            validEmail && !loading ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
           }`}
           onPress={resetPassword}
         >

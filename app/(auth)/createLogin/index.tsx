@@ -37,7 +37,7 @@ export default function CreateLogin() {
   // Function to send the information the user entered to the backend to verify that they are an existing customer
   const checkInfo = async () => {
     try {
-      setLoading(true)
+      setLoading(true);
       const response = await fetch(
         "http://localhost:3000/api/auth/verifyKubAccount",
         {
@@ -59,8 +59,7 @@ export default function CreateLogin() {
       router.push("/(auth)/createLogin/contactEmail"); // Send the user to the next page
     } catch (error: any) {
       setShowError(true);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -145,7 +144,7 @@ export default function CreateLogin() {
         <TouchableOpacity
           disabled={!isReady || loading}
           className={`mt-6 rounded-xl items-center ${
-            (isReady && !loading) ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
+            isReady && !loading ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
           }`}
           onPress={checkInfo}
         >

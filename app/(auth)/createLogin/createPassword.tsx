@@ -68,8 +68,7 @@ export default function CreatePassword() {
     } catch (error: any) {
       // catch errors not explicitly handled
       Alert.alert("Error", error.message);
-    }
-    finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -162,7 +161,7 @@ export default function CreatePassword() {
         <TouchableOpacity
           disabled={!isReady || loading}
           className={`mt-6 rounded-xl items-center ${
-            (isReady && !loading) ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
+            isReady && !loading ? "bg-[#3377F4]" : "bg-[#3377F4]/50"
           }`}
           onPress={authCreation}
         >
