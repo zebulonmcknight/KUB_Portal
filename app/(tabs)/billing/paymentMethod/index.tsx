@@ -51,16 +51,13 @@ export default function PaymentMethod() {
         return;
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/paymentMethods",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+            method: "GET",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch payment methods");
@@ -96,17 +93,14 @@ export default function PaymentMethod() {
               return;
             }
 
-            const response = await fetch(
-              "http://localhost:3000/api/billing/paymentMethods/remove",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${access_token}`,
-                },
-                body: JSON.stringify({ paymentMethodId: id }),
-              },
-            );
+                     const response = await fetch("http://localhost:3000/api/billing/paymentMethods/remove", {
+                        method: "POST",
+                        headers: {
+                           "Content-Type": "application/json",
+                           Authorization: `Bearer ${access_token}`,
+                        },
+                        body: JSON.stringify({ paymentMethodId: id }),
+                     });
 
             if (!response.ok) {
               Alert.alert("Error", "Failed to remove payment method");
@@ -135,17 +129,14 @@ export default function PaymentMethod() {
         return;
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/paymentMethods/setDefault",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-          body: JSON.stringify({ paymentMethodId: id }),
-        },
-      );
+         const response = await fetch("http://localhost:3000/api/billing/paymentMethods/setDefault", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+            body: JSON.stringify({ paymentMethodId: id }),
+         });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to set default payment method");
@@ -170,17 +161,14 @@ export default function PaymentMethod() {
         return;
       }
 
-      // Create a SetupIntent to initialize the sheet
-      const setupResponse = await fetch(
-        "http://localhost:3000/api/billing/autopay/setup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         // Create a SetupIntent to initialize the sheet
+         const setupResponse = await fetch("http://localhost:3000/api/billing/autopay/setup", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
 
       if (!setupResponse.ok) {
         Alert.alert("Error", "Failed to initialize card setup");
@@ -213,17 +201,14 @@ export default function PaymentMethod() {
       // Extract setupIntentId from clientSecret and save the payment method
       const setupIntentId = clientSecret.split("_secret_")[0];
 
-      const addResponse = await fetch(
-        "http://localhost:3000/api/billing/paymentMethods/add",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-          body: JSON.stringify({ setupIntentId }),
-        },
-      );
+         const addResponse = await fetch("http://localhost:3000/api/billing/paymentMethods/add", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+            body: JSON.stringify({ setupIntentId }),
+         });
 
       if (!addResponse.ok) {
         Alert.alert("Error", "Failed to save payment method");
@@ -351,7 +336,7 @@ export default function PaymentMethod() {
           <View className="gap-2 mt-4">
             <TouchableOpacity
               onPress={() =>
-                router.push("/(tabs)/billing/paymentMethod/payInPerson")
+                router.navigate("/(tabs)/billing/paymentMethod/payInPerson")
               }
               className="border-b border-section py-2"
             >
@@ -361,7 +346,7 @@ export default function PaymentMethod() {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
-                router.push("/(tabs)/billing/paymentMethod/payByPhone")
+                router.navigate("/(tabs)/billing/paymentMethod/payByPhone")
               }
               className="border-b border-section py-2"
             >
@@ -371,7 +356,7 @@ export default function PaymentMethod() {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
-                router.push("/(tabs)/billing/paymentMethod/payByMail")
+                router.navigate("/(tabs)/billing/paymentMethod/payByMail")
               }
               className="border-b border-section py-2"
             >

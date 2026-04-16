@@ -1,16 +1,14 @@
 import React, { useRef } from "react";
 import {
-  Dimensions,
   Linking,
-  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
+  useWindowDimensions,
   View,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
-
-const { height } = Dimensions.get("window");
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Coordinates for Knoxville
 const STARTING_COORDINATES = {
@@ -68,6 +66,7 @@ const FAKE_OUTAGES = [
 
 export default function OutagesScreen() {
   const mapRef = useRef<MapView>(null);
+  const { height } = useWindowDimensions();
 
   const checkOutageButton = () => {
     Linking.openURL("https://www.kub.org/outage/map");
@@ -75,10 +74,13 @@ export default function OutagesScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      {/* Map is 60% height of the screen to allow room for buttons under it*/}
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Outages</Text>
+      </View>
+      {/* Map is 45% height of the screen to allow room for buttons under it*/}
       <MapView
         ref={mapRef}
-        style={styles.map}
+        style={{ height: height * 0.45 }}
         initialRegion={STARTING_COORDINATES}
         showsUserLocation
         showsMyLocationButton={false}
@@ -130,13 +132,21 @@ export default function OutagesScreen() {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: "#0d1b2e",
+    backgroundColor: "#091C3C",
   },
-  map: {
-    height: height * 0.45,
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 20,
+    paddingBottom: 18,
+  },
+  headerTitle: {
+    color: "#ffffff",
+    fontSize: 30,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: -0.5,
   },
   panel: {
-    backgroundColor: "#0d1b2e",
+    backgroundColor: "#091C3C",
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 28,
@@ -144,20 +154,20 @@ const styles = StyleSheet.create({
   panelTitle: {
     color: "#ffffff",
     fontSize: 18,
-    fontWeight: "700",
+    fontFamily: "Inter_600SemiBold",
     marginBottom: 14,
   },
   legendRow: {
     flexDirection: "row",
     alignItems: "center",
-    flexWrap: "wrap",
-    gap: 12,
+    justifyContent: "space-between",
     marginBottom: 20,
   },
   legendItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    flexShrink: 1
   },
   legendDot: {
     width: 10,
@@ -165,9 +175,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   legendLabel: {
-    color: "#c0d0e8",
+    color: "#A0B3D3",
     fontSize: 13,
-    fontWeight: "500",
+    fontFamily: "Inter_400Regular",
+    flexShrink: 1
   },
   ctaBtn: {
     backgroundColor: "transparent",
@@ -180,7 +191,7 @@ const styles = StyleSheet.create({
   ctaBtnText: {
     color: "#ffffff",
     fontSize: 14,
-    fontWeight: "800",
+    fontFamily: "Inter_600SemiBold",
     letterSpacing: 1.4,
   },
 });

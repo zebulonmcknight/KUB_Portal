@@ -7,7 +7,7 @@ export default function OutagesLayout() {
             name="index"
             options={{
                headerTitle: "Outages",
-               headerShown: true,
+               headerShown: false,
                headerStyle:{
                   backgroundColor: '#091C3C',
                },

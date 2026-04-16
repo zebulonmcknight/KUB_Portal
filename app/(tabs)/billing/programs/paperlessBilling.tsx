@@ -26,25 +26,22 @@ export default function PaperlessBilling() {
     }, []),
   );
 
-  const handleToggle = async () => {
-    try {
-      setLoading(true);
-      const access_token = await getToken();
-      if (!access_token) {
-        Alert.alert("Session Expired", "Please log in again");
-        return;
-      }
+   const handleToggle = async () => {
+      try {
+         setLoading(true);
+         const access_token = await getToken();
+         if (!access_token) {
+            Alert.alert("Session Expired", "Please log in again");
+            return;
+         }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/paperless/toggle",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         const response = await fetch("http://localhost:3000/api/billing/paperless/toggle", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to update paperless billing");

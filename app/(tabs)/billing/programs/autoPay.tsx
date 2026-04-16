@@ -47,16 +47,13 @@ export default function AutoPay() {
         return [];
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/paymentMethods",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+            method: "GET",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch payment methods");
@@ -109,17 +106,14 @@ export default function AutoPay() {
       setLoading(true);
       setModalVisible(false);
 
-      // Create a SetupIntent to initialize the sheet
-      const setupResponse = await fetch(
-        "http://localhost:3000/api/billing/autopay/setup",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         // Create a SetupIntent to initialize the sheet
+         const setupResponse = await fetch("http://localhost:3000/api/billing/autopay/setup", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
 
       if (!setupResponse.ok) {
         Alert.alert("Error", "Failed to initialize card setup");
@@ -173,17 +167,14 @@ export default function AutoPay() {
         return;
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/autopay/enroll",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-          body: JSON.stringify({ paymentMethodId: selectedId }),
-        },
-      );
+         const response = await fetch("http://localhost:3000/api/billing/autopay/enroll", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+            body: JSON.stringify({ paymentMethodId: selectedId }),
+         });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to enroll in AutoPay");
@@ -200,22 +191,16 @@ export default function AutoPay() {
     }
   };
 
-  // Shared enroll call used after SetupSheet completes, sends setupIntentId to backend
-  const enrollWithIntent = async (
-    access_token: string,
-    setupIntentId: string,
-  ) => {
-    const enrollResponse = await fetch(
-      "http://localhost:3000/api/billing/autopay/enroll",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${access_token}`,
-        },
-        body: JSON.stringify({ setupIntentId }),
-      },
-    );
+   // Shared enroll call used after SetupSheet completes, sends setupIntentId to backend
+   const enrollWithIntent = async (access_token: string, setupIntentId: string) => {
+      const enrollResponse = await fetch("http://localhost:3000/api/billing/autopay/enroll", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${access_token}`,
+         },
+         body: JSON.stringify({ setupIntentId }),
+      });
 
     if (!enrollResponse.ok) {
       Alert.alert("Error", "Failed to enroll in AutoPay");
@@ -242,16 +227,13 @@ export default function AutoPay() {
               return;
             }
 
-            const response = await fetch(
-              "http://localhost:3000/api/billing/autopay/cancel",
-              {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${access_token}`,
-                },
-              },
-            );
+                  const response = await fetch("http://localhost:3000/api/billing/autopay/cancel", {
+                     method: "POST",
+                     headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${access_token}`,
+                     },
+                  });
 
             if (!response.ok) {
               Alert.alert("Error", "Failed to cancel AutoPay");

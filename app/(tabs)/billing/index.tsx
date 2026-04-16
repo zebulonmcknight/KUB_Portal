@@ -10,15 +10,15 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Image,
-    Linking,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    useWindowDimensions,
-    View,
+  ActivityIndicator,
+  Alert,
+  Image,
+  Linking,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -41,7 +41,7 @@ export default function Billing() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Grab the screen height so we can display the picture in the background to take up 50% of screen
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
   const tabBarHeight = useBottomTabBarHeight();
 
   useFocusEffect(
@@ -67,16 +67,13 @@ export default function Billing() {
         return [];
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/paymentMethods",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
+      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
-      );
+      });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch payment methods");
@@ -249,6 +246,8 @@ export default function Billing() {
     }
   };
 
+
+
   // Show a loading indicator if waiting on api call or if we have no billData yet
   // Should only run on first instance
   if (billLoading && !billData) {
@@ -299,10 +298,10 @@ export default function Billing() {
           />
 
           <View>
-            <Text className="text-text_main font-bold text-3xl text-left w-full p-6 mt-4">
+            <Text className="text-text_main font-bold text-3xl text-left w-full p-6"  style={{ marginTop: height * 0.02 }}>
               Welcome
             </Text>
-            <View className="flex-row justify-between w-full mt-4 px-20">
+            <View className="flex-row justify-between w-full" style={{paddingHorizontal: width * .17, marginTop: height * .02}}>
               <Text className="text-text_main font-sans text-base">
                 Payment Due
               </Text>
@@ -317,7 +316,7 @@ export default function Billing() {
               ${billData ? billData.totalAmountDue.toFixed(2) : "0.00"}
             </Text>
 
-            <View className="items-center px-6 py-3 rounded-xl mt-6">
+            <View className="items-center rounded-xl" style={{marginTop: height * .03 }}>
               {/* I added a slight dark background here like the blurred part in your image! */}
               <Text className="text-text_main text-lg">200 W Hill Ave</Text>
               <Text className="text-inactive_text text-lg">
@@ -326,7 +325,7 @@ export default function Billing() {
             </View>
           </View>
 
-          <View className="w-full px-8">
+          <View className="w-full" style={{paddingHorizontal: width * .08}}>
             {/* create the Subscribe button */}
             <TouchableOpacity
               onPress={handlePayment}
@@ -357,7 +356,7 @@ export default function Billing() {
 
         <View className="w-full">
           <TouchableOpacity
-            onPress={() => router.push("/(tabs)/billing/billsAndPayments")}
+            onPress={() => router.navigate("/(tabs)/billing/billsAndPayments")}
             className="border-b border-section py-4 flex-row mx-4 items-center"
           >
             <Image source={icons.billing} style={{ width: 18, height: 18 }} />
@@ -367,7 +366,7 @@ export default function Billing() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(tabs)/billing/paymentMethod")}
+            onPress={() => router.navigate("/(tabs)/billing/paymentMethod")}
             className="border-b border-section py-4 flex-row mx-4 items-center"
           >
             <Image
@@ -380,7 +379,7 @@ export default function Billing() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(tabs)/billing/programs")}
+            onPress={() => router.navigate("/(tabs)/billing/programs")}
             className="border-b border-section py-4 flex-row mx-4 items-center"
           >
             <Image
@@ -405,7 +404,7 @@ export default function Billing() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            onPress={() => router.push("/(tabs)/billing/promotions")}
+            onPress={() => router.navigate("/(tabs)/billing/promotions")}
             className="border-b border-section flex-row mx-4 py-4 items-center"
           >
             <Image

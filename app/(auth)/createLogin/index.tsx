@@ -56,7 +56,7 @@ export default function CreateLogin() {
         throw new Error();
       }
 
-      router.push("/(auth)/createLogin/contactEmail"); // Send the user to the next page
+      router.navigate("/(auth)/createLogin/contactEmail"); // Send the user to the next page
     } catch (error: any) {
       setShowError(true);
     } finally {

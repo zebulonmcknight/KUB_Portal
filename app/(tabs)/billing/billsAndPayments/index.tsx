@@ -6,14 +6,14 @@ import { format, parseISO } from "date-fns";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-   ActivityIndicator,
-   Alert,
-   FlatList,
-   Image,
-   Linking,
-   Text,
-   TouchableOpacity,
-   View,
+    ActivityIndicator,
+    Alert,
+    FlatList,
+    Image,
+    Linking,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 
 // Types matching what the backend returns from getInvoiceHistoryController
@@ -63,16 +63,13 @@ export default function BillsAndPayments() {
         return;
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/invoiceHistory",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         const response = await fetch("http://localhost:3000/api/billing/invoiceHistory", {
+            method: "GET",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch billing history");
@@ -125,7 +122,7 @@ export default function BillsAndPayments() {
               // Payment data is passed as a JSON param to avoid making the same fetch on the detail screen
               <TouchableOpacity
                 onPress={() =>
-                  router.push({
+                  router.navigate({
                     pathname: "/(tabs)/billing/billsAndPayments/[paymentId]",
                     params: {
                       paymentId: item.id,

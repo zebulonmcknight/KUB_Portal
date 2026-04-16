@@ -20,7 +20,7 @@ export default function Help() {
           Which issue are you experiencing?
         </Text>
         <View className="w-full pt-8">
-          <TouchableOpacity onPress={() => router.push("/(auth)/help/forgotPassword")} className="border-b border-section p-4">
+          <TouchableOpacity onPress={() => router.navigate("/(auth)/help/forgotPassword")} className="border-b border-section p-4">
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I can't remember my password.
             </Text>
@@ -28,7 +28,7 @@ export default function Help() {
 
           {/* Need a seperate view as these are separate buttons that appear on the same line */}
           <View className="flex-row justify-between border-b border-section">
-            <TouchableOpacity onPress={() => router.push("/(auth)/createLogin")} className="flex-1 p-4">
+            <TouchableOpacity onPress={() => router.navigate("/(auth)/createLogin")} className="flex-1 p-4">
               <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
                 I need to create a login.
               </Text>
@@ -53,13 +53,13 @@ export default function Help() {
             />
           </View>
 
-          <TouchableOpacity onPress={() => router.push("/(auth)/help/startService")} className="border-b border-section p-4">
+          <TouchableOpacity onPress={() => router.navigate("/(auth)/help/startService")} className="border-b border-section p-4">
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I want to start a service, but I'm not an existing customer.
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={() => router.push("/(auth)/help/deleteAccount")} className="border-b border-section p-4">
+          <TouchableOpacity onPress={() => router.navigate("/(auth)/help/deleteAccount")} className="border-b border-section p-4">
             <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I want to delete my online KUB account.
             </Text>

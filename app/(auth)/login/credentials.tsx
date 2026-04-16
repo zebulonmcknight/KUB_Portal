@@ -115,7 +115,7 @@ export default function Credentials() {
         <View className="flex-row justify-between items-center w-full mt-3">
           <Text
             className="text-active_icon font-sans text-base underline"
-            onPress={() => router.replace("/(auth)/help/forgotPassword")}
+            onPress={() => router.navigate("/(auth)/help/forgotPassword")}
           >
             Forgot your password?
           </Text>

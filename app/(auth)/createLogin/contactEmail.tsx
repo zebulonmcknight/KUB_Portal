@@ -38,7 +38,7 @@ export default function ContactEmail() {
           className={`mt-6 rounded-xl items-center ${
             validEmail ? 'bg-[#3377F4]' : 'bg-[#3377F4]/50'
           }`}
-          onPress={() => router.push("/(auth)/createLogin/createPassword")}
+          onPress={() => router.navigate("/(auth)/createLogin/createPassword")}
         >
           <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             NEXT

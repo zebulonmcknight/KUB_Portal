@@ -20,6 +20,7 @@ export default function ScreenHeader({ title, onPress }: HeaderStyleProps) {
             fontSize: 18,
          },
          headerTitleAlign: "left",
+         headerTintColor: "#FFFFFF",
          headerShadowVisible: false,
          ...(onPress && {
             headerRight: () => (

@@ -167,9 +167,13 @@ export const getCurrentBill = async (req: Request, res: Response) => {
         // Stripe stores in cents so have to convert to dollars
         const totalAmountDue = invoice!.amount_remaining / 100; // '!' mark here is to tell the compiler that we know this value is not null as we accounted for that in the if statement above
 
-        // Stripe stores timestamps in seconds, JS date function needs ms so we convert. if the due_date is null fall back to null
+        // Stripe stores timestamps in seconds, JS date function needs ms so we convert.
+        // if due date exists convert it to ISOString
+        // if we are on autopay it wont exist in which case we check whether finalized date exists and then add our 18 days that we defined to it to get date.
         const dueDate = invoice!.due_date
             ? new Date(invoice!.due_date * 1000).toISOString()
+            : invoice!.status_transitions?.finalized_at
+            ? new Date((invoice!.status_transitions.finalized_at + 18 * 24 * 60 * 60) * 1000).toISOString()
             : null;
 
         const lineItems = invoice!.lines.data.map((line) => ({

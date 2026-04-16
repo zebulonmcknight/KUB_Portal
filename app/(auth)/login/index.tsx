@@ -16,16 +16,19 @@ export default function Login() {
 
     // If valid token exists dont prompt user to enter login information
     if( token_expiry && access_token  && (Date.now() < parseInt(token_expiry)) ){
-      router.push("/(tabs)/billing");
+      router.navigate("/(tabs)/billing");
       return;
     }
-    router.push("/(auth)/login/credentials"); // Otherwise prompt
+    router.navigate("/(auth)/login/credentials"); // Otherwise prompt
   }
 
   return (
-
+    
     // Parent view container to contain background mountain image as well as all of the buttons for the login screen
     <SafeAreaView className="flex-1 bg-primary">
+      <Stack.Screen 
+        options={{ headerShown: false, title: "Login" }} // Hide the header on the login screen for a cleaner look
+      />
 
       {/* Get the image to take up 60% of screen and use absolute so that it doesnt affect other components. Doing 60% to blend image into background */}
       <Image 
@@ -40,18 +43,22 @@ export default function Login() {
       {/* Add a gradient to same area that image takes up. This helps blend the image to the primary background. */}
       <LinearGradient
         colors={ ["rgba(73, 130, 228, 0.3)", "#091C3C"] }
-        end={[0.7, 0.7]}
-        className="absolute top-0 w-full h-[60%]"
+        locations={[0, 1]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: .8 }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          width: '100%',
+          height: '60%',
+        }}
       />
 
       {/* This view is in charge of the KUB logo as well as setting up the button/version text */}
       <View className="flex-1 justify-center">
-        <Stack.Screen 
-          options={{ headerShown: false }} // Hide the header on the login screen for a cleaner look
-        />
 
         {/* Make it absolute so that it doesnt affect the other components */}
-        <View className="absolute top-40 self-center">
+        <View className="absolute self-center" style={{ top: height * 0.18 }}>
           <Image 
             source={require("@/assets/images/kub-transparent-bg.png")} 
             style={{ 
@@ -70,12 +77,12 @@ export default function Login() {
         </TouchableOpacity>
         
         {/* For the links under the login button */}
-        {/* Using router.push here so it adds to stack and back button appears */}
+        {/* Using router.navigate here so it adds to stack and back button appears */}
         <View className="flex-row mt-8 justify-between px-16">
-          <TouchableOpacity onPress={() => router.push("/(auth)/help")}>
+          <TouchableOpacity onPress={() => router.navigate("/(auth)/help")}>
             <Text className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">NEED HELP?</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.push("/(auth)/createLogin")}>
+          <TouchableOpacity onPress={() => router.navigate("/(auth)/createLogin")}>
             <Text className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">CREATE LOGIN</Text>
           </TouchableOpacity>
         </View>

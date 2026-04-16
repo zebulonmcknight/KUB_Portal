@@ -189,7 +189,7 @@ export default function PayNowModal({
                               className="text-active_icon"
                               onPress={() => {
                                  onClose();
-                                 router.push("/(tabs)/billing/paymentMethod/payInPerson");
+                                 router.navigate("/(tabs)/billing/paymentMethod/payInPerson");
                               }}
                            >
                               pay your bill in person

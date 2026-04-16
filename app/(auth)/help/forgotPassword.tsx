@@ -22,16 +22,13 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
       // Make a call to our signup api sending the information from our registration context
-      const response = await fetch(
-        "http://localhost:3000/api/auth/resetPassword",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: email,
-          }),
-        },
-      );
+      const response = await fetch("http://localhost:3000/api/auth/resetPassword", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Something went wrong. Please try again.");

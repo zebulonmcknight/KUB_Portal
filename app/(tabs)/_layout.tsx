@@ -27,7 +27,6 @@ export default function TabsLayout () {
                height: 90,
                width: '100%',
                position: 'absolute',
-               overflow: 'hidden',
                borderWidth: 1,
                borderColor: "#091C3C"
             }

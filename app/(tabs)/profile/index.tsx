@@ -1,4 +1,5 @@
 import { icons } from "@/constants/icons";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import React, { useEffect, useRef, useState } from "react";
@@ -18,18 +19,13 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import Svg, { Circle, Path } from "react-native-svg";
+import Svg, { Path } from "react-native-svg";
 
 // ─── User profile props — swap these out for your real auth/user context ──────
 type UserProfile = {
   name: string;
   address: string;
   accountNumber: string;
-};
-
-type Props = {
-  user?: UserProfile;
-  onLogout?: () => void;
 };
 
 const DEFAULT_USER: UserProfile = {
@@ -42,110 +38,9 @@ const DEFAULT_USER: UserProfile = {
 type ModalType = "mailing" | "password" | "email" | "phone" | "feedback" | null;
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
-function EmailIcon() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <Path
-        d="M22 6l-10 7L2 6"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
-function PhoneIcon() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.27h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
-function ContactsIcon() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <Circle
-        cx="9"
-        cy="7"
-        r="4"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <Path
-        d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
-function BellIcon() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 0 1-3.46 0"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
-function FeedbackIcon() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-        stroke="#7a99c8"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
-function LogoutIcon() {
-  return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
-      <Path
-        d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"
-        stroke="#e05c5c"
-        strokeWidth={1.8}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </Svg>
-  );
-}
 function ChevronIcon() {
   return (
-    <Svg width={16} height={16} viewBox="0 0 24 24" fill="none">
+    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
       <Path
         d="M9 18l6-6-6-6"
         stroke="#4a6080"
@@ -158,7 +53,7 @@ function ChevronIcon() {
 }
 function CloseIcon() {
   return (
-    <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
+    <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
       <Path
         d="M18 6L6 18M6 6l12 12"
         stroke="#7a99c8"
@@ -237,10 +132,10 @@ function SheetModal({
 
 // ── Main screen ───────────────────────────────────────────────────────────────
 export default function ProfileScreen({
-  user = DEFAULT_USER,
-  onLogout,
-}: Props) {
+  user = DEFAULT_USER
+}) {
   const [activeModal, setActiveModal] = useState<ModalType>(null);
+  const tabBarHeight = useBottomTabBarHeight();
 
   // Field values
   const [mailing, setMailing] = useState<"paperless" | "physical">("paperless");
@@ -348,7 +243,7 @@ export default function ProfileScreen({
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
-        contentContainerStyle={styles.scroll}
+        contentContainerStyle={[styles.scroll, {paddingBottom: tabBarHeight}]}
         showsVerticalScrollIndicator={false}
       >
         {/* Page title */}
@@ -365,7 +260,7 @@ export default function ProfileScreen({
             style={styles.manageBtn}
             activeOpacity={0.8}
             onPress={() =>
-              router.push({
+              router.navigate({
                 pathname: "/(tabs)/profile/manageYourService",
               })
             }
@@ -388,7 +283,7 @@ export default function ProfileScreen({
             onPress={() => open("password")}
           />
         </View>
-
+        <Divider />
         <Text style={styles.sectionHeader}>Contacts &amp; Notifications</Text>
 
         <View>
@@ -413,7 +308,7 @@ export default function ProfileScreen({
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={() =>
-              router.push({
+              router.navigate({
                 pathname: "/(tabs)/profile/alternateContacts",
               })
             }
@@ -641,12 +536,12 @@ function Divider() {
 // ── Styles ────────────────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#091C3C" },
-  scroll: { paddingHorizontal: 20, paddingBottom: 120 },
+  scroll: { paddingHorizontal: 16, paddingBottom: 120 },
   pageTitle: {
     color: "#F7FDFD",
-    fontSize: 34,
-    fontWeight: "700",
-    letterSpacing: -0.5,
+    fontSize: 30,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 0.5,
     marginTop: 20,
     marginBottom: 18,
   },
@@ -659,14 +554,14 @@ const styles = StyleSheet.create({
   },
   accountName: {
     color: "#F7FDFD",
-    fontSize: 18,
-    fontWeight: "700",
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
     marginBottom: 6,
   },
   accountDetail: {
     color: "#A0B3D3",
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 16,
+    fontFamily: "Inter_400Regular",
     marginBottom: 2,
   },
   manageBtn: {
@@ -680,16 +575,15 @@ const styles = StyleSheet.create({
   },
   manageBtnText: {
     color: "#F7FDFD",
-    fontSize: 14,
-    fontWeight: "800",
-    letterSpacing: 1.2,
+    fontSize: 16,
+    fontFamily: "Inter_700Bold",
+    letterSpacing: 2,
   },
   sectionHeader: {
     color: "#F7FDFD",
-    fontSize: 16,
-    fontWeight: "700",
-    marginBottom: 8,
-    marginTop: 4,
+    fontSize: 20,
+    fontFamily: "Inter_700Bold",
+    marginTop: 10,
   },
   section: {
     backgroundColor: "#162C53",
@@ -700,12 +594,12 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 14,
+    paddingVertical: 16,
   },
   rowIcon: { marginRight: 12 },
   rowContent: { flex: 1 },
-  rowLabel: { color: "#F7FDFD", fontSize: 15, fontWeight: "600" },
-  rowValue: { color: "#A0B3D3", fontSize: 13, marginTop: 2 },
+  rowLabel: { color: "#F7FDFD", fontSize: 16, fontFamily: "Inter_400Regular" },
+  rowValue: { color: "#A0B3D3", fontSize: 14, fontFamily: "Inter_400Regular", marginTop: 2 },
   divider: {
     height: 1,
     backgroundColor: "rgba(255,255,255,0.06)",
@@ -715,9 +609,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
     paddingVertical: 6,
-    marginTop: 4,
+    marginTop: 6,
   },
-  logoutText: { color: "#e05c5c", fontSize: 16, fontWeight: "600" },
+  logoutText: { color: "#e05c5c", fontSize: 16, fontFamily: "Inter_600SemiBold" },
 });
 
 const modalStyles = StyleSheet.create({
@@ -754,11 +648,15 @@ const modalStyles = StyleSheet.create({
     borderBottomColor: "rgba(255,255,255,0.06)",
     marginBottom: 20,
   },
-  sheetTitle: { color: "#fff", fontSize: 18, fontWeight: "700" },
+  sheetTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontFamily: "Inter_600SemiBold",
+  },
   fieldLabel: {
-    color: "#7a99c8",
+    color: "#A0B3D3",
     fontSize: 13,
-    fontWeight: "600",
+    fontFamily: "Inter_600SemiBold",
     marginBottom: 8,
     letterSpacing: 0.4,
   },
@@ -767,20 +665,25 @@ const modalStyles = StyleSheet.create({
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 14,
-    color: "#e8edf5",
+    color: "#F7FDFD",
     fontSize: 15,
+    fontFamily: "Inter_400Regular",
     marginBottom: 16,
     borderWidth: 1,
     borderColor: "#1e3050",
   },
   saveBtn: {
-    backgroundColor: "#3d6ef5",
+    backgroundColor: "#3377F4",
     borderRadius: 12,
     paddingVertical: 15,
     alignItems: "center",
     marginTop: 4,
   },
-  saveBtnText: { color: "#fff", fontSize: 16, fontWeight: "700" },
+  saveBtnText: {
+    color: "#fff",
+    fontSize: 16,
+    fontFamily: "Inter_700Bold",
+  },
   choiceRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -791,7 +694,7 @@ const modalStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#1e3050",
   },
-  choiceRowActive: { borderColor: "#3d6ef5", backgroundColor: "#0f2044" },
+  choiceRowActive: { borderColor: "#3377F4", backgroundColor: "#0f2044" },
   radio: {
     width: 20,
     height: 20,
@@ -802,12 +705,16 @@ const modalStyles = StyleSheet.create({
     justifyContent: "center",
     marginRight: 12,
   },
-  radioActive: { borderColor: "#3d6ef5" },
+  radioActive: { borderColor: "#3377F4" },
   radioDot: {
     width: 10,
     height: 10,
     borderRadius: 5,
-    backgroundColor: "#3d6ef5",
+    backgroundColor: "#3377F4",
   },
-  choiceLabel: { color: "#e8edf5", fontSize: 15, fontWeight: "500" },
+  choiceLabel: {
+    color: "#F7FDFD",
+    fontSize: 15,
+    fontFamily: "Inter_400Regular",
+  },
 });

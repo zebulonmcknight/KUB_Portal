@@ -30,16 +30,16 @@ export function useBillData() {
         return;
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/getCurrentBill",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
-        },
-      );
+         const response = await fetch(
+         "http://localhost:3000/api/billing/getCurrentBill",
+         {
+            method: "GET",
+            headers: {
+               "Content-Type": "application/json",
+               Authorization: `Bearer ${access_token}`,
+            },
+         },
+         );
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch billing data");

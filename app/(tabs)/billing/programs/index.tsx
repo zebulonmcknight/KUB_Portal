@@ -81,16 +81,13 @@ export default function Programs() {
         return [];
       }
 
-      const response = await fetch(
-        "http://localhost:3000/api/billing/paymentMethods",
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${access_token}`,
-          },
+      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
         },
-      );
+      });
 
       if (!response.ok) {
         Alert.alert("Error", "Failed to fetch payment methods");
@@ -261,7 +258,7 @@ export default function Programs() {
           title="AutoPay"
           description="Automatically draft monthly payments from your bank account on or near your due date."
           buttonText="Learn more and enroll"
-          onPress={() => router.push("/(tabs)/billing/programs/autoPay")}
+          onPress={() => router.navigate("/(tabs)/billing/programs/autoPay")}
         />
         {/* Add strip functionality here as it opens the same page on billing/index. Not using the Program card as it has unique properties */}
         <TouchableOpacity
@@ -301,7 +298,7 @@ export default function Programs() {
           description="Levelized Billing helps residential customers keep bills level, despite extreme temperatures."
           buttonText="Learn more and enroll"
           onPress={() =>
-            router.push("/(tabs)/billing/programs/levelizedBilling")
+            router.navigate("/(tabs)/billing/programs/levelizedBilling")
           }
         />
         <ProgramCard
@@ -309,7 +306,7 @@ export default function Programs() {
           description="Eliminate paper bills and receive electronic bill alerts. It's easy, safe, and good for the environment."
           buttonText="Learn more and enroll"
           onPress={() =>
-            router.push("/(tabs)/billing/programs/paperlessBilling")
+            router.navigate("/(tabs)/billing/programs/paperlessBilling")
           }
         />
       </View>
@@ -321,7 +318,7 @@ export default function Programs() {
           title="Round It Up"
           description="Help your neighbors imporve their home's energy efficiency by automatically rounding your monthly bill up to the next dollar"
           buttonText="Learn more and enroll"
-          onPress={() => router.push("/(tabs)/billing/programs/roundUp")}
+          onPress={() => router.navigate("/(tabs)/billing/programs/roundUp")}
         />
         <ProgramCard
           title="Project Help"

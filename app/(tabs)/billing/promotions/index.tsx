@@ -39,7 +39,7 @@ export default function Promotions(){
                         {promotion.description}
                      </Text>
                      {/* Learn more button */}
-                     <TouchableOpacity onPress={() => router.push(promotion.route)}
+                     <TouchableOpacity onPress={() => router.navigate(promotion.route)}
                         className="bg-active_icon rounded-xl justify-center items-center py-3.5 mt-8"
                      >
                         <Text className="text-text_main font-semibold text-lg tracking-wide">

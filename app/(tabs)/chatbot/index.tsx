@@ -245,15 +245,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 16,
     paddingTop: 20,
     paddingBottom: 10,
   },
   headerTitle: {
     color: "#ffffff",
-    fontSize: 34,
-    fontWeight: "700",
+    fontSize: 30,
     letterSpacing: -0.5,
+    fontFamily: "Inter_700Bold"
   },
   messageList: {
     paddingHorizontal: 14,
@@ -285,11 +285,13 @@ const styles = StyleSheet.create({
   botText: {
     color: "#e8edf5",
     fontSize: 15,
+    fontFamily: "Inter_400Regular",
     lineHeight: 22,
   },
   userText: {
     color: "#ffffff",
     fontSize: 15,
+    fontFamily: "Inter_400Regular",
     lineHeight: 22,
   },
   dotsRow: {
@@ -323,6 +325,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
+    fontFamily: "Inter_400Regular",
     color: "#111",
     maxHeight: 100,
     paddingTop: 6,
