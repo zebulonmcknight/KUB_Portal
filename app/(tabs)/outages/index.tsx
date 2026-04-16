@@ -53,7 +53,7 @@ const FAKE_OUTAGES = [
     latitude: 35.91,
     longitude: -84.05,
     range: "1-9",
-    color: "blue",
+    color: "yellow",
   },
   {
     id: 5,
