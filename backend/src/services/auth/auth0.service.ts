@@ -85,7 +85,6 @@ export class Auth0Service {
             .eq('ssn_last4', ssn_last4)
             .eq('zip', zip)
             .maybeSingle(); 
-
         if (error || !data) {
             const err: any = new Error('No matching service account found.'); 
             err.status = 404; 
@@ -107,7 +106,6 @@ export class Auth0Service {
         });
 
         const user = userInfoResponse.data;
-        //console.log('userinfo response:', JSON.stringify(user, null, 2)); 
 
         const phone = payload.user_metadata?.phone ?? null;
         const formattedPhone = phone ? this.formatPhone(phone) : null;

@@ -21,7 +21,7 @@ export default function ContactEmail() {
     <View className="flex-1 justify-center">
       <ScreenHeader title="Create Login" />
       <View className="flex-1 justify-start px-6 pt-4">
-        <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Thank you! Next, please enter your email address:
         </Text>
 
@@ -40,7 +40,7 @@ export default function ContactEmail() {
           }`}
           onPress={() => router.navigate("/(auth)/createLogin/createPassword")}
         >
-          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             NEXT
           </Text>
         </TouchableOpacity>

@@ -57,11 +57,11 @@ export default function PaymentPicker({
          <View className="bg-primary rounded-t-2xl p-6 gap-4">
             {/* Header row with title and X close button */}
             <View className="flex-row justify-between items-center">
-               <Text className="text-text_main font-bold text-xl tracking-wide">
+               <Text allowFontScaling={false} className="text-text_main font-bold text-xl tracking-wide">
                   Select Payment Method
                </Text>
                <TouchableOpacity onPress={onClose}>
-                  <Text className="text-text_main text-2xl px-2">✕</Text>
+                  <Text allowFontScaling={false} className="text-text_main text-2xl px-2">✕</Text>
                </TouchableOpacity>
             </View>
 
@@ -77,21 +77,21 @@ export default function PaymentPicker({
                      <View>
                         {selectedCard ? (
                            <>
-                              <Text className="text-text_main font-sans text-base">
+                              <Text allowFontScaling={false} className="text-text_main font-sans text-base">
                                  {selectedCard.brand.toUpperCase()} **** {selectedCard.last4}
                               </Text>
-                              <Text className="text-inactive_text text-sm font-sans">
+                              <Text allowFontScaling={false} className="text-inactive_text text-sm font-sans">
                                  EXP. {String(selectedCard.expMonth).padStart(2, "0")}/{String(selectedCard.expYear).slice(-2)}
                               </Text>
                            </>
                         ) : (
-                           <Text className="text-inactive_text font-sans text-base">
+                           <Text allowFontScaling={false} className="text-inactive_text font-sans text-base">
                               No card selected
                            </Text>
                         )}
                      </View>
                      {/* Arrow flips when dropdown is open */}
-                     <Text className="text-text_main text-lg">
+                     <Text allowFontScaling={false} className="text-text_main text-lg">
                         {dropdownOpen ? "▲" : "▼"}
                      </Text>
                   </TouchableOpacity>
@@ -108,16 +108,16 @@ export default function PaymentPicker({
                               }`}
                            >
                               <View>
-                                 <Text className="text-text_main font-sans text-base">
+                                 <Text allowFontScaling={false} className="text-text_main font-sans text-base">
                                     {method.brand.toUpperCase()} **** {method.last4}
                                  </Text>
-                                 <Text className="text-inactive_text text-sm font-sans">
+                                 <Text allowFontScaling={false} className="text-inactive_text text-sm font-sans">
                                     EXP. {String(method.expMonth).padStart(2, "0")}/{String(method.expYear).slice(-2)}
                                  </Text>
                               </View>
                               {/* Checkmark on the currently selected card */}
                               {method.id === selectedId && (
-                                 <Text className="text-active_icon text-xl">✓</Text>
+                                 <Text allowFontScaling={false} className="text-active_icon text-xl">✓</Text>
                               )}
                            </TouchableOpacity>
                         ))}
@@ -127,10 +127,10 @@ export default function PaymentPicker({
                            onPress={onAddNew}
                            className="p-4 flex-row justify-between items-center"
                         >
-                           <Text className="text-active_icon font-sans text-base">
+                           <Text allowFontScaling={false} className="text-active_icon font-sans text-base">
                               Add New Card
                            </Text>
-                           <Text className="text-active_icon text-xl">+</Text>
+                           <Text allowFontScaling={false} className="text-active_icon text-xl">+</Text>
                         </TouchableOpacity>
                      </View>
                   )}
@@ -141,7 +141,7 @@ export default function PaymentPicker({
                      disabled={!selectedId}
                      className={`rounded-xl items-center bg-[#3377F4] mt-2 ${!selectedId ? "opacity-50" : "opacity-100"}`}
                   >
-                     <Text className="text-text_main font-bold tracking-widest text-lg p-4">
+                     <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest text-lg p-4">
                         {confirmLabel}
                      </Text>
                   </TouchableOpacity>

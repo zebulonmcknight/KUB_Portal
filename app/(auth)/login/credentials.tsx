@@ -78,10 +78,10 @@ export default function Credentials() {
   };
 
   return (
-    <SafeAreaView className="flex-1 justify-center">
+    <SafeAreaView className="flex-1 justify-center" edges={['top', 'left', 'right']}>
       <ScreenHeader title="Enter Your Credentials" />
       <View className="flex-1 justify-start px-6">
-        <Text className="text-text_main font-sans text-2xl tracking-wide pb-4 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-wide pb-4 w-full">
           Please enter your information:
         </Text>
 
@@ -114,7 +114,7 @@ export default function Credentials() {
 
         <View className="flex-row justify-between items-center w-full mt-3">
           <Text
-            className="text-active_icon font-sans text-base underline"
+            className="text-active_icon font-sans text-base underline flex-shrink"
             onPress={() => router.navigate("/(auth)/help/forgotPassword")}
           >
             Forgot your password?
@@ -126,7 +126,7 @@ export default function Credentials() {
               onValueChange={setStayLoggedIn}
               color={stayLoggedIn ? "#3377F4" : undefined}
             />
-            <Text className="text-text_main font-sans text-base">
+            <Text allowFontScaling={false} className="text-text_main font-sans text-base flex-shrink">
               Keep me signed in
             </Text>
           </View>
@@ -139,7 +139,7 @@ export default function Credentials() {
           }`}
           onPress={handleLogin}
         >
-          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             {loading ? "Processing..." : "LOGIN"}
           </Text>
         </TouchableOpacity>

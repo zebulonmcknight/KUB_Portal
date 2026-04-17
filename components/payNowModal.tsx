@@ -55,21 +55,21 @@ export default function PayNowModal({
          animationType="slide"
          onRequestClose={onClose}
       >
-         <SafeAreaView className="flex-1 bg-primary">
+         <SafeAreaView className="flex-1 bg-primary"  edges={['top', 'left', 'right']}>
 
             {/* Header */}
             <View className="flex-row items-center px-4 py-3">
                <TouchableOpacity onPress={onClose} className="p-2">
-                  <Text className="text-text_main text-2xl">✕</Text>
+                  <Text allowFontScaling={false} className="text-text_main text-2xl">✕</Text>
                </TouchableOpacity>
-               <Text className="text-text_main font-bold text-xl ml-4">
+               <Text allowFontScaling={false} className="text-text_main font-bold text-xl ml-4">
                   Pay Now
                </Text>
             </View>
 
             <View className="flex-1 px-6 pt-4 gap-6">
                {/* Balance heading */}
-               <Text className="text-text_main font-bold text-2xl tracking-wide">
+               <Text allowFontScaling={false} className="text-text_main font-bold text-2xl tracking-wide">
                   Your current balance is ${totalAmountDue.toFixed(2)}
                   {formattedDue ? ` due on ${formattedDue}` : ""}
                </Text>
@@ -80,10 +80,10 @@ export default function PayNowModal({
                   <>
                      {/* Payment Amount row */}
                      <View className="border-b border-section pb-4">
-                        <Text className="text-text_main font-sans text-xl tracking-wide">
+                        <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide">
                            Payment Amount
                         </Text>
-                        <Text className="text-inactive_text font-sans text-sm tracking-wide mt-1">
+                        <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide mt-1">
                            ${totalAmountDue.toFixed(2)}
                         </Text>
                      </View>
@@ -95,25 +95,25 @@ export default function PayNowModal({
                            className="flex-row justify-between items-start"
                         >
                            <View>
-                              <Text className="text-text_main font-sans text-xl tracking-wide">
+                              <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide">
                                  Payment Method
                               </Text>
                               {selectedCard ? (
                                  <>
-                                    <Text className="text-inactive_text font-sans text-sm tracking-wide mt-1">
+                                    <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide mt-1">
                                        **** {selectedCard.last4}
                                     </Text>
-                                    <Text className="text-inactive_text font-sans text-sm tracking-wide">
+                                    <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide">
                                        {selectedCard.brand.toUpperCase()} EXP {String(selectedCard.expMonth).padStart(2, "0")}/{String(selectedCard.expYear).slice(-2)}
                                     </Text>
                                  </>
                               ) : (
-                                 <Text className="text-inactive_text font-sans text-sm tracking-wide mt-1">
+                                 <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide mt-1">
                                     No card selected
                                  </Text>
                               )}
                            </View>
-                           <Text className="text-text_main text-lg pt-1">
+                           <Text allowFontScaling={false} className="text-text_main text-lg pt-1">
                               {dropdownOpen ? "▲" : "▼"}
                            </Text>
                         </TouchableOpacity>
@@ -130,16 +130,16 @@ export default function PayNowModal({
                                     }`}
                                  >
                                     <View>
-                                       <Text className="text-text_main font-sans text-base">
+                                       <Text allowFontScaling={false} className="text-text_main font-sans text-base">
                                           {method.brand.toUpperCase()} **** {method.last4}
                                        </Text>
-                                       <Text className="text-inactive_text text-sm font-sans">
+                                       <Text allowFontScaling={false} className="text-inactive_text text-sm font-sans">
                                           EXP. {String(method.expMonth).padStart(2, "0")}/{String(method.expYear).slice(-2)}
                                        </Text>
                                     </View>
                                     {/* Checkmark on the currently selected card */}
                                     {method.id === selectedId && (
-                                       <Text className="text-active_icon text-xl">✓</Text>
+                                       <Text allowFontScaling={false} className="text-active_icon text-xl">✓</Text>
                                     )}
                                  </TouchableOpacity>
                               ))}
@@ -149,10 +149,10 @@ export default function PayNowModal({
                                  onPress={onAddNew}
                                  className="p-4 flex-row justify-between items-center"
                               >
-                                 <Text className="text-active_icon font-sans text-base">
+                                 <Text allowFontScaling={false} className="text-active_icon font-sans text-base">
                                     Add New Card
                                  </Text>
-                                 <Text className="text-active_icon text-xl">+</Text>
+                                 <Text allowFontScaling={false} className="text-active_icon text-xl">+</Text>
                               </TouchableOpacity>
                            </View>
                         )}
@@ -160,10 +160,10 @@ export default function PayNowModal({
 
                      {/* Payment Date row */}
                      <View className="border-b border-section pb-4">
-                        <Text className="text-text_main font-sans text-xl tracking-wide">
+                        <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide">
                            Payment Date
                         </Text>
-                        <Text className="text-inactive_text font-sans text-sm tracking-wide mt-1">
+                        <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide mt-1">
                            {today}
                         </Text>
                      </View>
@@ -176,14 +176,14 @@ export default function PayNowModal({
                            !canPay || !selectedId ? "opacity-50" : "opacity-100"
                         }`}
                      >
-                        <Text className="text-text_main font-bold tracking-widest text-lg p-4">
+                        <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest text-lg p-4">
                            NEXT
                         </Text>
                      </TouchableOpacity>
 
                      {/* Pay in person info card */}
                      <View className="bg-section rounded-xl p-6 items-center gap-3">
-                        <Text className="text-text_main font-sans text-base text-center">
+                        <Text allowFontScaling={false} className="text-text_main font-sans text-base text-center">
                            Want to{" "}
                            <Text
                               className="text-active_icon"

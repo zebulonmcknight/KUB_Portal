@@ -13,8 +13,6 @@ export const login = async (req: Request, res: Response) => {
 
     const token = await auth0Service.login(email, password);
 
-    console.log("TOKEN:", token.access_token); // temporary, remove after testing
-
     return res.status(200).json({
       access_token: token.access_token,
       expires_in: token.expires_in,
