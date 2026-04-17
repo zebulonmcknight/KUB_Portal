@@ -63,7 +63,7 @@ export default function BillsAndPayments() {
         return;
       }
 
-         const response = await fetch("http://localhost:3000/api/billing/invoiceHistory", {
+         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/invoiceHistory", {
             method: "GET",
             headers: {
                "Content-Type": "application/json",

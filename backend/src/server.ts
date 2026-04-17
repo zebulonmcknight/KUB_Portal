@@ -7,5 +7,5 @@ const PORT = process.env.PORT || 3000;
 // 'PORT'.
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Health check: http://localhost:${PORT}/health`);
+  console.log(`📍 Health check: https://localhost:${PORT}/health`);
 });

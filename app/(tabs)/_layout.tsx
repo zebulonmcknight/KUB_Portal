@@ -13,6 +13,7 @@ const TabIcon = ({icon}: any) => {
 }
 
 export default function TabsLayout () {
+
    return (
       <Tabs
          screenOptions={{

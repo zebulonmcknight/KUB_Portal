@@ -35,7 +35,7 @@ export default function PaperlessBilling() {
             return;
          }
 
-         const response = await fetch("http://localhost:3000/api/billing/paperless/toggle", {
+         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paperless/toggle", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",

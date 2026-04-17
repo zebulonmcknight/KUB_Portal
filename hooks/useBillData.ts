@@ -31,7 +31,7 @@ export function useBillData() {
       }
 
          const response = await fetch(
-         "http://localhost:3000/api/billing/getCurrentBill",
+         "https://kubportal-production.up.railway.app/api/billing/getCurrentBill",
          {
             method: "GET",
             headers: {

@@ -47,7 +47,7 @@ export default function AutoPay() {
         return [];
       }
 
-         const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods", {
             method: "GET",
             headers: {
                "Content-Type": "application/json",
@@ -107,7 +107,7 @@ export default function AutoPay() {
       setModalVisible(false);
 
          // Create a SetupIntent to initialize the sheet
-         const setupResponse = await fetch("http://localhost:3000/api/billing/autopay/setup", {
+         const setupResponse = await fetch("https://kubportal-production.up.railway.app/api/billing/autopay/setup", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
@@ -167,7 +167,7 @@ export default function AutoPay() {
         return;
       }
 
-         const response = await fetch("http://localhost:3000/api/billing/autopay/enroll", {
+         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/autopay/enroll", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
@@ -193,7 +193,7 @@ export default function AutoPay() {
 
    // Shared enroll call used after SetupSheet completes, sends setupIntentId to backend
    const enrollWithIntent = async (access_token: string, setupIntentId: string) => {
-      const enrollResponse = await fetch("http://localhost:3000/api/billing/autopay/enroll", {
+      const enrollResponse = await fetch("https://kubportal-production.up.railway.app/api/billing/autopay/enroll", {
          method: "POST",
          headers: {
             "Content-Type": "application/json",
@@ -227,7 +227,7 @@ export default function AutoPay() {
               return;
             }
 
-                  const response = await fetch("http://localhost:3000/api/billing/autopay/cancel", {
+                  const response = await fetch("https://kubportal-production.up.railway.app/api/billing/autopay/cancel", {
                      method: "POST",
                      headers: {
                         "Content-Type": "application/json",

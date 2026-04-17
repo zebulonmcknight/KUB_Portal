@@ -67,7 +67,7 @@ export default function Billing() {
         return [];
       }
 
-      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+      const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -140,7 +140,7 @@ export default function Billing() {
 
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "http://localhost:3000/api/billing/payInvoice",
+        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
         {
           method: "POST",
           headers: {
@@ -175,7 +175,7 @@ export default function Billing() {
       // get the client secret for the open invoice
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "http://localhost:3000/api/billing/payInvoice",
+        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
         {
           method: "POST",
           headers: {
@@ -252,13 +252,13 @@ export default function Billing() {
   // Should only run on first instance
   if (billLoading && !billData) {
     return (
-      <SafeAreaView className="flex-1 bg-primary items-center justify-center">
+      <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
         <ActivityIndicator size="large" color="#3377F4" />
       </SafeAreaView>
     );
   }
   return (
-    <SafeAreaView className="flex-1 bg-primary">
+    <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView
         className="flex-1"

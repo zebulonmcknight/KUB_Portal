@@ -39,7 +39,7 @@ export default function CreateLogin() {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://localhost:3000/api/auth/verifyKubAccount",
+        "https://kubportal-production.up.railway.app/api/auth/verifyKubAccount",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

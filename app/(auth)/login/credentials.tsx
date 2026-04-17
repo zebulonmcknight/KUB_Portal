@@ -30,7 +30,7 @@ export default function Credentials() {
     try {
       setLoading(true); // button has been clicked so lock it from being clicked again
 
-      const response = await fetch("http://localhost:3000/api/auth/login", {
+      const response = await fetch("https://kubportal-production.up.railway.app/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,6 +68,7 @@ export default function Credentials() {
         setAccessToken(access_token);
       }
 
+      router.dismissAll();
       router.replace("/(tabs)/billing");
     } catch (error) {
       console.error("There was an error:", error);
