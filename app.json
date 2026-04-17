@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "KUB_Portal",
-    "slug": "KUB_Portal",
+    "slug": "kub",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/kub-splash-logo.png",
@@ -9,7 +9,11 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kubportalsorganization.kub",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -18,7 +22,8 @@
         "monochromeImage": "./assets/images/kub-splash-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.kubportalsorganization.kub"
     },
     "web": {
       "output": "static",
@@ -51,6 +56,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8f4b7717-b68c-4dc2-ba2a-cd347fb4fdc7"
+      }
     }
   }
 }
