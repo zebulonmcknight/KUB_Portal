@@ -68,7 +68,7 @@ export const signup = async (req: Request, res: Response) => {
     if (data.has_water) priceIds.push(process.env.STRIPE_WATER_ID);
 
     const stripeSubscriptionResponse = await fetch(
-      "http://localhost:3000/api/billing/newCustomerSubscription",
+      "https://kubportal-production.up.railway.app/api/billing/newCustomerSubscription",
       {
         method: "POST",
         headers: {

@@ -51,7 +51,7 @@ export default function PaymentMethod() {
         return;
       }
 
-         const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods", {
             method: "GET",
             headers: {
                "Content-Type": "application/json",
@@ -93,7 +93,7 @@ export default function PaymentMethod() {
               return;
             }
 
-                     const response = await fetch("http://localhost:3000/api/billing/paymentMethods/remove", {
+                     const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods/remove", {
                         method: "POST",
                         headers: {
                            "Content-Type": "application/json",
@@ -129,7 +129,7 @@ export default function PaymentMethod() {
         return;
       }
 
-         const response = await fetch("http://localhost:3000/api/billing/paymentMethods/setDefault", {
+         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods/setDefault", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
@@ -162,7 +162,7 @@ export default function PaymentMethod() {
       }
 
          // Create a SetupIntent to initialize the sheet
-         const setupResponse = await fetch("http://localhost:3000/api/billing/autopay/setup", {
+         const setupResponse = await fetch("https://kubportal-production.up.railway.app/api/billing/autopay/setup", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",
@@ -201,7 +201,7 @@ export default function PaymentMethod() {
       // Extract setupIntentId from clientSecret and save the payment method
       const setupIntentId = clientSecret.split("_secret_")[0];
 
-         const addResponse = await fetch("http://localhost:3000/api/billing/paymentMethods/add", {
+         const addResponse = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods/add", {
             method: "POST",
             headers: {
                "Content-Type": "application/json",

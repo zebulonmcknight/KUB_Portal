@@ -22,7 +22,7 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
       // Make a call to our signup api sending the information from our registration context
-      const response = await fetch("http://localhost:3000/api/auth/resetPassword", {
+      const response = await fetch("https://kubportal-production.up.railway.app/api/auth/resetPassword", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

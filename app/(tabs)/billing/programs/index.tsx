@@ -83,7 +83,7 @@ export default function Programs() {
         return [];
       }
 
-      const response = await fetch("http://localhost:3000/api/billing/paymentMethods", {
+      const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -161,7 +161,7 @@ export default function Programs() {
 
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "http://localhost:3000/api/billing/payInvoice",
+        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
         {
           method: "POST",
           headers: {
@@ -196,7 +196,7 @@ export default function Programs() {
       // get the client secret for the open invoice
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "http://localhost:3000/api/billing/payInvoice",
+        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
         {
           method: "POST",
           headers: {
