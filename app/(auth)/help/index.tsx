@@ -16,12 +16,12 @@ export default function Help() {
       <ScreenHeader title="Need Help?" />
       {/* Buttons that lead to the nested pages */}
       <View className="flex-1 justify-start left-4 pt-4">
-        <Text className="text-text_main font-sans text-2xl tracking-wide p-4">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-wide p-4">
           Which issue are you experiencing?
         </Text>
         <View className="w-full pt-8">
           <TouchableOpacity onPress={() => router.navigate("/(auth)/help/forgotPassword")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I can't remember my password.
             </Text>
           </TouchableOpacity>
@@ -29,7 +29,7 @@ export default function Help() {
           {/* Need a seperate view as these are separate buttons that appear on the same line */}
           <View className="flex-row justify-between border-b border-section">
             <TouchableOpacity onPress={() => router.navigate("/(auth)/createLogin")} className="flex-1 p-4">
-              <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+              <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide">
                 I need to create a login.
               </Text>
             </TouchableOpacity>
@@ -42,7 +42,7 @@ export default function Help() {
               message={
                 <Text>
                   You must already have an active account with Knoxville Utilities Board before signing up to use our online services. If you are not yet a KUB customer, please visit{' '}
-                  <Text onPress={ () => Linking.openURL("https://www.kub.org/start-stop-service")} className="underline">
+                  <Text allowFontScaling={false} onPress={ () => Linking.openURL("https://www.kub.org/start-stop-service")} className="underline">
                     www.kub.org/start-stop-service
                   </Text>
                   {' '}to get started.
@@ -54,13 +54,13 @@ export default function Help() {
           </View>
 
           <TouchableOpacity onPress={() => router.navigate("/(auth)/help/startService")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I want to start a service, but I'm not an existing customer.
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={() => router.navigate("/(auth)/help/deleteAccount")} className="border-b border-section p-4">
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide">
               I want to delete my online KUB account.
             </Text>
           </TouchableOpacity>

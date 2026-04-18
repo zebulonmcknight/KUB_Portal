@@ -3,10 +3,11 @@ import ScreenHeader from "@/components/headerStyle";
 import PayNowModal from "@/components/payNowModal";
 import { PaymentMethod } from "@/components/paymentPicker";
 import { useBillData } from "@/hooks/useBillData";
+import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 // Shape of a payment method returned from our backend
 // Interface for the card
@@ -30,17 +31,17 @@ function ProgramCard({
       onPress={onPress}
       className="bg-section rounded-lg overflow-hidden"
     >
-      <Text className="p-4 font-sans text-text_main text-2xl tracking-wide">
+      <Text allowFontScaling={false} className="p-4 font-sans text-text_main text-2xl tracking-wide">
         {title}
       </Text>
-      <Text className="px-4 pb-4 font-sans text-text_main text-lg tracking-wide">
+      <Text allowFontScaling={false} className="px-4 pb-4 font-sans text-text_main text-lg tracking-wide">
         {description}
       </Text>
       <TouchableOpacity
         onPress={onPress}
         className="border-t items-center py-5"
       >
-        <Text className="font-bold text-text_main tracking-widest">
+        <Text allowFontScaling={false} className="font-bold text-text_main tracking-widest">
           {buttonText}
         </Text>
       </TouchableOpacity>
@@ -56,6 +57,7 @@ export default function Programs() {
   const router = useRouter();
   const { getToken } = useAuth();
   const { billData, billLoading, fetchBillData } = useBillData();
+  const tabBarHeight = useBottomTabBarHeight();
 
   // Payment method selection state for Pay Now modal
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
@@ -271,10 +273,10 @@ export default function Programs() {
               : "opacity-100"
           }`}
         >
-          <Text className="p-4 font-sans text-text_main text-2xl tracking-wide">
+          <Text allowFontScaling={false} className="p-4 font-sans text-text_main text-2xl tracking-wide">
             One Time Payment
           </Text>
-          <Text className="px-4 pb-4 font-sans text-text_main text-lg tracking-wide">
+          <Text allowFontScaling={false} className="px-4 pb-4 font-sans text-text_main text-lg tracking-wide">
             Securely save your banking information to conveniently make
             payments.
           </Text>
@@ -283,7 +285,7 @@ export default function Programs() {
             disabled={loading || billData?.status !== "open"}
             className="border-t items-center py-5"
           >
-            <Text className="font-bold text-text_main tracking-widest">
+            <Text allowFontScaling={false} className="font-bold text-text_main tracking-widest">
               {loading ? "Processing..." : "Pay Now"}
             </Text>
           </TouchableOpacity>
@@ -336,95 +338,102 @@ export default function Programs() {
 
   // Not wrapping the return in an if-else because everything stays the same except for the info under the buttons
   return (
-    <View className="flex-1">
-      <ScreenHeader title="Bill & Payment Programs" />
+    <ScrollView
+      className="flex-1"
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ paddingBottom: tabBarHeight }}
+    >
+      
+      <View className="flex-1">
+        <ScreenHeader title="Bill & Payment Programs" />
 
-      <View className="flex-1 p-4 gap-4">
-        <Text className="font-sans text-text_main tracking-wide text-2xl">
-          KUB offers several ways to manage your billing and payments.{"\n"}Take
-          advantage of the KUB program(s) that are right for you.
-        </Text>
+        <View className="flex-1 p-4 gap-4">
+          <Text allowFontScaling={false} className="font-sans text-text_main tracking-wide text-2xl">
+            KUB offers several ways to manage your billing and payments.{"\n"}Take
+            advantage of the KUB program(s) that are right for you.
+          </Text>
 
-        {/* The three buttons */}
-        <View className="flex-row justify-center mt-4 mb-4">
-          {/* Left button - rounded left only */}
-          <TouchableOpacity
-            className={`flex-1 justify-center items-center border border-b border-text_main rounded-l-sm py- ${
-              tab === "payment" ? "bg-text_main" : "bg-transparent"
-            }`}
-            onPress={() => setTab("payment")}
-          >
-            <Text
-              className={`font-bold tracking-wide text-lg ${
-                tab === "payment" ? "text-active_icon" : "text-text_main"
+          {/* The three buttons */}
+          <View className="flex-row justify-center mt-4 mb-4">
+            {/* Left button - rounded left only */}
+            <TouchableOpacity
+              className={`flex-1 justify-center items-center border border-b border-text_main rounded-l-sm py- ${
+                tab === "payment" ? "bg-text_main" : "bg-transparent"
               }`}
+              onPress={() => setTab("payment")}
             >
-              PAYMENT
-            </Text>
-          </TouchableOpacity>
+              <Text
+                className={`font-bold tracking-wide text-lg ${
+                  tab === "payment" ? "text-active_icon" : "text-text_main"
+                }`}
+              >
+                PAYMENT
+              </Text>
+            </TouchableOpacity>
 
-          {/* Middle button - no left border to avoid doubling, no rounding */}
-          <TouchableOpacity
-            className={`flex-1 justify-center items-center border-t border-b border-text_main py-2 ${
-              tab === "billing" ? "bg-text_main" : "bg-transparent"
-            }`}
-            onPress={() => setTab("billing")}
-          >
-            <Text
-              className={`font-bold tracking-wide text-lg ${
-                tab === "billing" ? "text-active_icon" : "text-text_main"
+            {/* Middle button - no left border to avoid doubling, no rounding */}
+            <TouchableOpacity
+              className={`flex-1 justify-center items-center border-t border-b border-text_main py-2 ${
+                tab === "billing" ? "bg-text_main" : "bg-transparent"
               }`}
+              onPress={() => setTab("billing")}
             >
-              BILLING
-            </Text>
-          </TouchableOpacity>
+              <Text
+                className={`font-bold tracking-wide text-lg ${
+                  tab === "billing" ? "text-active_icon" : "text-text_main"
+                }`}
+              >
+                BILLING
+              </Text>
+            </TouchableOpacity>
 
-          {/* Right button - rounded right only */}
-          <TouchableOpacity
-            className={`flex-1 justify-center items-center border border-b border-text_main rounded-r-sm py-2 ${
-              tab === "giving" ? "bg-text_main" : "bg-transparent"
-            }`}
-            onPress={() => setTab("giving")}
-          >
-            <Text
-              className={`font-bold tracking-wide text-lg ${
-                tab === "giving" ? "text-active_icon" : "text-text_main"
+            {/* Right button - rounded right only */}
+            <TouchableOpacity
+              className={`flex-1 justify-center items-center border border-b border-text_main rounded-r-sm py-2 ${
+                tab === "giving" ? "bg-text_main" : "bg-transparent"
               }`}
+              onPress={() => setTab("giving")}
             >
-              GIVING
-            </Text>
-          </TouchableOpacity>
+              <Text
+                className={`font-bold tracking-wide text-lg ${
+                  tab === "giving" ? "text-active_icon" : "text-text_main"
+                }`}
+              >
+                GIVING
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Conditional rendering */}
+          {tabContent}
         </View>
 
-        {/* Conditional rendering */}
-        {tabContent}
+        {/* Pay Now full page modal */}
+        <PayNowModal
+          visible={payModalVisible}
+          onClose={() => setPayModalVisible(false)}
+          methods={methods}
+          methodsLoading={methodsLoading}
+          selectedId={selectedId}
+          onSelectId={(id) => {
+            setSelectedId(id);
+            setDropdownOpen(false);
+          }}
+          dropdownOpen={dropdownOpen}
+          onToggleDropdown={() => setDropdownOpen(!dropdownOpen)}
+          onConfirm={handlePayWithExisting}
+          onAddNew={async () => {
+            const access_token = await getToken();
+            if (!access_token) {
+              Alert.alert("Session Expired", "Please log in again");
+              return;
+            }
+            await handlePayWithNewCard(access_token);
+          }}
+          totalAmountDue={billData?.totalAmountDue ?? 0}
+          dueDate={billData?.dueDate ?? null}
+        />
       </View>
-
-      {/* Pay Now full page modal */}
-      <PayNowModal
-        visible={payModalVisible}
-        onClose={() => setPayModalVisible(false)}
-        methods={methods}
-        methodsLoading={methodsLoading}
-        selectedId={selectedId}
-        onSelectId={(id) => {
-          setSelectedId(id);
-          setDropdownOpen(false);
-        }}
-        dropdownOpen={dropdownOpen}
-        onToggleDropdown={() => setDropdownOpen(!dropdownOpen)}
-        onConfirm={handlePayWithExisting}
-        onAddNew={async () => {
-          const access_token = await getToken();
-          if (!access_token) {
-            Alert.alert("Session Expired", "Please log in again");
-            return;
-          }
-          await handlePayWithNewCard(access_token);
-        }}
-        totalAmountDue={billData?.totalAmountDue ?? 0}
-        dueDate={billData?.dueDate ?? null}
-      />
-    </View>
+    </ScrollView>
   );
 }

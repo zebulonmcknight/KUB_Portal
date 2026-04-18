@@ -6,14 +6,14 @@ import { format, parseISO } from "date-fns";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    FlatList,
-    Image,
-    Linking,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  Linking,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 // Types matching what the backend returns from getInvoiceHistoryController
@@ -137,11 +137,11 @@ export default function BillsAndPayments() {
                   style={{ width: 14, height: 14 }}
                 />
                 <View className="flex-col">
-                  <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+                  <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide">
                     {/* Dates are saved in ISO format so have to parse it first before being able to print */}
                     {format(parseISO(item.paymentDate), "MMM dd, yyyy")}
                   </Text>
-                  <Text className="text-inactive_text font-sans text-sm tracking-wide">
+                  <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide">
                     ${item.paymentAmount.toFixed(2)}
                   </Text>
                 </View>
@@ -164,12 +164,12 @@ export default function BillsAndPayments() {
             >
               <Image source={icons.invoice} style={{ width: 14, height: 14 }} />
               <View className="flex-col">
-                <Text className="text-text_main bg-primary font-sans text-xl tracking-wide">
+                <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide">
                   {loadingId === item.id
                     ? "Loading..."
                     : format(parseISO(item.invoiceDate), "MMM dd, yyyy")}
                 </Text>
-                <Text className="text-inactive_text font-sans text-sm tracking-wide">
+                <Text allowFontScaling={false} className="text-inactive_text font-sans text-sm tracking-wide">
                   ${item.amountDue.toFixed(2)}
                 </Text>
               </View>

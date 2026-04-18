@@ -31,18 +31,18 @@ export default function Promotions(){
 
                   <View className="p-4">
                      {/* This is the title of the card */}
-                     <Text className="text-text_main font-semibold text-lg mt-4 tracking-wide">
+                     <Text allowFontScaling={false} className="text-text_main font-semibold text-lg mt-4 tracking-wide">
                         {promotion.title}
                      </Text>
                      {/* The description */}
-                     <Text className="text-text_main font-sans text-base mt-4 tracking-wide">
+                     <Text allowFontScaling={false} className="text-text_main font-sans text-base mt-4 tracking-wide">
                         {promotion.description}
                      </Text>
                      {/* Learn more button */}
                      <TouchableOpacity onPress={() => router.navigate(promotion.route)}
                         className="bg-active_icon rounded-xl justify-center items-center py-3.5 mt-8"
                      >
-                        <Text className="text-text_main font-semibold text-lg tracking-wide">
+                        <Text allowFontScaling={false} className="text-text_main font-semibold text-lg tracking-wide">
                            LEARN MORE
                         </Text>
                      </TouchableOpacity>

@@ -5,12 +5,12 @@ import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 // Shape of paymentMethod returned from our backend
@@ -235,21 +235,21 @@ export default function PaymentMethod() {
         <View className="gap-1">
           {/* Default badge shown inline with card type */}
           <View className="flex-row items-center gap-2">
-            <Text className="text-text_main text-xl font-sans tracking-wide">
+            <Text allowFontScaling={false} className="text-text_main text-xl font-sans tracking-wide">
               Credit / Debit Card
             </Text>
             {item.isDefault && (
               <View className="bg-active_icon px-2 py-0.5 rounded-full">
-                <Text className="text-text_main text-xs font-bold">
+                <Text allowFontScaling={false} className="text-text_main text-xs font-bold">
                   Default
                 </Text>
               </View>
             )}
           </View>
-          <Text className="text-inactive_text text-sm font-sans tracking-wide">
+          <Text allowFontScaling={false} className="text-inactive_text text-sm font-sans tracking-wide">
             **** {item.last4}
           </Text>
-          <Text className="text-inactive_text text-sm font-sans tracking-wide">
+          <Text allowFontScaling={false} className="text-inactive_text text-sm font-sans tracking-wide">
             {item.brand.toUpperCase()} EXP.{" "}
             {String(item.expMonth).padStart(2, "0")}/
             {String(item.expYear).slice(-2)}
@@ -264,7 +264,7 @@ export default function PaymentMethod() {
               onPress={() => setMenuOpenId(isMenuOpen ? null : item.id)}
               className="py-1"
             >
-              <Text className="text-blue-500 text-2xl p-4 leading-none">⋮</Text>
+              <Text allowFontScaling={false} className="text-blue-500 text-2xl p-4 leading-none">⋮</Text>
             </TouchableOpacity>
           )}
 
@@ -276,7 +276,7 @@ export default function PaymentMethod() {
                   onPress={() => handleSetDefault(item.id)}
                   className="px-4 py-2 border-b border-inactive_icon"
                 >
-                  <Text className="text-text_main text-base font-sans">
+                  <Text allowFontScaling={false} className="text-text_main text-base font-sans">
                     Set as Default
                   </Text>
                 </TouchableOpacity>
@@ -285,7 +285,7 @@ export default function PaymentMethod() {
                 onPress={() => handleDelete(item.id)}
                 className="px-4 py-2"
               >
-                <Text className="text-red-500 text-base font-sans">Delete</Text>
+                <Text allowFontScaling={false} className="text-red-500 text-base font-sans">Delete</Text>
               </TouchableOpacity>
             </View>
           )}
@@ -311,7 +311,7 @@ export default function PaymentMethod() {
         contentContainerStyle={{ paddingBottom: tabBarHeight }}
       >
         <View className="ml-4 mt-12">
-          <Text className="text-text_main tracking-wide text-xl font-bold">
+          <Text allowFontScaling={false} className="text-text_main tracking-wide text-xl font-bold">
             Saved Payment Methods
           </Text>
 
@@ -323,13 +323,13 @@ export default function PaymentMethod() {
             disabled={loading}
             className={`border-b border-section flex-row items-center justify-between ${loading ? "opacity-50" : "opacity-100"}`}
           >
-            <Text className="text-text_main text-xl font-sans tracking-wide">
+            <Text allowFontScaling={false} className="text-text_main text-xl font-sans tracking-wide">
               {loading ? "Processing..." : "Add Payment Method"}
             </Text>
-            <Text className="text-blue-500 p-4 text-2xl">+</Text>
+            <Text allowFontScaling={false} className="text-blue-500 p-4 text-2xl">+</Text>
           </TouchableOpacity>
 
-          <Text className="text-text_main tracking-wide text-xl font-bold mt-10">
+          <Text allowFontScaling={false} className="text-text_main tracking-wide text-xl font-bold mt-10">
             Other Payment Methods
           </Text>
 
@@ -340,7 +340,7 @@ export default function PaymentMethod() {
               }
               className="border-b border-section py-2"
             >
-              <Text className="text-text_main tracking-wide text-xl font-sans">
+              <Text allowFontScaling={false} className="text-text_main tracking-wide text-xl font-sans">
                 Pay In Person
               </Text>
             </TouchableOpacity>
@@ -350,7 +350,7 @@ export default function PaymentMethod() {
               }
               className="border-b border-section py-2"
             >
-              <Text className="text-text_main tracking-wide text-xl font-sans">
+              <Text allowFontScaling={false} className="text-text_main tracking-wide text-xl font-sans">
                 Pay By Phone
               </Text>
             </TouchableOpacity>
@@ -360,7 +360,7 @@ export default function PaymentMethod() {
               }
               className="border-b border-section py-2"
             >
-              <Text className="text-text_main tracking-wide text-xl font-sans">
+              <Text allowFontScaling={false} className="text-text_main tracking-wide text-xl font-sans">
                 Pay By Mail
               </Text>
             </TouchableOpacity>

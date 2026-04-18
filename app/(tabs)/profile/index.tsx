@@ -115,7 +115,7 @@ function SheetModal({
         >
           <View style={modalStyles.handle} />
           <View style={modalStyles.sheetHeader}>
-            <Text style={modalStyles.sheetTitle}>{title}</Text>
+            <Text allowFontScaling={false} style={modalStyles.sheetTitle}>{title}</Text>
             <TouchableOpacity
               onPress={onClose}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -241,19 +241,19 @@ export default function ProfileScreen({
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe}  edges={['top', 'left', 'right']}>
       <ScrollView
         contentContainerStyle={[styles.scroll, {paddingBottom: tabBarHeight}]}
         showsVerticalScrollIndicator={false}
       >
         {/* Page title */}
-        <Text style={styles.pageTitle}>Profile</Text>
+        <Text allowFontScaling={false} style={styles.pageTitle}>Profile</Text>
 
         {/* Account card */}
         <View style={styles.accountCard}>
-          <Text style={styles.accountName}>{user.name}</Text>
-          <Text style={styles.accountDetail}>{user.address}</Text>
-          <Text style={styles.accountDetail}>
+          <Text allowFontScaling={false} style={styles.accountName}>{user.name}</Text>
+          <Text allowFontScaling={false} style={styles.accountDetail}>{user.address}</Text>
+          <Text allowFontScaling={false} style={styles.accountDetail}>
             Account # {user.accountNumber}
           </Text>
           <TouchableOpacity
@@ -265,7 +265,7 @@ export default function ProfileScreen({
               })
             }
           >
-            <Text style={styles.manageBtnText}>MANAGE YOUR SERVICE</Text>
+            <Text allowFontScaling={false} style={styles.manageBtnText}>MANAGE YOUR SERVICE</Text>
           </TouchableOpacity>
         </View>
 
@@ -284,7 +284,7 @@ export default function ProfileScreen({
           />
         </View>
         <Divider />
-        <Text style={styles.sectionHeader}>Contacts &amp; Notifications</Text>
+        <Text allowFontScaling={false} style={styles.sectionHeader}>Contacts &amp; Notifications</Text>
 
         <View>
           <RowButton
@@ -360,7 +360,7 @@ export default function ProfileScreen({
             source={icons.logout}
             style={{ width: 18, height: 18, tintColor: "#e05c5c" }}
           />
-          <Text style={styles.logoutText}>Logout</Text>
+          <Text allowFontScaling={false} style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -388,13 +388,13 @@ export default function ProfileScreen({
             >
               {mailingDraft === opt && <View style={modalStyles.radioDot} />}
             </View>
-            <Text style={modalStyles.choiceLabel}>
+            <Text allowFontScaling={false} style={modalStyles.choiceLabel}>
               {opt === "paperless" ? "Paperless (Digital)" : "Physical Mail"}
             </Text>
           </TouchableOpacity>
         ))}
         <TouchableOpacity style={modalStyles.saveBtn} onPress={saveMailing}>
-          <Text style={modalStyles.saveBtnText}>Save</Text>
+          <Text allowFontScaling={false} style={modalStyles.saveBtnText}>Save</Text>
         </TouchableOpacity>
       </SheetModal>
 
@@ -404,7 +404,7 @@ export default function ProfileScreen({
         title="Change Password"
         onClose={close}
       >
-        <Text style={modalStyles.fieldLabel}>New Password</Text>
+        <Text allowFontScaling={false} style={modalStyles.fieldLabel}>New Password</Text>
         <TextInput
           style={modalStyles.textInput}
           placeholder="Min. 12 characters"
@@ -414,7 +414,7 @@ export default function ProfileScreen({
           onChangeText={setPasswordDraft}
           autoCapitalize="none"
         />
-        <Text style={modalStyles.fieldLabel}>Confirm Password</Text>
+        <Text allowFontScaling={false} style={modalStyles.fieldLabel}>Confirm Password</Text>
         <TextInput
           style={modalStyles.textInput}
           placeholder="Repeat password"
@@ -425,7 +425,7 @@ export default function ProfileScreen({
           autoCapitalize="none"
         />
         <TouchableOpacity style={modalStyles.saveBtn} onPress={savePassword}>
-          <Text style={modalStyles.saveBtnText}>Update Password</Text>
+          <Text allowFontScaling={false} style={modalStyles.saveBtnText}>Update Password</Text>
         </TouchableOpacity>
       </SheetModal>
 
@@ -435,7 +435,7 @@ export default function ProfileScreen({
         title="Primary Email"
         onClose={close}
       >
-        <Text style={modalStyles.fieldLabel}>Email Address</Text>
+        <Text allowFontScaling={false} style={modalStyles.fieldLabel}>Email Address</Text>
         <TextInput
           style={modalStyles.textInput}
           placeholder="you@example.com"
@@ -447,7 +447,7 @@ export default function ProfileScreen({
           onChangeText={setEmailDraft}
         />
         <TouchableOpacity style={modalStyles.saveBtn} onPress={saveEmail}>
-          <Text style={modalStyles.saveBtnText}>Save</Text>
+          <Text allowFontScaling={false} style={modalStyles.saveBtnText}>Save</Text>
         </TouchableOpacity>
       </SheetModal>
 
@@ -457,7 +457,7 @@ export default function ProfileScreen({
         title="Phone Number"
         onClose={close}
       >
-        <Text style={modalStyles.fieldLabel}>Phone Number</Text>
+        <Text allowFontScaling={false} style={modalStyles.fieldLabel}>Phone Number</Text>
         <TextInput
           style={modalStyles.textInput}
           placeholder="10-digit number"
@@ -468,7 +468,7 @@ export default function ProfileScreen({
           maxLength={14}
         />
         <TouchableOpacity style={modalStyles.saveBtn} onPress={savePhone}>
-          <Text style={modalStyles.saveBtnText}>Save</Text>
+          <Text allowFontScaling={false} style={modalStyles.saveBtnText}>Save</Text>
         </TouchableOpacity>
       </SheetModal>
 
@@ -478,7 +478,7 @@ export default function ProfileScreen({
         title="App Feedback"
         onClose={close}
       >
-        <Text style={modalStyles.fieldLabel}>Your Feedback</Text>
+        <Text allowFontScaling={false} style={modalStyles.fieldLabel}>Your Feedback</Text>
         <TextInput
           style={[
             modalStyles.textInput,
@@ -491,7 +491,7 @@ export default function ProfileScreen({
           onChangeText={setFeedbackDraft}
         />
         <TouchableOpacity style={modalStyles.saveBtn} onPress={saveFeedback}>
-          <Text style={modalStyles.saveBtnText}>Submit</Text>
+          <Text allowFontScaling={false} style={modalStyles.saveBtnText}>Submit</Text>
         </TouchableOpacity>
       </SheetModal>
     </SafeAreaView>
@@ -521,8 +521,8 @@ function RowButton({
     >
       {icon && <View style={styles.rowIcon}>{icon}</View>}
       <View style={styles.rowContent}>
-        <Text style={styles.rowLabel}>{label}</Text>
-        {value && <Text style={styles.rowValue}>{value}</Text>}
+        <Text allowFontScaling={false} style={styles.rowLabel}>{label}</Text>
+        {value && <Text allowFontScaling={false} style={styles.rowValue}>{value}</Text>}
       </View>
       {chevron && onPress && <ChevronIcon />}
     </TouchableOpacity>
@@ -577,6 +577,7 @@ const styles = StyleSheet.create({
     color: "#F7FDFD",
     fontSize: 16,
     fontFamily: "Inter_700Bold",
+    textAlign: 'center',
     letterSpacing: 2,
   },
   sectionHeader: {

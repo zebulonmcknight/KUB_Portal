@@ -103,11 +103,11 @@ export default function CreatePassword() {
     <View className="flex-1 justify-center">
       <ScreenHeader title="Create Login" onPress={() => setShowAlert(true)} />
       <View className="flex-1 justify-start px-6 pt-4">
-        <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Please create a password:
         </Text>
 
-        <Text className="text-text_main font-sans text-xl tracking-wide pt-4 pb-4 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide pt-4 pb-4 w-full">
           Passwords must be 12-64 characters long and include at least 3 of the
           following character classes: an uppercase letter, a lowercase letter,
           a number, or a symbol.
@@ -134,7 +134,7 @@ export default function CreatePassword() {
           }
         />
 
-        <Text className="text-text_main font-sans text-xl tracking-wide pt-6 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide pt-6 w-full">
           Please confirm your password
         </Text>
 
@@ -165,7 +165,7 @@ export default function CreatePassword() {
           }`}
           onPress={authCreation}
         >
-          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             {loading ? "Creating..." : "Create Login"}
           </Text>
         </TouchableOpacity>

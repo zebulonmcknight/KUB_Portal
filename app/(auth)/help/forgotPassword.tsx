@@ -51,7 +51,7 @@ export default function ForgotPassword() {
     <View className="flex-1 justify-center">
       <ScreenHeader title="Forgot Password" />
       <View className="flex-1 justify-start px-6 pt-4">
-        <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Please enter your information:
         </Text>
 
@@ -70,7 +70,7 @@ export default function ForgotPassword() {
           }`}
           onPress={resetPassword}
         >
-          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             {loading ? "Processing..." : "NEXT"}
           </Text>
         </TouchableOpacity>

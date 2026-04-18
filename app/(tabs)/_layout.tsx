@@ -2,6 +2,7 @@ import { highlightedIcons, icons } from '@/constants/icons';
 import { Tabs } from 'expo-router';
 import React from 'react';
 import { Image, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // Component to render the tab icons, changing based on whether the tab is focused or not
 const TabIcon = ({icon}: any) => {
@@ -14,6 +15,7 @@ const TabIcon = ({icon}: any) => {
 
 export default function TabsLayout () {
 
+   const insets = useSafeAreaInsets();
    return (
       <Tabs
          screenOptions={{
@@ -25,9 +27,8 @@ export default function TabsLayout () {
             tabBarStyle: {
                backgroundColor: '#091C3C', // Match the tab bar background to the app's theme
                shadowColor: 'transparent', // Remove the shadown of the tab bar for seamless integration with background
-               height: 90,
+               paddingBottom: insets.bottom,
                width: '100%',
-               position: 'absolute',
                borderWidth: 1,
                borderColor: "#091C3C"
             }
