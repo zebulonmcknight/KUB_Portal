@@ -13,18 +13,18 @@ export default function RoundUp() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ padding: 16, gap: 16, paddingBottom: tabBarHeight + 16 }}
          >
-            <Text className="text-text_main font-bold text-2xl tracking-wide leading-10">
+            <Text allowFontScaling={false} className="text-text_main font-bold text-2xl tracking-wide leading-10">
                Round It Up puts your spare change to work for the Knoxville-area community.
             </Text>
-            <Text className="font-sans text-text_main tracking-wide text-xl leading-8">
+            <Text allowFontScaling={false} className="font-sans text-text_main tracking-wide text-xl leading-8">
                Automatically round your bill up to the next dollar to weatherize homes for low income families in need of help with their energy bills.
             </Text>
 
-            <Text className="font-sans text-text_main tracking-wide text-base leading-6">
+            <Text allowFontScaling={false} className="font-sans text-text_main tracking-wide text-base leading-6">
                Through this program, your{" "}
-               <Text className="font-bold">maximum contribution per year would be $11.88</Text>
+               <Text allowFontScaling={false} className="font-bold">maximum contribution per year would be $11.88</Text>
                , and the average{" "}
-               <Text className="font-bold">annual contribution is around $6</Text>
+               <Text allowFontScaling={false} className="font-bold">annual contribution is around $6</Text>
                . You can unenroll at any time.
             </Text>
 
@@ -33,13 +33,13 @@ export default function RoundUp() {
                className="mt-2 rounded-xl items-center bg-[#3377F4]"
                onPress={() => Linking.openURL("https://www.kub.org/srounditup-1/")}
             >
-               <Text className="text-text_main font-bold tracking-widest text-lg p-4">
+               <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest text-lg p-4">
                   ENROLL ONLINE
                </Text>
             </TouchableOpacity>
 
             <View className="bg-section rounded-xl p-6 gap-3">
-               <Text className="font-sans text-text_main tracking-wide text-base text-center leading-6">
+               <Text allowFontScaling={false} className="font-sans text-text_main tracking-wide text-base text-center leading-6">
                   All of the change from rounding your bill to the next dollar is sent to the Knoxville-Knox County Community Action Committee (CAC) weatherization assistance program. This program weatherizes homes for income-limited families and individuals, helping break the cycle of high utility bills due to inefficient homes and the ongoing needs for bill payment assistance.
                </Text>
                <Text

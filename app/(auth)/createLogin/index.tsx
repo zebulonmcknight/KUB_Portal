@@ -53,11 +53,12 @@ export default function CreateLogin() {
 
       // Make sure we have a valid response
       if (!response.ok) {
-        throw new Error();
+        throw new Error("Response bad");
       }
 
       router.navigate("/(auth)/createLogin/contactEmail"); // Send the user to the next page
     } catch (error: any) {
+      console.log(error.message);
       setShowError(true);
     } finally {
       setLoading(false);
@@ -71,7 +72,7 @@ export default function CreateLogin() {
         onPress={() => setShowHeaderAlert(true)}
       />
       <View className="flex-1 justify-start px-6 pt-4">
-        <Text className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-wide pt-4 pb-4 w-full">
           Register your account to view and pay your bill, monitor usage, and
           more.
         </Text>
@@ -126,7 +127,7 @@ export default function CreateLogin() {
           onSubmitEditing={() => ssnRef.current?.focus()}
         />
 
-        <Text className="text-text_main font-sans text-base tracking-wide pt-6 w-full">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-base tracking-wide pt-6 w-full">
           Please confirm the last 4 digits of your Social Security (or Tax ID)
           Number.
         </Text>
@@ -150,7 +151,7 @@ export default function CreateLogin() {
         >
           {/* NEED TO CONNECT THIS TO AUTH0!!!!! */}
           {/* Have to make sure they are a customer before allowing them to continue further. */}
-          <Text className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             {loading ? "Verifying..." : "NEXT"}
           </Text>
         </TouchableOpacity>

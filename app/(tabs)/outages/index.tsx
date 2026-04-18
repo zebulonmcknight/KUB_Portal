@@ -73,9 +73,9 @@ export default function OutagesScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe}  edges={['top', 'left', 'right']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Outages</Text>
+        <Text allowFontScaling={false} style={styles.headerTitle}>Outages</Text>
       </View>
       {/* Map is 45% height of the screen to allow room for buttons under it*/}
       <MapView
@@ -102,7 +102,7 @@ export default function OutagesScreen() {
 
       {/* Bottom info panel */}
       <View style={styles.panel}>
-        <Text style={styles.panelTitle}>Customers without Power:</Text>
+        <Text allowFontScaling={false} style={styles.panelTitle}>Customers without Power:</Text>
 
         {/* Legend row */}
         <View style={styles.legendRow}>
@@ -111,7 +111,7 @@ export default function OutagesScreen() {
               <View
                 style={[styles.legendDot, { backgroundColor: item.color }]}
               />
-              <Text style={styles.legendLabel}>{item.label}</Text>
+              <Text allowFontScaling={false} style={styles.legendLabel}>{item.label}</Text>
             </View>
           ))}
         </View>
@@ -122,7 +122,7 @@ export default function OutagesScreen() {
           onPress={checkOutageButton}
           activeOpacity={0.8}
         >
-          <Text style={styles.ctaBtnText}>CHECK OUTAGE STATUS</Text>
+          <Text allowFontScaling={false} style={styles.ctaBtnText}>CHECK OUTAGE STATUS</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

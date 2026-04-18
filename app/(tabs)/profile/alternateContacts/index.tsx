@@ -13,13 +13,13 @@ export default function AlternateContacts() {
       <ScreenHeader title="Alternate Contacts" />
 
       {/* Subtitle Text */}
-      <Text className="text-text_main text-2xl text-center mt-6 mb-8">
+      <Text allowFontScaling={false} className="text-text_main text-2xl text-center mt-6 mb-8">
         You may provide additional contacts to receive notifications for this
         account:
       </Text>
 
       {/* Phone Numbers Section*/}
-      <Text className="text-text_main font-bold text-base mb-3">
+      <Text allowFontScaling={false} className="text-text_main font-bold text-base mb-3">
         Phone Numbers
       </Text>
       <View style={modalStyles.inputWrapper}>
@@ -32,12 +32,12 @@ export default function AlternateContacts() {
           autoCorrect={false}
         />
         <TouchableOpacity style={modalStyles.inputButton} onPress={() => {}}>
-          <Text style={modalStyles.inputButtonText}>→</Text>
+          <Text allowFontScaling={false} style={modalStyles.inputButtonText}>→</Text>
         </TouchableOpacity>
       </View>
 
       {/* Email Addresses Section */}
-      <Text className="text-text_main font-bold text-base mt-8 mb-3">
+      <Text allowFontScaling={false} className="text-text_main font-bold text-base mt-8 mb-3">
         Email Addresses
       </Text>
       <View style={modalStyles.inputWrapper}>
@@ -50,7 +50,7 @@ export default function AlternateContacts() {
           autoCorrect={false}
         />
         <TouchableOpacity style={modalStyles.inputButton} onPress={() => {}}>
-          <Text style={modalStyles.inputButtonText}>→</Text>
+          <Text allowFontScaling={false} style={modalStyles.inputButtonText}>→</Text>
         </TouchableOpacity>
       </View>
     </View>

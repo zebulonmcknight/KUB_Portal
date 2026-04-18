@@ -8,7 +8,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 export default function Login() {
 
   const router = useRouter();
-  const { height } = useWindowDimensions();
+  const { height, width } = useWindowDimensions();
 
   const handleLogin = async () => {
     const token_expiry = await SecureStore.getItemAsync('token_expiry');
@@ -73,21 +73,21 @@ export default function Login() {
         <TouchableOpacity onPress={() => handleLogin()}
           className="bg-active_icon rounded-xl justify-center items-center py-3.5 mx-6"
         >
-          <Text className="text-text_main text-lg font-semibold tracking-wide w-full text-center">LOGIN</Text>
+          <Text allowFontScaling={false} className="text-text_main text-lg font-semibold tracking-wide w-full text-center">LOGIN</Text>
         </TouchableOpacity>
         
         {/* For the links under the login button */}
         {/* Using router.navigate here so it adds to stack and back button appears */}
-        <View className="flex-row mt-8 justify-between px-16">
+        <View className="flex-row mt-8 justify-between" style={{paddingHorizontal: width * .12}}>
           <TouchableOpacity onPress={() => router.navigate("/(auth)/help")}>
-            <Text className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">NEED HELP?</Text>
+            <Text allowFontScaling={false} className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">NEED HELP?</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={() => router.navigate("/(auth)/createLogin")}>
-            <Text className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">CREATE LOGIN</Text>
+            <Text allowFontScaling={false} className="text-active_icon text-lg font-semibold tracking-wide w-full text-center">CREATE LOGIN</Text>
           </TouchableOpacity>
         </View>
         <View className="absolute bottom-10 items-center w-full">
-          <Text className="text-text_main font-semibold tracking-wide w-full text-center">
+          <Text allowFontScaling={false} className="text-text_main font-semibold tracking-wide w-full text-center">
             v1.0.0
           </Text>
         </View>

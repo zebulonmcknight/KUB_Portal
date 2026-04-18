@@ -10,9 +10,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  useWindowDimensions,
+  View
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
 // --->Backend integration point for Kevin<---
@@ -102,7 +103,7 @@ function MessageBubble({ msg }: { msg: Message }) {
       <View
         style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}
       >
-        <Text style={isUser ? styles.userText : styles.botText}>
+        <Text allowFontScaling={false} style={isUser ? styles.userText : styles.botText}>
           {msg.text}
         </Text>
       </View>
@@ -164,7 +165,6 @@ export default function QAChat() {
         { id: (Date.now() + 1).toString(), from: "bot", text: reply },
       ]);
     } catch( error: any ) {
-      console.log(error.message);
       setMessages((prev) => [
         ...prev,
         {
@@ -178,18 +178,20 @@ export default function QAChat() {
     }
   };
 
+  const insets = useSafeAreaInsets();
+  const {height} = useWindowDimensions();
   const canSend = input.trim().length > 0 && !isTyping;
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe}  edges={['top', 'left', 'right']}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={-tabBarHeight + 10}
+        keyboardVerticalOffset={Platform.OS === "ios" ? tabBarHeight : 0}
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Q&A</Text>
+          <Text allowFontScaling={false} style={styles.headerTitle}>Q&A</Text>
         </View>
 
         {/* Messages list */}
@@ -197,7 +199,7 @@ export default function QAChat() {
           ref={flatListRef}
           data={messages}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.messageList}
+          contentContainerStyle={[styles.messageList, {paddingBottom: tabBarHeight}]}
           showsVerticalScrollIndicator={false}
           onContentSizeChange={scrollToBottom}
           renderItem={({ item }) => <MessageBubble msg={item} />}
@@ -205,7 +207,7 @@ export default function QAChat() {
         />
 
         {/* Input bar */}
-        <View style={[styles.inputBar, { marginBottom: tabBarHeight }]}>
+        <View style={[styles.inputBar, { marginBottom: '8%' }]}>
           <TextInput
             style={styles.input}
             placeholder="Message Energi…"
@@ -214,7 +216,6 @@ export default function QAChat() {
             onChangeText={setInput}
             onSubmitEditing={handleSend}
             returnKeyType="send"
-            blurOnSubmit={false}
             multiline
           />
           <TouchableOpacity
@@ -257,7 +258,6 @@ const styles = StyleSheet.create({
   },
   messageList: {
     paddingHorizontal: 14,
-    paddingBottom: 8,
     gap: 10,
   },
   botRow: {

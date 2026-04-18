@@ -4,13 +4,13 @@ import { useBillData } from "@/hooks/useBillData";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Linking,
-    Modal,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Linking,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -71,10 +71,10 @@ export default function PaperlessBilling() {
     <View className="flex-1">
       <ScreenHeader title="Paperless Billing" />
       <View className="flex-1 p-6 gap-6">
-        <Text className="text-text_main font-bold text-2xl tracking-wide leading-10">
+        <Text allowFontScaling={false} className="text-text_main font-bold text-2xl tracking-wide leading-10">
           Receive and view your bills easily through email.
         </Text>
-        <Text className="text-text_main font-sans text-xl tracking-wide leading-8">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide leading-8">
           No more hunting for your paper bill. Elect to receive your bill via
           email as soon as it's ready, instead of in the mail. Paperless Billing
           saves time and saves paper. It's easy for you and is good for the
@@ -91,10 +91,10 @@ export default function PaperlessBilling() {
           }
         >
           Learn more{" "}
-          <Text className="text-text_main">about Paperless Billing</Text>
+          <Text allowFontScaling={false} className="text-text_main">about Paperless Billing</Text>
         </Text>
 
-        <Text className="text-text_main font-sans text-base tracking-wide leading-6">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-base tracking-wide leading-6">
           By enrolling in Paperless Billing, you accept KUB's{" "}
           {/* Opens the T&C modal instead of linking out */}
           <Text
@@ -111,7 +111,7 @@ export default function PaperlessBilling() {
           className={`mt-2 rounded-xl items-center bg-[#3377F4] ${loading ? "opacity-50" : "opacity-100"}`}
           onPress={handleToggle}
         >
-          <Text className="text-text_main font-bold tracking-widest text-lg p-4">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest text-lg p-4">
             {loading
               ? "Processing..."
               : billData?.isPaperless
@@ -128,25 +128,25 @@ export default function PaperlessBilling() {
         animationType="slide"
         onRequestClose={() => setTermsVisible(false)}
       >
-        <SafeAreaView className="flex-1 bg-primary">
+        <SafeAreaView className="flex-1 bg-primary"  edges={['top', 'left', 'right']}>
           {/* Header */}
           <View className="flex-row items-center px-4 py-3">
             <TouchableOpacity
               onPress={() => setTermsVisible(false)}
               className="p-2"
             >
-              <Text className="text-text_main text-2xl">✕</Text>
+              <Text allowFontScaling={false} className="text-text_main text-2xl">✕</Text>
             </TouchableOpacity>
-            <Text className="text-text_main font-bold text-xl ml-4">
+            <Text allowFontScaling={false} className="text-text_main font-bold text-xl ml-4">
               Terms and Conditions
             </Text>
           </View>
 
           <View className="flex-1 p-6 gap-6">
-            <Text className="text-text_main font-bold text-2xl tracking-wide leading-10">
+            <Text allowFontScaling={false} className="text-text_main font-bold text-2xl tracking-wide leading-10">
               Paperless Billing Terms and Conditions:
             </Text>
-            <Text className="text-text_main font-sans text-xl tracking-wide leading-8">
+            <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide leading-8">
               By continuing, you authorize KUB to stop sending you monthly paper
               bills and start e-mailing you when your monthly bill is available
               on your My Account page. You agree to pay your bill (including any

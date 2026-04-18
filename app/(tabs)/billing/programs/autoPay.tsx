@@ -6,12 +6,12 @@ import { useStripe } from "@stripe/stripe-react-native";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-    ActivityIndicator,
-    Alert,
-    Linking,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  Linking,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 export default function AutoPay() {
@@ -268,14 +268,14 @@ export default function AutoPay() {
     <View className="flex-1">
       <ScreenHeader title="AutoPay" />
       <View className="flex-1 p-6 gap-6">
-        <Text className="text-text_main font-bold text-2xl tracking-wide leading-10">
+        <Text allowFontScaling={false} className="text-text_main font-bold text-2xl tracking-wide leading-10">
           AutoPay ensures that your bill is always paid on time.
         </Text>
-        <Text className="text-text_main font-sans text-2xl tracking-widest leading-10">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-2xl tracking-widest leading-10">
           Payments are automatically drafted from your saved payment method on
           or near your bill due date each month.
         </Text>
-        <Text className="text-text_main font-sans text-xl tracking-wide leading-7">
+        <Text allowFontScaling={false} className="text-text_main font-sans text-xl tracking-wide leading-7">
           You will continue to receive a monthly statement that looks like a
           normal bill, but which shows Amount to be drafted. You can unenroll
           from AutoPay at any time.
@@ -288,7 +288,7 @@ export default function AutoPay() {
             Linking.openURL("https://www.kub.org/bills-payments/autopay")
           }
         >
-          Learn more <Text className="text-text_main">about AutoPay</Text>
+          Learn more <Text allowFontScaling={false} className="text-text_main">about AutoPay</Text>
         </Text>
 
         {/* Single button that swaps between enroll and cancel based on current autopay status */}
@@ -297,7 +297,7 @@ export default function AutoPay() {
           className={`mt-4 rounded-xl items-center bg-[#3377F4] ${loading ? "opacity-50" : "opacity-100"}`}
           onPress={billData?.isAutoPay ? handleCancel : handleEnrollPress}
         >
-          <Text className="text-text_main font-bold tracking-widest text-lg p-4">
+          <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest text-lg p-4">
             {loading
               ? "Processing..."
               : billData?.isAutoPay

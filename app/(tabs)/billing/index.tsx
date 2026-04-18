@@ -258,7 +258,7 @@ export default function Billing() {
     );
   }
   return (
-    <SafeAreaView className="flex-1 bg-primary">
+    <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
       <Stack.Screen options={{ headerShown: false }} />
       <ScrollView
         className="flex-1"
@@ -298,28 +298,28 @@ export default function Billing() {
           />
 
           <View>
-            <Text className="text-text_main font-bold text-3xl text-left w-full p-6"  style={{ marginTop: height * 0.02 }}>
+            <Text allowFontScaling={false} className="text-text_main font-bold text-3xl text-left w-full p-6"  style={{ marginTop: height * 0.02 }}>
               Welcome
             </Text>
             <View className="flex-row justify-between w-full" style={{paddingHorizontal: width * .17, marginTop: height * .02}}>
-              <Text className="text-text_main font-sans text-base">
+              <Text allowFontScaling={false} className="text-text_main font-sans text-base">
                 Payment Due
               </Text>
-              <Text className="text-text_main font-bold text-base">
+              <Text allowFontScaling={false} className="text-text_main font-bold text-base">
                 {formattedDueDate}
               </Text>
             </View>
           </View>
 
           <View className="w-full items-center">
-            <Text className="text-text_main font-bold text-7xl">
+            <Text allowFontScaling={false} className="text-text_main font-bold text-7xl">
               ${billData ? billData.totalAmountDue.toFixed(2) : "0.00"}
             </Text>
 
             <View className="items-center rounded-xl" style={{marginTop: height * .03 }}>
               {/* I added a slight dark background here like the blurred part in your image! */}
-              <Text className="text-text_main text-lg">200 W Hill Ave</Text>
-              <Text className="text-inactive_text text-lg">
+              <Text allowFontScaling={false} className="text-text_main text-lg">200 W Hill Ave</Text>
+              <Text allowFontScaling={false} className="text-inactive_text text-lg">
                 Account 8764872181
               </Text>
             </View>
@@ -337,7 +337,7 @@ export default function Billing() {
               }`}
             >
               {/* if the request is current processing, output processing, otherwise output subscribe */}
-              <Text className="text-text_main font-semibold text-xl">
+              <Text allowFontScaling={false} className="text-text_main font-semibold text-xl">
                 {loading ? "Processing..." : "PAY NOW"}
               </Text>
             </TouchableOpacity>
@@ -347,7 +347,7 @@ export default function Billing() {
               disabled={pdfLoading || !billData?.invoicePdf}
               className="p-4 rounded-xl w-full items-center mb-8"
             >
-              <Text className="text-text_main font-semibold text-xl">
+              <Text allowFontScaling={false} className="text-text_main font-semibold text-xl">
                 {pdfLoading ? "Loading..." : "VIEW BILL"}
               </Text>
             </TouchableOpacity>
@@ -360,7 +360,7 @@ export default function Billing() {
             className="border-b border-section py-4 flex-row mx-4 items-center"
           >
             <Image source={icons.billing} style={{ width: 18, height: 18 }} />
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bills & Payments
             </Text>
           </TouchableOpacity>
@@ -373,7 +373,7 @@ export default function Billing() {
               source={icons.payment_method}
               style={{ width: 18, height: 18 }}
             />
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Payment Method
             </Text>
           </TouchableOpacity>
@@ -386,7 +386,7 @@ export default function Billing() {
               source={icons.payment_program}
               style={{ width: 18, height: 18 }}
             />
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Bill & Payment Programs
             </Text>
           </TouchableOpacity>
@@ -398,7 +398,7 @@ export default function Billing() {
             className="border-b border-section py-4 flex-row mx-4 items-center"
           >
             <Image source={icons.fiber} style={{ width: 18, height: 18 }} />
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Fiber
             </Text>
           </TouchableOpacity>
@@ -411,7 +411,7 @@ export default function Billing() {
               source={icons.promotions}
               style={{ width: 18, height: 18 }}
             />
-            <Text className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
+            <Text allowFontScaling={false} className="text-text_main bg-primary font-sans text-xl tracking-wide mx-4">
               Offers & Promotions
             </Text>
           </TouchableOpacity>

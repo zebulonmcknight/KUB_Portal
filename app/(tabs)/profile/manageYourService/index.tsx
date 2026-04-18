@@ -19,10 +19,10 @@ export default function ManageYourService() {
       <ScreenHeader title="Manage Service" />
 
       {/* Hero text */}
-      <Text className="text-text_main text-3xl mt-5 mb-5">
+      <Text allowFontScaling={false} className="text-text_main text-3xl mt-5 mb-5">
         Start, Stop, or Transfer service easily and quickly.
       </Text>
-      <Text className="text-text_main text-xl mb-10">
+      <Text allowFontScaling={false} className="text-text_main text-xl mb-10">
         We'll take you through the steps needed to start new service or stop
         service on your existing account.
       </Text>
@@ -33,7 +33,7 @@ export default function ManageYourService() {
         activeOpacity={0.8}
         onPress={stopServiceButton}
       >
-        <Text className="text-white font-bold text-sm tracking-widest">
+        <Text allowFontScaling={false} className="text-white font-bold text-sm tracking-widest">
           STOP SERVICE
         </Text>
       </TouchableOpacity>
@@ -44,7 +44,7 @@ export default function ManageYourService() {
         activeOpacity={0.8}
         onPress={transferServiceButton}
       >
-        <Text className="text-white font-bold text-sm tracking-widest">
+        <Text allowFontScaling={false} className="text-white font-bold text-sm tracking-widest">
           TRANSFER SERVICE
         </Text>
       </TouchableOpacity>
@@ -55,7 +55,7 @@ export default function ManageYourService() {
         activeOpacity={0.8}
         onPress={startServiceButton}
       >
-        <Text className="text-blue-500 font-bold text-sm tracking-widest">
+        <Text allowFontScaling={false} className="text-blue-500 font-bold text-sm tracking-widest">
           START SERVICE
         </Text>
       </TouchableOpacity>
