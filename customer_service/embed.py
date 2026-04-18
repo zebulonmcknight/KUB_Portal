@@ -13,10 +13,9 @@ if HF_TOKEN:= os.getenv("HF_TOKEN"):
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
 FAQ_QUESTIONS = [
-    # --- Existing entries ---
     {
         "question": "What payment methods are there?",
-        "answer": "If you want to save time and effort in bill paying, you can set up AutoPay! If not, you may pay through the official KUB website, in the billing section of this app, pay via call using KUB's automated system by calling 865-524-2911 and following the prompts, pay at your bank (please check if your financial institution accepts KUB payments), or through mail.",
+        "answer": "If you want to save time and effort in bill paying, you can set up AutoPay! If not, you may pay through the official KUB website, in the billing section of this app, pay via call using KUB's automated system by calling (865) 524-2911 and following the prompts, pay at your bank (please check if your financial institution accepts KUB payments), or through mail.",
         "embedding": [],
         "metadata": {},
     },
@@ -26,17 +25,15 @@ FAQ_QUESTIONS = [
         "embedding": [],
         "metadata": {},
     },
-
-    # --- New entries ---
     {
         "question": "How do I report a power outage?",
-        "answer": "You can report an outage online at https://www.kub.org/outage/report, or call 865-524-2911 or 1-800-250-8068 at any time — 24/7 emergency service is available. When prompted, press 2-1 for electric outages. You can also check your outage status at https://www.kub.org/outage/my-status and view live outage maps at https://www.kub.org/outage/map.",
+        "answer": "You can report an outage online at https://www.kub.org/outage/report, or call (865) 524-2911 or +1 (800) 250-8068 at any time — 24/7 emergency service is available. When prompted, press 2-1 for electric outages. You can also check your outage status at https://www.kub.org/outage/my-status and view live outage maps at https://www.kub.org/outage/map.",
         "embedding": [],
         "metadata": {},
     },
     {
         "question": "How do I report a gas leak or emergency?",
-        "answer": "Call 865-524-2911 or 1-800-250-8068 immediately — this line is available 24 hours a day, 7 days a week. When the automated recording begins, press 1 for a natural gas leak or emergency. Do not use electrical switches or open flames near the suspected leak.",
+        "answer": "Call (865) 524-2911 or +1 (800) 250-8068 immediately — this line is available 24 hours a day, 7 days a week. When the automated recording begins, press 1 for a natural gas leak or emergency. Do not use electrical switches or open flames near the suspected leak.",
         "embedding": [],
         "metadata": {},
     },
@@ -72,13 +69,13 @@ FAQ_QUESTIONS = [
     },
     {
         "question": "What are KUB's customer service hours?",
-        "answer": "KUB customer service representatives are available Monday through Friday, 7 a.m. to 6 p.m., for billing inquiries, service orders, and general questions. Call 865-524-2911 and have your account number ready. For emergencies such as outages or gas leaks, the line is available 24 hours a day, 7 days a week.",
+        "answer": "KUB customer service representatives are available Monday through Friday, 7 a.m. to 6 p.m., for billing inquiries, service orders, and general questions. Call (865) 524-2911 and have your account number ready. For emergencies such as outages or gas leaks, the line is available 24 hours a day, 7 days a week.",
         "embedding": [],
         "metadata": {},
     },
     {
         "question": "How can I manage my account 24/7 without speaking to a representative?",
-        "answer": "KUB's automated phone system is available around the clock. Call 865-524-2911 or 1-800-250-8068 and follow the prompts to check your account balance, make a payment, or request a final notice due date extension. Have your KUB account number ready. The system supports both speech and Touch-Tone input, and is available in English and Spanish.",
+        "answer": "KUB's automated phone system is available around the clock. Call (865) 524-2911 or +1 (800) 250-8068 and follow the prompts to check your account balance, make a payment, or request a final notice due date extension. Have your KUB account number ready. The system supports both speech and Touch-Tone input, and is available in English and Spanish.",
         "embedding": [],
         "metadata": {},
     },
@@ -96,13 +93,13 @@ FAQ_QUESTIONS = [
     },
     {
         "question": "How do I contact KUB?",
-        "answer": "You can reach KUB by phone at 865-524-2911 (Monday–Friday, 7 a.m.–6 p.m. for general inquiries; 24/7 for emergencies). You can also submit a message via the contact form at https://www.kub.org/about/contact-us, or email customerservice@kub.org. For TDD/TTY access, call 865-594-7494.",
+        "answer": "You can reach KUB by phone at (865) 524-2911 (Monday–Friday, 7 a.m.–6 p.m. for general inquiries; 24/7 for emergencies). You can also submit a message via the contact form at https://www.kub.org/about/contact-us, or email customerservice@kub.org. For TDD/TTY access, call (865) 594-7494.",
         "embedding": [],
         "metadata": {},
     },
     {
         "question": "Does KUB offer services in Spanish?",
-        "answer": "Yes. KUB's automated phone system (865-524-2911) is available in both English and Spanish. Spanish-language billing information is also available on the KUB website at https://www.kub.org/bills-payments/espanol.",
+        "answer": "Yes, KUB's automated phone system (865) 524-2911 is available in both English and Spanish. Spanish-language billing information is also available on the KUB website at https://www.kub.org/bills-payments/espanol.",
         "embedding": [],
         "metadata": {},
     },
