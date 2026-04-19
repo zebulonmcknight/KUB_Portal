@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Modal, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 interface CustomAlertProps {
    message: string | ReactNode;
@@ -10,14 +10,13 @@ interface CustomAlertProps {
    onConfirm?: () => void;
 }
 
+//alert box that uses views instead of modals
 export default function CustomAlert({ message, visible, onClose, confirmText, onConfirm }: CustomAlertProps) {
+   if (!visible) return null;
    return (
-      <Modal animationType="none" transparent={true} visible={visible} onRequestClose={onClose} statusBarTranslucent={true}>
-         {/* First view lets us position the box to be at the center of the screen. It also dims the background so alert is focused */}
-         <View className="flex-1 justify-center items-center bg-black/50 px-6">
-            {/* This creates the actual alert box */}
-            <View className="bg-zinc-600 p-6">
-               <Text allowFontScaling={false} className="text-text_main text-lg font-sans leading-normal">{message}</Text>
+      <View className="absolute inset-0 flex-1 justify-center items-center bg-black/50 px-6" style={{ zIndex: 999 }}>
+         <View className="bg-zinc-600 p-6">
+            <Text allowFontScaling={false} className="text-text_main text-lg font-sans leading-normal">{message}</Text>
                {/* Need this one to put the buttons at the end of the box. */}
                <View className="items-end flex-row justify-end gap-4 pt-4">
                   {/* If confirmText and onConfirm are provided show two buttons, otherwise show single OK */}
@@ -36,8 +35,7 @@ export default function CustomAlert({ message, visible, onClose, confirmText, on
                      </TouchableOpacity>
                   )}
                </View>
-            </View>
          </View>
-      </Modal>
+      </View>
    );
 }
