@@ -252,7 +252,7 @@ export default function Billing() {
   // Should only run on first instance
   if (billLoading && !billData) {
     return (
-      <SafeAreaView className="flex-1 bg-primary items-center justify-center">
+      <SafeAreaView className="flex-1 bg-primary" edges={['top', 'left', 'right']}>
         <ActivityIndicator size="large" color="#3377F4" />
       </SafeAreaView>
     );

@@ -33,14 +33,14 @@ echo "NODE_ENV=development" > .env
 npm run dev
 ```
 
-Server will start on `http://localhost:3000`
+Server will start on `https://kubportal-production.up.railway.app`
 
 ### 5. Verify It's Running
 
 In a seperate terminal instance:
 
 ```bash
-curl http://localhost:3000/health
+curl https://kubportal-production.up.railway.app/health
 ```
 
 Expected response:
