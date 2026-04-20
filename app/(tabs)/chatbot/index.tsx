@@ -5,7 +5,6 @@ import {
   Animated,
   FlatList,
   KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -183,10 +182,10 @@ export default function QAChat() {
   const canSend = input.trim().length > 0 && !isTyping;
 
   return (
-    <SafeAreaView style={styles.safe}  edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={"padding"}
         keyboardVerticalOffset={0}
       >
         {/* Header */}
