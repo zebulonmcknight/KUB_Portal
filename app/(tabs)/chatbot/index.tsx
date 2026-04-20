@@ -187,7 +187,7 @@ export default function QAChat() {
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? tabBarHeight : 0}
+        keyboardVerticalOffset={0}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -207,7 +207,7 @@ export default function QAChat() {
         />
 
         {/* Input bar */}
-        <View style={[styles.inputBar, { marginBottom: '8%' }]}>
+        <View style={[styles.inputBar]}>
           <TextInput
             style={styles.input}
             placeholder="Message Energi…"
