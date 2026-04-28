@@ -1,50 +1,73 @@
-# Welcome to your Expo app 👋
+# KUB Portal
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A cross-platform mobile application built with React Native and Expo that consolidates KUB's seperate iOS and Android apps into a single unified codebase.
 
-## Get started
+## Project Background
 
-1. Install dependencies
+KUB currently maintains separate native mobile apps for iOS (Swift) and Android (Kotlin), requiring features and bug fixes to be implemented twice across two different platforms. This project consolidates both into a single React Native codebase, reducing maintenance overhead while preserving the existing user experience.
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+**Frontend:** React Native with Expo, Expo Router, NativeWind, TypeScript
 
-   ```bash
-   npx expo start
-   ```
+**Backend:** Node.js, Express, TypeScript, Python
 
-In the output, you'll find options to open the app in a
+**Services:** Auth0 (Authentication), Stripe (Billing and Payments), Supabase (Database)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## App Overview
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+The app has four main tabs:
+ 
+- **Billing** - view current bill, pay invoices, manage payment methods, enroll in AutoPay and billing programs (Levelized Billing, Paperless Billing, Round It Up), and browse offers and promotions
+- **Profile** - account and contact information management
+- **Outages** - outage map and reporting
+- **Q&A** - RAG-based chatbot for customer support questions
 
-## Get a fresh project
+The initial load screen is where user authentication is handled. Authentication supports account registration verified against predefined KUB account numbers, as well as login functionality and password reset via Auth0.
 
-When you're ready, run:
+## Running the App
 
-```bash
-npm run reset-project
+### Prerequisites
+- [Node.js](https://nodejs.org/) v18 or higher
+- Expo Go application installed on mobile device
+- The following environment variable in a ```.env``` file in the root directory:
+```EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key```. Must have a Stripe developer dashboard to obtain this.
+
+See [`backend/README.md`](./backend/README.md) for setup and [`backend/documentation.md`](./backend/documentation.md) for the full API reference
+
+### Setup
+
+```
+npm install
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+Scan the QR code with Expo Go to launch application instance.
 
-## Learn more
 
-To learn more about developing your project with Expo, look at the following resources:
+## Publishing (Steps for Production Release)
+ 
+The app was not published to the Apple App Store or Google Play Store due to the costs involved. Apple's Developer Program requires a $99/year enrollment and Google Play requires a $25 one-time fee. Below are the steps that would be taken to publish the app if this were to move into production.
+ 
+### Building for Production Prerequisites
+ 
+```bash
+npm install -g eas-cli
+eas login
+eas build:configure
+```
+ 
+### iOS - Apple App Store
+ 
+1. Enroll in the Apple Developer Program
+2. Create an App ID and profile in App Store Connect
+3. Build: `eas build --platform ios`
+4. Submit: `eas submit --platform ios`
+5. Complete the App Store listing and submit for review
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### Android - Google Play Store
+ 
+1. Create a Google Play Developer account
+2. Build: `eas build --platform android`
+3. Submit: `eas submit --platform android`
+4. Complete the Play Store listing and submit for review
