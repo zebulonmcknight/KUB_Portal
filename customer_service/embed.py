@@ -1,3 +1,15 @@
+"""
+File: embed.py
+Creates a dictionary of FAQs, embeds the question + answer together with all-MiniLM-L6-v2, and stores it into the database for RAG.
+
+If wanting to create FAQs, edit FAQ_QUESTIONS in the same {"question": , "answer": , "embedding": , "metadata": ,} format by first removing previous FAQs, then adding the new ones.
+
+To start the FAQ database over, clear the rows inside faq table then run this program with all the FAQs you want.
+
+Author: Kevin Lam
+Usage: python embed.py
+"""
+
 import os
 from dotenv import load_dotenv
 from supabase import create_client
@@ -12,6 +24,7 @@ if HF_TOKEN:= os.getenv("HF_TOKEN"):
 
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
+#Dictionary of FAQ to be embedded and inserted into the Supabase.
 FAQ_QUESTIONS = [
     {
         "question": "What payment methods are there?",
@@ -109,9 +122,12 @@ for faq in FAQ_QUESTIONS:
     # Embed the question + answer so it can capture questions that essentially ask the same thing in different phrasing. Convert to list (vector) for Supabase.
     faq['embedding'] = embedder.encode(faq['question'] + ' ' + faq['answer']).tolist()
     
+    #Combine all the information into one dictionary to store.
     data = {"question": faq['question'], "answer": faq['answer'], "embedding": faq['embedding'], "metadata": faq['metadata']}
     
+    #Insert into Supabase.
     supabase.table("faq").insert(data).execute()
+    
     print(f"Inserted FAQ: {faq['question']}")
     
 print("All FAQs embedded and inserted into Supabase.")

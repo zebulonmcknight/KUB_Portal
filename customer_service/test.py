@@ -1,3 +1,13 @@
+"""
+File: test.py
+This file is to test the FastAPI to ensure that the chatbot was correctly setup and ran.
+
+Currently tests the default localhost:8000, but it can be changed to whatever IP you wish to test it on.
+
+Author: Kevin Lam
+Usage: python test.py
+"""
+
 import requests
 import time
 

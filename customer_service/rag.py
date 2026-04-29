@@ -1,3 +1,14 @@
+"""
+File: rag.py
+FastAPI server for Energi, the KUB customer service chatbot.
+
+Handles incoming chat requests by classifying the input (and enhancing it if necessary) using a locally hosted Ollama LLM, performing semantic similarity search
+over the FAQ database (Supabase) using all-MiniLM-L6-v2 embeddings, and generating responses.
+
+Author: Kevin Lam
+Usage: fastapi run rag.py
+"""
+
 import os
 from dotenv import load_dotenv
 from supabase import create_client
@@ -6,8 +17,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from ollama import chat
 
+#Set up FastAPI.
 app = FastAPI()
 
+#Get .env variables.
 load_dotenv()
 
 supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_PUBLIC_KEY"))
@@ -17,9 +30,10 @@ if HF_TOKEN:= os.getenv("HF_TOKEN"):
 
 OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
 
+#Create embedder.
 embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
-# System prompt for how LLM should act.
+#System prompt for how LLM should act.
 SYSTEM_PROMPT = """You are Energi, a Knoxville Utilities Board (KUB) customer service AI assistant.
 
 When FAQ Context is provided, use it as your only source of facts. Do not introduce any information outside of it.
@@ -28,7 +42,7 @@ Be polite, concise, and professional.
 Do not use any markdown formatting. Write in plain text only. For links, write the full URL as-is (e.g. https://www.kub.org/customer/forgot).
 """
 
-# Just ensures that the HTTP request contains a string field named question.
+#Just ensures that the HTTP request contains a string field named question.
 class ChatRequest(BaseModel):
     question: str
 
@@ -54,6 +68,17 @@ def search_faq(query: str, similarity_threshold: float = 0.3, num_match: int = 1
         return -1
 
 def call_LLM(context:str, question: str):
+    """
+    Calls the LLM with the system prompt and original or enhanced question to generate a response.
+    
+    Args:
+        context: If semantic search into Supabase was done, this is the str containing the result.
+        question: Original or enhanced question from classify_and_expand.
+        
+    Returns:
+        A string that is the LLM's response message content.
+    """
+    
     try:
         response = chat(
             model=OLLAMA_MODEL, 
@@ -69,6 +94,18 @@ def call_LLM(context:str, question: str):
         return "Energi is currently unavailable. Please call KUB support at (865) 524-2911"
 
 def classify_and_expand(question: str) -> tuple[bool, str]:
+    """
+    Uses the LLM to classify the user's query as either a greeting/farewell/pleasantry or a question.
+    If classified as the former, then reply with GREETING as the classifier.
+    Else, it'll reply with a the user's question rewritten into a clear, complete version to improve the semantic search.
+    
+    Args:
+        question: User's question text.
+        
+    Returns:
+        A tuple: [bool, str] where the bool is whether it was a greeting/farewell/pleasantry (True) or not (False), and the str is the original question or enhanced question.
+    """
+    
     response = chat(
         model=OLLAMA_MODEL,
         think=False,
@@ -91,6 +128,16 @@ def classify_and_expand(question: str) -> tuple[bool, str]:
 
 @app.post("/chat")
 def chat_endpoint(request: ChatRequest):
+    """
+    API endpoint to allow the React Native app access to the chatbot. Calls classify_and_expand, search_faq (if it was not a greeting/farewell/pleasantry), and finally calls the LLM for a response.
+    
+    Args:
+        request: A class to ensure that the API is called solely with a string value (the question).
+        
+    Returns:
+        A JSON object with a single "response" key containing the chatbot's reply str.
+    """
+    
     try:
         is_greeting, expanded = classify_and_expand(request.question) #Create an improved query question using the LLM so the search_faq fails less.
         

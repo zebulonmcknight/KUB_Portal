@@ -11,15 +11,17 @@ import {
   TextInput,
   TouchableOpacity,
   useWindowDimensions,
-  View
+  View,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
 // --->Backend integration point for Kevin<---
 //
-// Replace this function with your real API call.
-// Receives the user message string, returns the bot reply string.
+// Receives the user message string, calls chatbot API, and returns the bot reply string.
 async function sendMessageToBackend(userMessage: string): Promise<string> {
   const response = await fetch(
     "https://snappy-orville-leathern.ngrok-free.dev/chat",
@@ -103,7 +105,10 @@ function MessageBubble({ msg }: { msg: Message }) {
       <View
         style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}
       >
-        <Text allowFontScaling={false} style={isUser ? styles.userText : styles.botText}>
+        <Text
+          allowFontScaling={false}
+          style={isUser ? styles.userText : styles.botText}
+        >
           {msg.text}
         </Text>
       </View>
@@ -164,7 +169,7 @@ export default function QAChat() {
         ...prev,
         { id: (Date.now() + 1).toString(), from: "bot", text: reply },
       ]);
-    } catch( error: any ) {
+    } catch (error: any) {
       setMessages((prev) => [
         ...prev,
         {
@@ -179,11 +184,11 @@ export default function QAChat() {
   };
 
   const insets = useSafeAreaInsets();
-  const {height} = useWindowDimensions();
+  const { height } = useWindowDimensions();
   const canSend = input.trim().length > 0 && !isTyping;
 
   return (
-    <SafeAreaView style={styles.safe}  edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
       <KeyboardAvoidingView
         style={styles.flex}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -191,7 +196,9 @@ export default function QAChat() {
       >
         {/* Header */}
         <View style={styles.header}>
-          <Text allowFontScaling={false} style={styles.headerTitle}>Q&A</Text>
+          <Text allowFontScaling={false} style={styles.headerTitle}>
+            Q&A
+          </Text>
         </View>
 
         {/* Messages list */}
@@ -199,7 +206,10 @@ export default function QAChat() {
           ref={flatListRef}
           data={messages}
           keyExtractor={(item) => item.id}
-          contentContainerStyle={[styles.messageList, {paddingBottom: tabBarHeight}]}
+          contentContainerStyle={[
+            styles.messageList,
+            { paddingBottom: tabBarHeight },
+          ]}
           showsVerticalScrollIndicator={false}
           onContentSizeChange={scrollToBottom}
           renderItem={({ item }) => <MessageBubble msg={item} />}
@@ -207,7 +217,7 @@ export default function QAChat() {
         />
 
         {/* Input bar */}
-        <View style={[styles.inputBar, { marginBottom: '8%' }]}>
+        <View style={[styles.inputBar, { marginBottom: "8%" }]}>
           <TextInput
             style={styles.input}
             placeholder="Message Energi…"
@@ -254,7 +264,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
     fontSize: 30,
     letterSpacing: -0.5,
-    fontFamily: "Inter_700Bold"
+    fontFamily: "Inter_700Bold",
   },
   messageList: {
     paddingHorizontal: 14,
