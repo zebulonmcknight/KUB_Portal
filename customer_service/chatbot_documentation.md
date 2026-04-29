@@ -19,7 +19,7 @@ This directory powers **Energi**, the Knoxville Utilities Board (KUB) customer s
 ## Prerequisites
 
 - [Python 3.10+](https://www.python.org/downloads/)
-- [Ollama](https://ollama.com/download)
+- [Ollama](https://ollama.com/download) and Qwen3:8b installed
 - [ngrok](https://ngrok.com/download) with an account and static domain configured
 
 ---
