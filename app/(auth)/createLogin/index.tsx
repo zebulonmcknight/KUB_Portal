@@ -4,7 +4,7 @@ import ScreenHeader from "@/components/headerStyle";
 import { useRegistration } from "@/components/registrationContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Linking, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function CreateLogin() {
@@ -19,6 +19,17 @@ export default function CreateLogin() {
   const { accountNumber, setAccountNumber } = useRegistration();
   const { zipCode, setZipCode } = useRegistration();
   const { ssn, setSSN } = useRegistration();
+  const { email, setEmail } = useRegistration();
+  const { password, setPassword } = useRegistration();
+
+  useEffect(() => {
+    // Reset all registration context values when entering this screen fresh
+    setAccountNumber("");
+    setZipCode("");
+    setSSN("");
+    setEmail("");
+    setPassword("");
+  }, []);
 
   // useRef so that we can wire the keyboard to show 'Next' instead of 'Done' when on account number and zipcode text boxes
   // Need references to zip and ssn as those are the boxes we move to
