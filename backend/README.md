@@ -1,15 +1,15 @@
 # KUB Portal Backend
 
-Express.js + TypeScript backend API for the KUB Portal mobile application.
+Express.js + TypeScript backend API for the KUB Portal mobile application. 
 
-## Quick Start
+## Quick Start on Local Host
 
 ### 1. Pull the Backend Branch
 
 ```bash
 git fetch origin
-git checkout zeb
-git pull origin zeb
+git checkout backend
+git pull origin backend
 ```
 
 ### 2. Install Dependencies
@@ -26,6 +26,7 @@ touch .env
 echo "PORT=3000" > .env
 echo "NODE_ENV=development" > .env
 ```
+Other environment variables should be retrieved from relevant dashboards. Developers use Railway URL and environment variables will be injected automatically. 
 
 ### 4. Start Development Server
 
@@ -33,14 +34,14 @@ echo "NODE_ENV=development" > .env
 npm run dev
 ```
 
-Server will start on `https://kubportal-production.up.railway.app`
+Server will start on `http://localhost:3000`
 
 ### 5. Verify It's Running
 
 In a seperate terminal instance:
 
 ```bash
-curl https://kubportal-production.up.railway.app/health
+curl http://localhost:3000/health
 ```
 
 Expected response:
