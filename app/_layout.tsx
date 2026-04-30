@@ -69,6 +69,7 @@ export default function RootLayout() {
               name="(tabs)"
               options={{
                 headerShown: false, // Hide the header for the main tab layout
+                gestureEnabled: false,
               }}
             />
           </Stack>

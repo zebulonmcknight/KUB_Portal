@@ -31,7 +31,7 @@ export default function RoundUp() {
             {/* Enrollment handled on KUB's website since it requires billing system integration */}
             <TouchableOpacity
                className="mt-2 rounded-xl items-center bg-[#3377F4]"
-               onPress={() => Linking.openURL("https://www.kub.org/srounditup-1/")}
+               onPress={() => Linking.openURL("https://www.kub.org/rounditup-1/")}
             >
                <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest text-lg p-4">
                   ENROLL ONLINE

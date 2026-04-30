@@ -12,6 +12,7 @@ export default function ScreenHeader({ title, onPress }: HeaderStyleProps) {
       <Stack.Screen
          options={{
          title,
+         headerShown: true,
          headerStyle: {
             backgroundColor: "#3377F4",
          },

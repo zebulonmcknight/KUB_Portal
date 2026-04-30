@@ -69,8 +69,8 @@ export default function Credentials() {
       }
 
       //router.dismissAll();
-      //router.replace("/(tabs)/billing");
-      router.navigate("/(tabs)/billing"); 
+      router.replace("/(tabs)/billing");
+      // router.navigate("/(tabs)/billing"); 
     } catch (error) {
       console.error("There was an error:", error);
       Alert.alert("Network Error", "Could not connect to the server.");

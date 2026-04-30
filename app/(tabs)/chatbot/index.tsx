@@ -1,11 +1,10 @@
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Animated,
   FlatList,
   KeyboardAvoidingView,
-  Platform,
   StyleSheet,
   Text,
   TextInput,
@@ -188,11 +187,11 @@ export default function QAChat() {
   const canSend = input.trim().length > 0 && !isTyping;
 
   return (
-    <SafeAreaView style={styles.safe} edges={["top", "left", "right"]}>
+    <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
         style={styles.flex}
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        keyboardVerticalOffset={Platform.OS === "ios" ? tabBarHeight : 0}
+        behavior={"padding"}
+        keyboardVerticalOffset={0}
       >
         {/* Header */}
         <View style={styles.header}>
@@ -217,7 +216,7 @@ export default function QAChat() {
         />
 
         {/* Input bar */}
-        <View style={[styles.inputBar, { marginBottom: "8%" }]}>
+        <View style={[styles.inputBar]}>
           <TextInput
             style={styles.input}
             placeholder="Message Energi…"
