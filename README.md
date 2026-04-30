@@ -33,7 +33,7 @@ The initial load screen is where user authentication is handled. Authentication 
 - The following environment variable in a ```.env``` file in the root directory:
 ```EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key```. Must have a Stripe developer dashboard to obtain this.
 
-See [`backend/README.md`](./backend/README.md) for setup and [`backend/documentation.md`](./backend/documentation.md) for the full API reference
+See [`backend/README.md`](./backend/README.md) for setup and [`backend/auth_documentation.md`](./backend/auth_documentation.md) for the full Auth0 API reference and [`backend/stripe_documentation.md`](./backend/stripe_documentation.md) for the full Stripe API reference
 
 ### Setup
 
