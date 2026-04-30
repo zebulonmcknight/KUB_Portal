@@ -1,54 +1,10 @@
 # KUB Portal — Auth API Documentation
 
-## Setup
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v18 or higher
-- npm
-
-### Install & Run
-
-```bash
-cd backend
-npm install
-npm run dev
-```
-
 The server runs on `https://kubportal-production.up.railway.app`. Confirm it's up by hitting the health check:
 
 ```bash
 curl https://kubportal-production.up.railway.app/health
 ```
-
-### Environment Variables
-
-You will need a `.env` file in the `backend/` directory.
-It will need to contain:
-
-```
-PORT=3000
-
-NODE_ENV=development
-
-SUPABASE_URL=
-
-SUPABASE_SECRET_KEY=
-
-STRIPE_SECRET_KEY=
-
-STRIPE_PRICE_ID=
-
-AUTH0_DOMAIN=
-
-AUTH0_AUDIENCE=
-
-AUTH0_CLIENT_ID=
-
-AUTH0_CLIENT_SECRET=
-```
-
-All of these values should be retrievable from their respective providers platforms, but some are hard to find through all the menus. Reach out if you need assistance finding any environment variables.
 
 ---
 
@@ -78,13 +34,12 @@ const response = await fetch('https://kubportal-production.up.railway.app/api/au
   body: JSON.stringify({
     email: 'user@example.com',
     password: 'Password123!',
-    account_number: '1234567890'
+    account_number: '1234567890',
     first_name: 'John',
     last_name: 'Doe',
     phone: '4231231234'
   })
 });
-
 const data = await response.json();
 // data.access_token — store this for authenticated requests
 // data.expires_in   — token lifetime in seconds (86400 = 24hrs)
@@ -131,7 +86,6 @@ const response = await fetch("https://kubportal-production.up.railway.app/api/au
     password: "Password123!",
   }),
 });
-
 const data = await response.json();
 // data.access_token — store this for authenticated requests
 ```
@@ -151,6 +105,49 @@ const data = await response.json();
 | ------ | ------------------------- |
 | 400    | Missing email or password |
 | 401    | Invalid credentials       |
+
+---
+
+### POST `/api/auth/reset-password`
+
+Sends a password reset link to the provided email address. For security reasons, the response is the same whether or not the email exists in the system.
+
+**Request Body**
+
+| Field   | Type   | Required |
+| ------- | ------ | -------- |
+| `email` | string | yes      |
+
+**Example**
+
+```javascript
+const response = await fetch("https://kubportal-production.up.railway.app/api/auth/reset-password", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    email: "user@example.com",
+  }),
+});
+const data = await response.json();
+// data.message — confirmation string (same regardless of whether the email exists)
+```
+
+**Success Response (200)**
+
+```json
+{
+  "message": "If an account exists for that email, a reset link has been sent."
+}
+```
+
+**Error Responses**
+
+| Status | Cause                              |
+| ------ | ---------------------------------- |
+| 400    | Missing email                      |
+| 500    | Password reset failed (server error) |
+
+> **Note:** This endpoint does not require authentication. The reset link is delivered via email and handled by Auth0.
 
 ---
 
