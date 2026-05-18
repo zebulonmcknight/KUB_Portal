@@ -5,7 +5,7 @@ import { supabase } from '../../database/supabase'; // example database client i
 // ABOUT ARBITRARY USERS BY EMAIL. 
 
 
-export const get_user_by_email = async (req : Request, res: Response) => {
+export const getUserByEmail = async (req : Request, res: Response) => {
     try {
         const { email } = req.query; // request should contain email in the body
         

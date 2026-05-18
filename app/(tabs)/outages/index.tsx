@@ -26,7 +26,7 @@ const LEGEND = [
   { label: "500+", color: "orange" },
 ];
 
-const FAKE_OUTAGES = [
+const PLACEHOLDER_OUTAGES = [
   {
     id: 1,
     latitude: 35.93,
@@ -87,7 +87,7 @@ export default function OutagesScreen() {
         showsCompass={false}
         toolbarEnabled={false}
       >
-        {FAKE_OUTAGES.map((outage) => (
+        {PLACEHOLDER_OUTAGES.map((outage) => (
           <Marker
             key={outage.id}
             coordinate={{

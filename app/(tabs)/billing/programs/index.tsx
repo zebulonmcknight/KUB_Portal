@@ -2,6 +2,7 @@ import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
 import PayNowModal from "@/components/payNowModal";
 import { PaymentMethod } from "@/components/paymentPicker";
+import { API_BASE_URL } from "@/constants/api";
 import { useBillData } from "@/hooks/useBillData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useStripe } from "@stripe/stripe-react-native";
@@ -83,7 +84,7 @@ export default function Programs() {
         return [];
       }
 
-      const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods", {
+      const response = await fetch(`${API_BASE_URL}/api/billing/paymentMethods`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -159,10 +160,7 @@ export default function Programs() {
         return;
       }
 
-      const response = await fetch(
-        // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
-        {
+      const response = await fetch(`${API_BASE_URL}/api/billing/payInvoice`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -196,7 +194,7 @@ export default function Programs() {
       // get the client secret for the open invoice
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
+        `${API_BASE_URL}/api/billing/payInvoice`,
         {
           method: "POST",
           headers: {

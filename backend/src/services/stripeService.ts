@@ -170,8 +170,3 @@ export const getInvoiceHistory = async (stripeId: string) => {
         limit: 100,
     });
 }
-
-// // marks the subscription incomplete if payment is required so frontend can handle payment
-// payment_behavior: 'default_incomplete',
-// // return the client_secret to frontend Stripe SDK in order to confirm payment
-// expand: ['latest_invoice.confirmation_secret']

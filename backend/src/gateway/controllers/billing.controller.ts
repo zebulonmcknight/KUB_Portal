@@ -61,29 +61,13 @@ export const newCustomerSubscription = async (req: Request, res: Response) => {
         // extract the customer id
         const stripeId = customer.id;
         
-        // if the stripeId is not retrieved from the frontend request
+        // if the stripe customr creation returned no ID
         if( !stripeId ){
             return res.status(400).json({ error: 'stripeId and price IDs are required' });
         }
         
         // create the subscription
         const subscription = await createCustomerSubscription( stripeId, priceIds );
-        
-        // // fix ts type errors and obtain the client_secret for payment confirmation on frontend
-        // let clientSecret: string | undefined;
-        // const latestInvoice = subscription.latest_invoice;
-        // if( latestInvoice && typeof latestInvoice !== 'string' ){
-            //     const confirmationSecret = latestInvoice.confirmation_secret;
-            
-            //     if( confirmationSecret ){
-                //         clientSecret = confirmationSecret.client_secret;
-                //     }
-                // }
-                
-                // // ensure clientSecret exists
-                // if( !clientSecret ){
-                    //     return res.status(500).json({ error: 'Failed to retrieve client secret from subscription'});
-                    // }
         
         // ensure subscription created successfully and retrieve subscription ID
         const stripeSubscriptionId = subscription.id;

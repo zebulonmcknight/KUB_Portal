@@ -18,8 +18,6 @@ import {
 } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
-// --->Backend integration point for Kevin<---
-//
 // Receives the user message string, calls chatbot API, and returns the bot reply string.
 async function sendMessageToBackend(userMessage: string): Promise<string> {
   const response = await fetch(
@@ -34,7 +32,6 @@ async function sendMessageToBackend(userMessage: string): Promise<string> {
   const data = await response.json();
   return data.response;
 }
-// ─────────────────────────────────────────────────────────────────────────────
 
 type Message = {
   id: string;
@@ -50,7 +47,7 @@ const INITIAL_MESSAGES: Message[] = [
   },
 ];
 
-// ── Typing indicator bubble ──────────────────────────────────────────────────
+// Typing indicator bubble
 function TypingBubble() {
   const anim1 = useRef(new Animated.Value(0)).current;
   const anim2 = useRef(new Animated.Value(0)).current;
@@ -96,7 +93,7 @@ function TypingBubble() {
   );
 }
 
-// ── Single message bubble ────────────────────────────────────────────────────
+// Single message bubble
 function MessageBubble({ msg }: { msg: Message }) {
   const isUser = msg.from === "user";
   return (
@@ -115,7 +112,7 @@ function MessageBubble({ msg }: { msg: Message }) {
   );
 }
 
-// ── Send icon ────────────────────────────────────────────────────────────────
+// Send icon
 function SendIcon() {
   return (
     <Svg width={20} height={20} viewBox="0 0 24 24" fill="none">
@@ -137,7 +134,7 @@ function SendIcon() {
   );
 }
 
-// ── Main screen ──────────────────────────────────────────────────────────────
+// Main screen
 export default function QAChat() {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
   const [input, setInput] = useState("");
@@ -245,7 +242,7 @@ export default function QAChat() {
   );
 }
 
-// ── Styles ───────────────────────────────────────────────────────────────────
+// Styles
 const styles = StyleSheet.create({
   safe: {
     flex: 1,

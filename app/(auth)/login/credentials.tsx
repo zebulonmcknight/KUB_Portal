@@ -1,6 +1,7 @@
 import { useAuth } from "@/components/authContext";
 import FloatingInput from "@/components/floatingInput";
 import ScreenHeader from "@/components/headerStyle";
+import { API_BASE_URL } from "@/constants/api";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Checkbox } from "expo-checkbox";
 import { useRouter } from "expo-router";
@@ -30,7 +31,7 @@ export default function Credentials() {
     try {
       setLoading(true); // button has been clicked so lock it from being clicked again
 
-      const response = await fetch("https://kubportal-production.up.railway.app/api/auth/login", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,8 +69,6 @@ export default function Credentials() {
         setAccessToken(access_token);
       }
 
-      //router.dismissAll();
-      //router.replace("/(tabs)/billing");
       router.navigate("/(tabs)/billing"); 
     } catch (error) {
       console.error("There was an error:", error);

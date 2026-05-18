@@ -108,7 +108,7 @@ const data = await response.json();
 
 ---
 
-### POST `/api/auth/reset-password`
+### POST `/api/auth/resetPassword`
 
 Sends a password reset link to the provided email address. For security reasons, the response is the same whether or not the email exists in the system.
 
@@ -121,7 +121,7 @@ Sends a password reset link to the provided email address. For security reasons,
 **Example**
 
 ```javascript
-const response = await fetch("https://kubportal-production.up.railway.app/api/auth/reset-password", {
+const response = await fetch("https://kubportal-production.up.railway.app/api/auth/resetPassword", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
@@ -148,6 +148,53 @@ const data = await response.json();
 | 500    | Password reset failed (server error) |
 
 > **Note:** This endpoint does not require authentication. The reset link is delivered via email and handled by Auth0.
+
+---
+
+### POST `/api/auth/verifyKubAccount`
+
+Verifies that a KUB service account exists and has not already been registered. Called during the registration flow before collecting email and password. Used to confirm the user is an existing KUB customer.
+
+**Request Body**
+
+| Field            | Type   | Required |
+| ---------------- | ------ | -------- |
+| `account_number` | string | yes      |
+| `ssn_last4`      | string | yes      |
+| `zip`            | string | yes      |
+
+**Example**
+
+```javascript
+const response = await fetch("https://kubportal-production.up.railway.app/api/auth/verifyKubAccount", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    account_number: "1234567890",
+    ssn_last4: "1234",
+    zip: "12345",
+  }),
+});
+```
+
+**Success Response (200)**
+
+```json
+{
+  "account_number": "1234567890"
+}
+```
+
+**Error Responses**
+
+| Status | Cause                                                        |
+| ------ | ------------------------------------------------------------ |
+| 400    | Missing account_number, ssn_last4, or zip                    |
+| 404    | No matching KUB service account found                        |
+| 409    | A portal account already exists for this service account     |
+| 500    | Server or database error                                     |
+
+> **Note:** This endpoint does not require authentication. It only checks that the KUB service account exists and is not yet registered — it does not create any account.
 
 ---
 

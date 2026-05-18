@@ -19,14 +19,26 @@ cd backend
 npm install
 ```
 
-### 3. Create Environment File
+### Configure Environment Variables
 
-```bash
-touch .env
-echo "PORT=3000" > .env
-echo "NODE_ENV=development" > .env
+Create a `.env` file in the backend directory with the following:
+
+```env
+PORT=3000
+NODE_ENV=development
+SUPABASE_URL=your_project_url
+SUPABASE_SECRET_KEY=your_supabase_secret
+STRIPE_SECRET_KEY=your_stripe_secret
+STRIPE_ELECTRIC_ID=electric_price_id
+STRIPE_WATER_ID=water_price_id
+STRIPE_WASTE_WATER_ID=waste_water_price_id
+AUTH0_DOMAIN=your_auth_domain
+AUTH0_AUDIENCE=your_auth_audience
+AUTH0_CLIENT_ID=your_auth_id
+AUTH0_CLIENT_SECRET=your_auth_secret
 ```
-Other environment variables should be retrieved from relevant dashboards. Developers use Railway URL and environment variables will be injected automatically. 
+
+Environment variables should be retrieved from relevant dashboards. 
 
 ### 4. Start Development Server
 

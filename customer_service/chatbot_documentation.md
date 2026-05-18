@@ -50,7 +50,7 @@ pip install -r requirements.txt
 
 ### Configure Environment Variables
 
-Create a `.env` file in the project root with the following:
+Create a `.env` file in the customer_service directory with the following:
 
 ```env
 SUPABASE_URL=your_supabase_project_url

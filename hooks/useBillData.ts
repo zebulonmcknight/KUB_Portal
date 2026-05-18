@@ -1,4 +1,5 @@
 import { useAuth } from "@/components/authContext";
+import { API_BASE_URL } from "@/constants/api";
 import { useState } from "react";
 import { Alert } from "react-native";
 
@@ -31,7 +32,7 @@ export function useBillData() {
       }
 
          const response = await fetch(
-         "https://kubportal-production.up.railway.app/api/billing/getCurrentBill",
+         `${API_BASE_URL}/api/billing/getCurrentBill`,
          {
             method: "GET",
             headers: {

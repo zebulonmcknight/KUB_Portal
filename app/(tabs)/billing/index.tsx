@@ -1,6 +1,7 @@
 import { useAuth } from "@/components/authContext";
 import PayNowModal from "@/components/payNowModal";
 import { PaymentMethod } from "@/components/paymentPicker";
+import { API_BASE_URL } from "@/constants/api";
 import { icons } from "@/constants/icons";
 import { useBillData } from "@/hooks/useBillData";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
@@ -29,7 +30,7 @@ export default function Billing() {
   const router = useRouter();
   // paymentSheet used for card processing/payment confirmation
   const { initPaymentSheet, presentPaymentSheet } = useStripe();
-  // to prevent the user from clicking the button again why the request is still processing
+  // to prevent the user from clicking the button again while the request is still processing
   const [loading, setLoading] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
 
@@ -67,7 +68,7 @@ export default function Billing() {
         return [];
       }
 
-      const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paymentMethods", {
+      const response = await fetch(`${API_BASE_URL}/api/billing/paymentMethods`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -138,10 +139,7 @@ export default function Billing() {
         return;
       }
 
-      const response = await fetch(
-        // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
-        {
+      const response = await fetch(`${API_BASE_URL}/api/billing/payInvoice`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -175,7 +173,7 @@ export default function Billing() {
       // get the client secret for the open invoice
       const response = await fetch(
         // HAS TO BE YOUR OWN LOCAL IP FOR MOBILE TESTING
-        "https://kubportal-production.up.railway.app/api/billing/payInvoice",
+        `${API_BASE_URL}/api/billing/payInvoice`,
         {
           method: "POST",
           headers: {
@@ -326,7 +324,7 @@ export default function Billing() {
           </View>
 
           <View className="w-full" style={{paddingHorizontal: width * .08}}>
-            {/* create the Subscribe button */}
+            {/* create the Pay Now button */}
             <TouchableOpacity
               onPress={handlePayment}
               disabled={loading || billData?.status !== "open"} // disables the button while request is processing
@@ -336,7 +334,7 @@ export default function Billing() {
                   : "bg-active_icon/50"
               }`}
             >
-              {/* if the request is current processing, output processing, otherwise output subscribe */}
+              {/* if the request is currently processing then output processing, otherwise output pay now */}
               <Text allowFontScaling={false} className="text-text_main font-semibold text-xl">
                 {loading ? "Processing..." : "PAY NOW"}
               </Text>

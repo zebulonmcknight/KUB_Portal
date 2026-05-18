@@ -1,6 +1,6 @@
 # KUB Portal
 
-A cross-platform mobile application built with React Native and Expo that consolidates KUB's seperate iOS and Android apps into a single unified codebase.
+A cross-platform mobile application built with React Native and Expo that consolidates KUB's separate iOS and Android apps into a single unified codebase.
 
 ## Project Background
 
@@ -33,7 +33,7 @@ The initial load screen is where user authentication is handled. Authentication 
 - The following environment variable in a ```.env``` file in the root directory:
 ```EXPO_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key```. Must have a Stripe developer dashboard to obtain this.
 
-See [`backend/README.md`](./backend/README.md) for setup and [`backend/auth_documentation.md`](./backend/auth_documentation.md) for the full Auth0 API reference and [`backend/stripe_documentation.md`](./backend/stripe_documentation.md) for the full Stripe API reference
+See [`backend/README.md`](./backend/README.md) for setup, [`backend/auth_documentation.md`](./backend/auth_documentation.md) for the Auth0 API reference, [`backend/stripe_documentation.md`](./backend/stripe_documentation.md) for the Stripe API reference, and [`customer_service/chatbot_documentation.md`](./customer_service/chatbot_documentation.md) for the Energi chatbot setup and API reference.
 
 ### Setup
 

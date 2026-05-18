@@ -2,6 +2,7 @@ import CustomAlert from "@/components/customAlert";
 import FloatingInput from "@/components/floatingInput";
 import ScreenHeader from "@/components/headerStyle";
 import { useRegistration } from "@/components/registrationContext";
+import { API_BASE_URL } from "@/constants/api";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
@@ -16,11 +17,13 @@ export default function CreateLogin() {
   const [loading, setLoading] = useState(false);
 
   // This is used to track what the user is typing
-  const { accountNumber, setAccountNumber } = useRegistration();
-  const { zipCode, setZipCode } = useRegistration();
-  const { ssn, setSSN } = useRegistration();
-  const { email, setEmail } = useRegistration();
-  const { password, setPassword } = useRegistration();
+  const {
+    accountNumber, setAccountNumber,
+    zipCode, setZipCode,
+    ssn, setSSN,
+    email, setEmail,
+    password, setPassword,
+  } = useRegistration();
 
   useEffect(() => {
     // Reset all registration context values when entering this screen fresh
@@ -50,7 +53,7 @@ export default function CreateLogin() {
     try {
       setLoading(true);
       const response = await fetch(
-        "https://kubportal-production.up.railway.app/api/auth/verifyKubAccount",
+        `${API_BASE_URL}/api/auth/verifyKubAccount`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -160,7 +163,6 @@ export default function CreateLogin() {
           }`}
           onPress={checkInfo}
         >
-          {/* NEED TO CONNECT THIS TO AUTH0!!!!! */}
           {/* Have to make sure they are a customer before allowing them to continue further. */}
           <Text allowFontScaling={false} className="text-text_main font-bold tracking-widest w-full text-center text-lg p-3">
             {loading ? "Verifying..." : "NEXT"}

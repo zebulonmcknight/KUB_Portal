@@ -1,11 +1,10 @@
 import CustomAlert from "@/components/customAlert";
 import FloatingInput from "@/components/floatingInput";
 import ScreenHeader from "@/components/headerStyle";
+import { API_BASE_URL } from "@/constants/api";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
-
-// Similarly to the forgotUsername page where we check the email the user has entered
 
 export default function ForgotPassword() {
   // This is used to track what the user is typing
@@ -21,8 +20,7 @@ export default function ForgotPassword() {
   const resetPassword = async () => {
     try {
       setLoading(true);
-      // Make a call to our signup api sending the information from our registration context
-      const response = await fetch("https://kubportal-production.up.railway.app/api/auth/resetPassword", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/resetPassword`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +73,7 @@ export default function ForgotPassword() {
           </Text>
         </TouchableOpacity>
       </View>
-      {/* This will only render if the auth creation was successfull. When they hit ok, it will redirect them to login page. */}
+      {/* Alert to render only after success. When they hit ok, it will redirect them to login page. */}
       <CustomAlert
         message={
           <Text>

@@ -20,7 +20,7 @@ import {
    submitUsage,
    togglePaperless
 } from './controllers/billing.controller';
-import { get_user_by_email } from './controllers/user.controller';
+import { getUserByEmail } from './controllers/user.controller';
 import { checkJwt, extractUserID } from './middleware/auth';
 
 
@@ -50,7 +50,7 @@ router.post('/billing/paperless/toggle', checkJwt, extractUserID, togglePaperles
 
 router.post('/account/profile', profile); 
 
-router.get('/user/get_user', checkJwt, extractUserID, get_user_by_email);  
+router.get('/user/get_user', checkJwt, extractUserID, getUserByEmail);  
 router.get('/billing/getCurrentBill', checkJwt, extractUserID, getCurrentBill);
 router.get('/billing/paymentMethods', checkJwt, extractUserID, getPaymentMethodsController);
 router.get('/billing/invoiceHistory', checkJwt, extractUserID, getInvoiceHistoryController);

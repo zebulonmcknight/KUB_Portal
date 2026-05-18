@@ -1,5 +1,6 @@
 import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
+import { API_BASE_URL } from "@/constants/api";
 import { useBillData } from "@/hooks/useBillData";
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
@@ -35,7 +36,7 @@ export default function PaperlessBilling() {
             return;
          }
 
-         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/paperless/toggle", {
+         const response = await fetch(`${API_BASE_URL}/api/billing/paperless/toggle`, {
             method: "POST",
             headers: {
                "Content-Type": "application/json",

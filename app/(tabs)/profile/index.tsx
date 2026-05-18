@@ -21,7 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import Svg, { Path } from "react-native-svg";
 
-// ─── User profile props — swap these out for your real auth/user context ──────
+// User profile props
 type UserProfile = {
   name: string;
   address: string;
@@ -33,11 +33,10 @@ const DEFAULT_USER: UserProfile = {
   address: "200 W Hill Ave",
   accountNumber: "8764872181",
 };
-// ─────────────────────────────────────────────────────────────────────────────
 
 type ModalType = "mailing" | "password" | "email" | "phone" | "feedback" | null;
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
+// Icons
 function ChevronIcon() {
   return (
     <Svg width={18} height={18} viewBox="0 0 24 24" fill="none">
@@ -65,7 +64,7 @@ function CloseIcon() {
   );
 }
 
-// ── Reusable modal shell ───────────────────────────────────────────────────────
+// Reusable modal shell
 function SheetModal({
   visible,
   title,
@@ -130,7 +129,7 @@ function SheetModal({
   );
 }
 
-// ── Main screen ───────────────────────────────────────────────────────────────
+// Main screen
 export default function ProfileScreen({
   user = DEFAULT_USER
 }) {
@@ -364,7 +363,7 @@ export default function ProfileScreen({
         </TouchableOpacity>
       </ScrollView>
 
-      {/* ── Mailing Preference Modal ── */}
+      {/* Mailing Preference Modal */}
       <SheetModal
         visible={activeModal === "mailing"}
         title="Mailing Preference"
@@ -398,7 +397,7 @@ export default function ProfileScreen({
         </TouchableOpacity>
       </SheetModal>
 
-      {/* ── Password Modal ── */}
+      {/* Password Modal */}
       <SheetModal
         visible={activeModal === "password"}
         title="Change Password"
@@ -429,7 +428,7 @@ export default function ProfileScreen({
         </TouchableOpacity>
       </SheetModal>
 
-      {/* ── Email Modal ── */}
+      {/* Email Modal */}
       <SheetModal
         visible={activeModal === "email"}
         title="Primary Email"
@@ -451,7 +450,7 @@ export default function ProfileScreen({
         </TouchableOpacity>
       </SheetModal>
 
-      {/* ── Phone Modal ── */}
+      {/* Phone Modal */}
       <SheetModal
         visible={activeModal === "phone"}
         title="Phone Number"
@@ -472,7 +471,7 @@ export default function ProfileScreen({
         </TouchableOpacity>
       </SheetModal>
 
-      {/* ── Feedback Modal ── */}
+      {/* Feedback Modal */}
       <SheetModal
         visible={activeModal === "feedback"}
         title="App Feedback"
@@ -498,7 +497,7 @@ export default function ProfileScreen({
   );
 }
 
-// ── Row button component ───────────────────────────────────────────────────────
+// Row button component
 function RowButton({
   icon,
   label,
@@ -533,7 +532,7 @@ function Divider() {
   return <View style={styles.divider} />;
 }
 
-// ── Styles ────────────────────────────────────────────────────────────────────
+// Styles
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: "#091C3C" },
   scroll: { paddingHorizontal: 16, paddingBottom: 120 },

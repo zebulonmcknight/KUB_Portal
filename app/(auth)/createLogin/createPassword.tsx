@@ -2,6 +2,7 @@ import CustomAlert from "@/components/customAlert";
 import FloatingInput from "@/components/floatingInput";
 import ScreenHeader from "@/components/headerStyle";
 import { useRegistration } from "@/components/registrationContext";
+import { API_BASE_URL } from "@/constants/api";
 import Entypo from "@expo/vector-icons/Entypo";
 import { useRouter } from "expo-router";
 import { useRef, useState } from "react";
@@ -34,7 +35,7 @@ export default function CreatePassword() {
     try {
       setLoading(true);
       // Make a call to our signup api sending the information from our registration context
-      const response = await fetch("https://kubportal-production.up.railway.app/api/auth/signup", {
+      const response = await fetch(`${API_BASE_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -79,7 +80,7 @@ export default function CreatePassword() {
   const zipCodeRef = useRef<TextInput>(null);
   const ssnRef = useRef<TextInput>(null);
 
-  // Use REGEX to verify that the user only entered digits and that they meet the length requirements
+  // Use REGEX to verify that the user meets the requirements
   const validPassword = (password: string) => {
     // Check the length of the password first
     if (password.length < 12 || password.length > 64) return false;

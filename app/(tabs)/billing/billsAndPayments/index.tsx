@@ -1,5 +1,6 @@
 import { useAuth } from "@/components/authContext";
 import ScreenHeader from "@/components/headerStyle";
+import { API_BASE_URL } from "@/constants/api";
 import { icons } from "@/constants/icons";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { format, parseISO } from "date-fns";
@@ -63,7 +64,7 @@ export default function BillsAndPayments() {
         return;
       }
 
-         const response = await fetch("https://kubportal-production.up.railway.app/api/billing/invoiceHistory", {
+         const response = await fetch(`${API_BASE_URL}/api/billing/invoiceHistory`, {
             method: "GET",
             headers: {
                "Content-Type": "application/json",
